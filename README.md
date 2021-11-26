@@ -7,12 +7,12 @@ Este E-book consiste do agrupamento de minhas notas de aula na forma de um livro
 Atualmente os tópicos aos quais este manuscrito irá atacar são:
 
 - Teoria Intuitiva dos Conjuntos
+- Estruturas Algébricas
 - Lógica (clássicas e não-clássicas)
 - Teoria dos Números
 - Linguagem Formais e Autômatos
 - Computabildiade e Decidibilidade
 - Análise de Algoritmos e Complexidade
-- Estruturas Algébricas
 
 ## Informações sobre o autor
 O Professor Valdigleis S. Costa sob a Tutela de [Benjamín Bedregal](https://docente.ufrn.br/2212166/perfil/) e [Regivan Santiago](https://docente.ufrn.br/1345816/perfil)  recebeu seus títulos de Mestre e Doutor  pelo [Programa de Pós-graduação em Sistemas e Computação](https://sigaa.ufrn.br/sigaa/public/programa/portal.jsf?id=73) vínculado ao [Departamento de Informática e Matématica Aplicada](https://www.dimap.ufrn.br) da [Universidade Federal do Rio Grande do Norte](https://www.ufrn.br/). Atualmente é professor adjunto (A2) no [Colegiado de Ciência da Computação](https://portais.univasf.edu.br/ccicomp) da [Universidade Federal do Vale do São Francisco](https://www.portais.univasf.edu.br). Tem experiência no ensino e pesquisa nas áreas de Fundamentos Matemáticos da Computação e Matemática aplicada (Inteligência artificial, processamento de sinais e bio-informática).
