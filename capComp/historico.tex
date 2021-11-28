@@ -1,0 +1,38 @@
+% Seta a imagem do capítulo
+\chapterimage{chapter_head_2.pdf}
+% O título e rótulo do cabiluto
+\chapter{O Início}\label{cap:InicioComputabilidadeDecidibildiade}
+
+
+\epigraph{``As máquinas me surpreendem muito frequentemente. ''}{Alan M. Turing.}
+
+%\epigraph{``Se você sabe que está morto, você está morto.\\ Mas se você sabe que está morto, você não está morto,\\ portanto você não sabe se está morto ou não.''}{Zenão de Citio (334-262 a.C.)}
+
+% Ciência é uma equação diferencial. Religião é a condição de contorno.
+% Eu acredito que às vezes são as pessoas que ninguém espera nada que fazem as coisas que ninguém consegue imaginar.
+% Nós só podemos ver um pouco do futuro, mas o suficiente para perceber que há muito a fazer.
+% Eu não fico muito impressionado com argumentos teológicos, independentemente daquilo que eles estão sendo usado para apoiar. Esses argumentos frequentemente se revelaram insatisfatórios no passado.
+
+\section{O Problema Da Decisão}
+
+A primeira metade do século XX é provavelmente o mais explosivo período já experimentado pela humanidade e sua ciência, em tal período nossa civilização presenciou duas grandes guerras e diversas revoluções do pensamento científico predominante em múltiplas áreas do conhecimento, entre tais revoluções sem dúvida merecem destaque as revoluções vivenciadas na física através do nascimento da ``física moderna'' \cite{bohr1937, dirac1981, einstein1905a, einstein1912b, einstein2005, schrodinger1926, einstein1905b} e a grande revolução da biologia e das ciência da saúde a partir dos desdobramentos da descoberta da molécula do DNA \cite{watson1953}.
+
+Outra área que teve um desenvolvimento explosivo durante o século XX foi a matemática, em grande parte esse desenvolvimento seguiu um roteiro estabelecido pela lista de Hilbert (como mencionado anteriormente neste manuscrito) e por outras indagações feitas pela próprio Hilbert. Talvez a mais importante destas indagações feitas por Hilbert, do ponto de vista de desenvolvimento tecnológico\footnote{A importância tecnológica do problema da decisão está ligado ao fato de que sua resolução levou diretamente ao surgimento do computador moderno (para uma historia completa ver \cite{fonseca2007}).}, tenha sido aquela conhecido como \textit{Entscheidungsproblem} (ou problema da decisão) \cite{fonseca2007}, que pode ser descrito pelo enunciado:
+\begin{itemize}
+	\item[ ] ``\textbf{Ache um procedimento efetivo\footnote{Na linguagem moderna da matemática substituímos o termo procedimento efetivo pela noção de algoritmo.} genérico para determinar se um dado enunciado da lógica de primeira ordem pode ser provado.}''
+\end{itemize}
+Tal problema seria respondido entre os anos de 1936 e 1937 de forma totalmente independente por Alonzo Church \cite{church1936b, church1936}, Alan M. Turing \cite{britton1992, herken1992, turing1937}, Kleene \cite{kleene1936} e também por outros jovens matemáticos em anos seguintes \cite{shepherdson1963}. O que todas as respostas possuem em comum é que, todas foram negativas a existência de tal algoritmo genérico, o que de certa forma colocou um fim no programa de Hilbert \cite{abramsky1992, ullman1992, sernadas2006}, terminando assim com os sonhos poéticos e dogmáticos de Hilbert \cite{fonseca2007} de matemática não existirem \textit{ignorabimus}.
+
+\section{Sobre os modelos de Computação}
+
+Como dito anteriormente múltiplos pesquisadores, Turing e Church entre eles, responderam de forma negativa ao problema da decisão levantado por Hilbert. Para realizar esta façanha intelectual Church em \cite{church1936} apresentou o $\lambda$-cálculo, Kleene em \cite{kleene1936} as funções recursiva, e Turing em \cite{turing1937} as máquinas de computar, hoje chamadas de máquinas de Turing. Cada um desses modelos é apresentado como sendo uma representação matemática para o conceito chamado por Hilbert de procedimento efetivo, sendo esse três modelos os pilares centrais do que chamamos de teoria da computação\footnote{Também é comum encontrar os termos teoria da recursão, ou simplesmente, computabilidade.}. 
+
+O $\lambda$-cálculo e as funções recursivas são de um ponto de vista moderno como discutido em \cite{hankin2004}, uma visão da computação baseada em programação, tais modelos são os pilares para o paradigma funcional das linguagens de programação, como por exemplo, OCaml e Haskell \cite{hankin2004}. Quando é dito que esses modelos apresentam a computação sendo baseada em programação, se está querendo dizer que, a computação está sendo formalizada (ou vista) em termos da linguagem (sintaxe e semântica) usada para descrever e realizar o fenômeno da computação, ou seja, a computação é um fenômeno linguístico de uma linguagem formal. 
+
+Por outro lado, o formalismo de máquinas de Turing apresenta a ideia da computação como sendo um fenômeno mecanizável através de um sistema discreto na forma de uma máquina abstrata \cite{sernadas2006, hankin2004}, ou seja, a computação é descrita pela evolução de um sistema discreto (a máquina) em função de uma entrada. Em um certo sentido o trabalho de Turing mostra que a computação seria um aspecto de engenharia, no sentido de evocar a necessidade de máquina (mesmo que abstrata) para realizar o fenômeno da computação.
+
+Apesar destes três modelos serem o cerne da teoria da computação, eles não são os únicos modelos de computação existentes
+
+%e os teoremas de Gödel \cite{abe2002-logica, godel1931}. 
+
+%o desenvolvimento da teoria da recursão\footnote{Também chamada de teoria da computação, ou simplesmente, computabilidade.} \cite{abramsky1992, ullman1992, sernadas2006} e sua principal contribuição .
