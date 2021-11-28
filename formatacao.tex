@@ -185,6 +185,7 @@
 \theoremstyle{blacknumbox}
 \newtheorem{vocabulary}{Vocabulary}[chapter]
 \newtheorem{defi}{Definição}[section]
+\newtheorem*{thesi}{Tese}
 \newtheorem{corollaryT}[dummy]{Corolário}
 \theoremstyle{ocrenum}
 \newtheorem{prop}[dummy]{Proposição}
@@ -251,6 +252,23 @@ rightmargin=0cm,
 linewidth=4pt,
 innerbottommargin=0pt]{dBox}	
 
+% Tese box
+\newmdenv[skipabove=7pt,
+skipbelow=7pt,
+rightline=false,
+leftline=true,
+topline=false,
+bottomline=false,
+backgroundcolor=ivory,
+linecolor=my-azul,
+innerleftmargin=5pt,
+innerrightmargin=5pt,
+innertopmargin=0pt,
+leftmargin=0cm,
+rightmargin=0cm,
+linewidth=4pt,
+innerbottommargin=0pt]{teseBox}	
+
 \newmdenv[skipabove=7pt,
 skipbelow=7pt,
 rightline=false,
@@ -305,6 +323,8 @@ innerbottommargin=0pt]{mBox}
 \newenvironment{theorem}{\begin{tBox}\begin{theoremeT}}{\end{theoremeT}\end{tBox}}
 \newenvironment{exercise}{\begin{eBox}\begin{exerciseT}}{\hfill{\color{ocre}\tiny\ensuremath{\blacksquare}}\end{exerciseT}\end{eBox}}				  
 \newenvironment{definition}{\begin{dBox}\begin{defi}}{\end{defi}\end{dBox}}	
+
+\newenvironment{tese}{\begin{teseBox}\begin{thesi}}{\end{thesi}\end{teseBox}}	
 
 \newenvironment{method}{\begin{mBox}\begin{metodo}}{\end{metodo}\end{mBox}}
 	
