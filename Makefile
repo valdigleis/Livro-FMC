@@ -8,10 +8,10 @@ pdf:
 
 clean:
 	rm *.toc
-	rm *.pdf
 	rm *.log
 	rm *.aux
-	rm *.out
+	rm *.idx
+	rm *.ptc
 	rm *.blg
 	rm *.bbl
 	rm *~

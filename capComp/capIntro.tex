@@ -1,0 +1,50 @@
+% Seta a imagem do capítulo
+\chapterimage{chapter_head_2.pdf}
+% O título e rótulo do cabiluto
+\chapter{O Início}\label{cap:InicioComputabilidadeDecidibildiade}
+
+
+\epigraph{``As máquinas me surpreendem muito frequentemente. ''}{Alan M. Turing.}
+
+%\epigraph{``Se você sabe que está morto, você está morto.\\ Mas se você sabe que está morto, você não está morto,\\ portanto você não sabe se está morto ou não.''}{Zenão de Citio (334-262 a.C.)}
+
+% Ciência é uma equação diferencial. Religião é a condição de contorno.
+% 
+% Eu não fico muito impressionado com argumentos teológicos, independentemente daquilo que eles estão sendo usado para apoiar. Esses argumentos frequentemente se revelaram insatisfatórios no passado.
+
+\section{O Problema Da Decisão}\label{sec:ProblemaDecisao}
+
+A primeira metade do século XX é provavelmente o mais explosivo período já experimentado pela humanidade e sua ciência, em tal período nossa civilização presenciou duas grandes guerras e diversas revoluções do pensamento científico predominante em múltiplas áreas do conhecimento, entre tais revoluções sem dúvida merecem destaque as revoluções vivenciadas na física através do nascimento da ``física moderna'' \cite{bohr1937, dirac1981, einstein1905a, einstein1912b, einstein2005, schrodinger1926, einstein1905b} e a grande revolução da biologia e das ciência da saúde a partir dos desdobramentos da descoberta da molécula do DNA \cite{watson1953}.
+
+Outra área que teve um desenvolvimento explosivo durante o século XX foi a matemática, em grande parte esse desenvolvimento seguiu um roteiro estabelecido pela lista de Hilbert (como mencionado anteriormente neste manuscrito) e por outras indagações feitas pela próprio Hilbert. Talvez a mais importante destas indagações feitas por Hilbert, do ponto de vista de desenvolvimento tecnológico\footnote{A importância tecnológica do problema da decisão está ligado ao fato de que sua resolução levou diretamente ao surgimento do computador moderno (para uma historia completa ver \cite{fonseca2007}).}, tenha sido aquela conhecido como \textit{Entscheidungsproblem} (ou problema da decisão) \cite{fonseca2007}, que pode ser descrito pelo enunciado:
+\begin{itemize}
+	\item[ ] ``\textbf{Ache um procedimento efetivo\footnote{Na linguagem moderna da matemática substituímos o termo procedimento efetivo pela noção de algoritmo.} genérico para determinar se um dado enunciado da lógica de primeira ordem pode ser provado.}''
+\end{itemize}
+Tal problema seria respondido entre os anos de 1936 e 1937 de forma totalmente independente por Alonzo Church (1903-1995) \cite{church1936b, church1936}, Alan M. Turing (1912-1954) \cite{britton1992, herken1992, turing1937}, Stephen Kleene (1909-1994) \cite{kleene1936} e também por outros jovens matemáticos em anos seguintes \cite{coelho2010, shepherdson1963}. O que todas as respostas possuem em comum é que, todas foram negativas a existência de tal algoritmo genérico, o que de certa forma colocou um fim no programa de Hilbert \cite{abramsky1992, ullman1992, sernadas2006}, terminando assim com os sonhos poéticos e dogmáticos de Hilbert \cite{fonseca2007} de matemática não existirem \textit{ignorabimus}.
+
+\section{Sobre os modelos de Computação}\label{sec:ModeloDeComputacao}
+
+Como dito anteriormente múltiplos pesquisadores, Turing e Church entre eles, responderam de forma negativa ao problema da decisão levantado por Hilbert. Para realizar esta façanha intelectual Church em \cite{church1936} apresentou o $\lambda$-cálculo, Kleene em \cite{kleene1936} as funções recursiva, e Turing em \cite{turing1937} as máquinas de computar, hoje chamadas de máquinas de Turing. Cada um desses modelos é apresentado como sendo uma representação matemática para o conceito chamado por Hilbert de procedimento efetivo, sendo esse três modelos os pilares centrais do que chamamos de teoria da computação\footnote{Também é comum encontrar os termos teoria da recursão, ou simplesmente, computabilidade.}. 
+
+O $\lambda$-cálculo e as funções recursivas \cite{cutland1980, fitting2011, odifreddi1992} são de um ponto de vista moderno como discutido em \cite{hankin2004}, uma visão da computação baseada em programação, tais modelos são os pilares para o paradigma funcional das linguagens de programação, como por exemplo, OCaml e Haskell \cite{hankin2004}. Quando é dito que esses modelos apresentam a computação sendo baseada em programação, se está querendo dizer que, a computação está sendo formalizada (ou vista) em termos da linguagem (sintaxe e semântica) usada para descrever e realizar o fenômeno da computação, ou seja, a computação é um fenômeno linguístico de uma linguagem formal. 
+
+Por outro lado, o formalismo de máquinas de Turing apresenta a ideia da computação como sendo um fenômeno mecanizável através de um sistema discreto na forma de uma máquina abstrata \cite{hankin2004, sernadas2006}, ou seja, a computação é descrita pela evolução de um sistema discreto (a máquina) em função de uma entrada. Em um certo sentido o trabalho de Turing mostra que a computação seria um aspecto de engenharia, no sentido de evocar a necessidade de máquina (mesmo que abstrata) para realizar o fenômeno da computação.
+
+Apesar destes três modelos serem o cerne da teoria da computação, eles não são os únicos modelos de computação existentes \cite{roberto1998}, de fato, como apontado em \cite{menezes2003}, existem diversos outros modelos tais como: Sistemas canônicos de Post\footnote{Também é comum a nomenclatura máquinas de Post \cite{nelson1968}.} \cite{fitting2011}, Algoritmos de Markov \cite{menezes2003}, Máquina de Registros Ilimitados \cite{cutland1980, menezes2003}, cada uma desta formaliza a ideia de computação ao seu modo, oferecendo assim uma nova interpretação para a noção de procedimento efetivo. 
+
+Um ponto a se destacar é que, como dito em \cite{sernadas2006}, qualquer modelo atual é superiormente limitado pela máquina de Turing, ou seja, os modelos de computação tem no máximo o mesmo poder computacional da máquina de Turing. Essa limitação veio a contribuir para a famosa declaração de Church, hoje chamada de \textbf{Tese de Church-Turing} que estabelece o limite superior de tudo que é computável, sendo tal tese enunciada como se segue.
+
+\begin{tese}[Church-Turing]
+	\cite{sernadas2006} Qualquer função que possa ser aceita como computável\footnote{Na visão de Gödel e Hilbert uma função é aceita como computável se ela for calculado por procedimento efetivo \cite{fonseca2007}.}, é computável formalmente por alguma máquina de Turing.
+\end{tese}
+
+\begin{rema}
+	Note que a tese de Church-Turing estabelece exatamente qual é a classe de que podem ser computadas, sendo essa as funções computáveis por máquinas de Turing.
+\end{rema}
+
+Em seu livro \cite{roberto1998}, o professor Roberto lins de Carvalho e a professora Claudia Maria Garcia Medeiros de Oliveira, apresentaram evidências para a tese de Church-Turing, em tal texto eles mostraram a equivalência entre a máquina de Turing e diversos outros modelos de computação. Vale salientar entretanto, que apresentar equivalências apenas fortalece a tese mas não a demonstra como verdadeira, pois como dito em \cite{benjaLivro2010, roberto1998, sernadas2006} uma prova para isso necessitaria de que a noção de procedimento efetivo fosse formalizadas em termos matemáticos precisos, e esta formalização deveria se mostrar equivalente a noção de máquinas de Turing \cite{benjaLivro2010}, algo que ainda não se mostrou possível, uma vez que, a própria ideia de procedimento efetivo é algo quase que inerente a intuição humana mas que é extremamente complexa (e possível impossível) de se formalizar em termos matemáticos precisos.
+
+Os próximos capítulos deste manuscrito estão organizado da seguinte forma: o Capítulo \ref{cap:LRegulares} irá introduzir a ideia de linguagens e gramáticas formais, além disso, irá introduzir os conceitos de autômatos finitos e expressões regulares \cite{benjaLivro2010, hopcroft2008, linz2006}. Em seguida no Capítulo \ref{cap:LLivresContexto} serão abordados os tópicos das linguagens livres do contexto e dos autômatos de pilha \cite{benjaLivro2010, menezes1998LFA}. Finalmente no Capítulo \ref{cap:MaquinaTuring} será abordado a computabilidade pelo viés de Turing, ou seja, tal capítulo irá tratar da teoria das máquinas de Turing \cite{benjaLivro2010, menezes1998LFA, turing1937} e das linguagens reconhecidas por essas máquinas, a saber linguagens recursivamente enumeráveis. 
+
+Nos Capítulos XX irá apresentar a teoria do $\lambda$-cálculo puro \cite{bare1984, henk1992, hankin2004}, detalhando seus aspectos semáticos, sintáticos e desenvolve sua relação com a lógica combinatória \cite{bimbo2019, hankin2004}, em seguida os Capítulos XX irá estender a teoria do $\lambda$-cálculo para o $\lambda$-cálculo tipado \cite{henk1992, hankin2004}. Por fim, nos Capítulo XX será desenvolvida a formalização da noção de computabilidade a partir da teoria da funções recursivas de Kleene \cite{kleene1936}, nestes capítulos sempre que necessário será adotada a representação de programas por meio noção de Máquinas de Registros Ilimitados \cite{cutland1980, menezes2003}. 
+
