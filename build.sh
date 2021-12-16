@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 default: pdf
 
 pdf: 
@@ -15,3 +17,11 @@ clean:
 	rm *.blg
 	rm *.bbl
 	rm *~
+
+
+echo "Digite o user"
+read USER
+echo "Digite o IP"
+read IP
+
+scp Livro-FMC.pdf $USER@$IP:~/public_html/files/

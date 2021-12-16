@@ -1,13 +1,85 @@
 % Seta a imagem do capítulo
 \chapterimage{chapter_head_2.pdf}
 % O título e rótulo do cabiluto
-\chapter{Revisão Matemática}\label{cap:IntroducaoComplexidade}
+\chapter{Revisão Matemática}\label{cap:ComplexidadeRevisao}
 
 
-\epigraph{``A ciência é o que nós compreendemos suficientemente bem para explicar a um computador. A arte é tudo mais.''}{Donald Knuth.}
+\epigraph{``E sabe adição?'', perguntou a Rainha.\\``Quanto é um mais um mais um mais um mais um mais um mais um mais um mais um mais?''\\ ``-Não sei!'', disse Alice, ``-Eu perdi a conta.''\\ ``-Não sabe adição'', a Rainha vermelha interrompeu.}{Lewis Carroll, Alice no País das Maravilhas.}
 
 \section{Somatórios: Notação e Definições Básicas}
 
-Como dito em \cite{carmo2013}, os somatórios apresentam um papel de suma importância em diversos campos da matemática e demais ciência exatas. Para o estudo da análise de algoritmos que será feitos em capítulos futuros o domínio de tais objetos matemáticos (os somatórios) será de extrema necessidade, assim este capítulo de revisão irá se iniciar reforçando ao leitor as notações e propriedades dos somatórios.
+Como dito em \cite{carmo2013}, os somatórios apresentam um papel de suma importância em diversos campos da matemática e demais ciências exatas. Para o estudo da análise de algoritmos que será feitos em capítulos futuros o domínio de tais objetos matemáticos (os somatórios) será de extrema necessidade, assim este capítulo de revisão irá se iniciar reforçando ao leitor as notações e propriedades dos somatórios.
 
-O leitor assim como todo estudante deve se lembrar de suas aulas na escola primária em que a operação de soma lhe foi apresenta como sendo uma operação\footnote{Nos termos mais formais abordados neste manuscrito até agora, pode-se repensar a noção de soma como sendo uma função cuja assinatura é a da forma $+: A \times A \rightarrow A$ onde $A$ é um conjunto numérico qualquer.} em que dois números eram dados como entrada e um número deveria ser o resultado da ``combinação'' dos números da entrada.
+O leitor assim como todo estudante deve se lembrar de suas aulas na escola primária em que a operação de soma lhe foi apresenta como sendo uma operação\footnote{Nos termos mais formais abordados neste manuscrito até agora, pode-se repensar a noção de soma como sendo uma função cuja assinatura é a da forma $+: A \times A \rightarrow A$ onde $A$ é um dos conjuntos numérico qualquer mencionados no Capítulo \ref{cap:Conjuntos}.} em que dois números eram dados como entrada e um número deveria ser o resultado da ``combinação'' dos números da entrada. 
+
+A noção que é apresentada durante o ensino primário cria o seguinte problema sintático, como é possível escrever que um certo número $k$ corresponde a soma de três números $x_1, x_2$ e $x_3$? Uma forma, de resolver esse problema é utilizar parênteses assim poderia ser escrito que  $k = (x_1 + x_2) + x_3$, ou poderia ser escrito $k = x_1 + (x_2 + x_3)$,  ora como explicado em \cite{carmo2013, knuth-livro}, uma vez que, a soma é associativa pode-se simplesmente escreve que $k = x_1 + x_2 + x_3$, e para o caso geral com $n \geq 3$ pode-se escreve que $k = x_1 + \cdots + x_n$, porém como destacado em \cite{knuth-livro}, o uso de reticências apesar de ter muita utilidade pode gerar ambiguidades na leitura e ser um tanto quanto prolixa. Uma alternativa ao uso das reticência foi apresentada pelo grande matemático e físico francês Jean Baptiste Joseph Fourier (1768-1830) a seguir tal alternativa é apresenta.
+
+\begin{definition}[Somatório]\label{def:Somatorio}
+	Seja $(a_i)_{i \in I}$ uma sequência, o somatório de todos os itens da sequência é denotado por $\displaystyle \sum_{i \in I} a_i$.
+\end{definition}
+
+\begin{rema}
+	Vale ressaltar que no caso particular quando se tem $I = \{1, 2, \cdots, n\}$ com $n \in \mathbb{N}$ é comum escrever $\displaystyle \sum_{i = 1}^n a_i$ ou $\sum_{i = 1}^n a_i$.
+\end{rema}
+
+Pode-se também como destacado em \cite{knuth-livro} usar uma forma alternativa (e muito mais verbosa) da notação de Fourier, em tal notação é  eliminado a expressão $i \in I$ na base do somatório, e em seu lugar é inserido a descrição das propriedades o índice $i$ deve possuir, por exemplo, considere uma sequência $(a_i)_{i \in P_{12}}$ onde $P_{12} = \{2, 4, 6, 8, 10, 12\}$, nessa situação o somatório dos itens da sequência poderia ser expresso da seguinte forma:
+$$\sum_{\substack{i = 2j, \\ 1 \leq j \leq 6}} a_i$$
+
+Neste manuscrito sempre que possível será evitado usar essa forma alternativa, mas caso o leitor tenha interesse em se aprofundar em seu uso ou busca por exemplo fica aqui a recomendação da leitura de \cite{carmo2013, knuth-livro}.
+
+Uma vez que, os somatórios são apenas formas generalizadas da soma é claro que eles ``herdam'' as propriedades da soma usual, assim são válidas a distributividade da multiplicação sobre a soma, além da associatividade e da comutatividade expressas formalmente a seguir.
+
+\begin{definition}[Propriedades dos somatórios]
+	Sejam $(a_i)_{i \in I}$ e $(b_i)_{i \in I}$ duas sequências, $\psi: I \rightarrow I$ uma função bijeção e $c$ uma constante  tem-se que valem as seguintes igualdades:
+	
+	\
+	
+	\begin{itemize}
+		\item[(S1)] \textbf{Distributividade:} $\displaystyle \sum_{i \in I} c a_i = c \Big(\sum_{i \in I} a_i\Big)$.
+		\item[(S2)] \textbf{Associatividade:} $\displaystyle \sum_{i \in I} (a_i + b_i) = \Big(\sum_{i \in I} a_i \Big) + \Big(\sum_{i \in I} b_i\Big)$.
+		\item[(S3)] \textbf{Comutatividade:} $\displaystyle \sum_{i \in I} a_i = \sum_{i \in I} a_{\psi(i)}$
+	\end{itemize}
+\end{definition}
+
+A seguir são apresentados as formulações que permitem combinar e decompor somatórios sobre uma mesma família, tais formalizações como dito em \cite{carmo2013} são capazes de considerar diferentes conjuntos de índices.
+
+\begin{definition}[Composição]
+	\cite{carmo2013} Dado os conjuntos de índices $I$ e $J$ tem-se que:
+	
+	\
+	
+	\begin{itemize}
+		\item[(S4)] \textbf{Composição:} $\displaystyle \Big(\sum_{i \in I} a_i\Big) + \Big(\sum_{i \in J} a_i\Big) = \Big(\sum_{i \in (I \cup J)} a_i\Big) + \Big(\sum_{i \in (I \cap J)} a_i\Big)$.
+	\end{itemize}
+\end{definition}
+
+
+Considerando então a definição da propriedade de composição anterior quando os conjuntos de índices $I$ e $J$ são disjuntos, ou seja, $I \cap J = \emptyset$ pode-se deduzir a decomposição de somatórios exposta na definição a seguir. 
+
+\begin{definition}[Decomposição]
+	\cite{carmo2013} Dado uma sequência $(a_k)_{k \in K}$ e os conjuntos de índices $I, J$ e $K$ com $K = I \cup J$ e $I \cap J = \emptyset$ tem-se que:
+	
+	\
+	
+	\begin{itemize}
+		\item[(S5)] \textbf{Decomposição:} $\displaystyle \sum_{k \in K} a_k = \Big(\sum_{i \in I} a_i\Big) + \Big(\sum_{j \in J} a_j\Big)$.
+	\end{itemize}
+\end{definition}
+
+Com respeito a propriedade de comutatividade dos somatórios $(S3)$, tem-se como explicado em \cite{carmo2013} que a mesma é um caso particular da lei de mudança de variável \cite{carmo2013} definida formalmente a seguir.
+
+\begin{definition}[Lei da Mudança de Variável]
+	Seja $(a_i)_{i \in I}$ uma sequência e seja $\psi: I \rightarrow J$ uma função total injetora a mudança de variável consiste nas seguintes igualdades:
+	
+	\begin{itemize}
+		\item[\textbf{(1ª}] \textbf{forma)} $\displaystyle \sum_{i \in I} a_i = \sum_{j \in \psi[I]} a_{\psi^{-1}(j)}$.
+		\item[\textbf{(2ª}] \textbf{forma)} $\displaystyle \sum_{i \in I} a_{\psi(i)} = \sum_{j \in \psi[I]} a_j$.
+	\end{itemize}
+\end{definition}
+
+\begin{exem}
+	Considere a sequência $(i+2)_{1 \leq i \leq 9}$ e a função injetora $\psi$ definida como sendo $\psi(i) = i + 2$, assim para cada $i$ existe um $j$ tal que $j = \psi(i)$, ou seja, $j = i + 2$. Agora dado o somatório,  
+	$$\displaystyle \sum_{i = 1}^{9} (i + 2)$$
+	aplicando a 2ª forma da mudança de variável tem-se que, 
+	$$\displaystyle \sum_{i = 1}^{9} (i + 2) = \sum_{i = 1}^{9} \psi(i) = \sum_{j = \psi(1)}^{\psi(9)} j =  \sum_{j = 3}^{11} j$$
+\end{exem}

@@ -1,0 +1,540 @@
+% Seta a imagem do capítulo
+\chapterimage{chapter_head_2.pdf}
+% O título e rótulo do cabiluto
+\chapter{Computabilidade: Linguagens Regulares}\label{cap:LRegulares}
+
+\epigraph{``Eu acredito que às vezes são as pessoas que ninguém espera nada que fazem as coisas que ninguém consegue imaginar. ''}{Alan M. Turing.}
+ 
+\section{Noções Fundamentais}
+ 
+Neste primeiro momento para o estudo dos autômatos finitos serão apresentados alguns conceitos fundamentais de extrema importância para o desenvolvimento das próximas seções e capítulos.
+
+\begin{definition}[Alfabetos e Palavras]\label{def:AlfabetoPalavra}
+	\cite{valdi2016master} Qualquer conjunto finito e não vazio $\Sigma$ será chamado de alfabeto. Qualquer sequência finita de símbolos na forma $a_1\cdots a_n$ com $a_i \in \Sigma$ para todo $1 \leq i \leq n$ será chamada de palavra sobre o alfabeto $\Sigma$.
+\end{definition}
+
+
+\begin{exem}
+	Os conjuntos $\{0, 1, 2, 3\}, \{a, b, c\}, \{\heartsuit,\spadesuit, \Diamond, \clubsuit\}$ e $\{n \in \mathbb{N} \mid n \leq 25\}$ são todos alfabetos, os conjuntos $\mathbb{N}$ e $\mathbb{R}$ não são alfabetos.
+\end{exem}
+
+\begin{exem}
+	Dado o alfabeto $\Sigma = \{0, 1, 2, 3\}$ tem-se que as sequências 0123, 102345, 1 e 0000 são todas palavras sobre $\Sigma$.
+\end{exem}
+
+\begin{definition}[Comprimento das palavras]\label{def:ComprimentoPalavra}
+	Seja $w$ uma palavra qualquer sobre um certo alfabeto $\Sigma$, o comprimento\footnote{Dado a notação em alguns texto é usado o termo módulo em vez de usar comprimento.} de $w$, denotado por $|w|$, corresponde ao número de símbolos existentes em $w$.
+\end{definition}
+
+\begin{exem}
+	Dado o alfabeto $\Sigma = \{a, b, c, d\}$ e as palavras $abcd, aacbd, c$ e $ddaacc$ tem-se que: $|abcd| = 4, |aa| = 2, |c| = 1$ e $|ddaacc| = 6$
+\end{exem}
+
+\begin{rema}
+	Em especial quando $|w| = 1$, é dito que $w$ é uma palavra unitária, isto é, a mesma contém apenas um único símbolo do alfabeto.
+\end{rema}
+
+Como muito bem explicado em \cite{benjaLivro2010, hopcroft2008, linz2006}, pode-se definir uma série de operações sobre palavras, sendo a primeira delas  a noção de concatenação.
+
+\begin{definition}[Concatenação de palavras]\label{def:Concatenacao}
+	Sejam $w_1 = a_1\cdots a_m$ e $w_2 = b_1\cdots b_n$ duas palavras quaisquer, tem-se que a concatenação de $w_1$ e $w_2$, denotado por $w_1w_2$, corresponde a uma sequência iniciada com os símbolos que forma $w_1$ imediatamente seguido dos símbolos que forma $w_2$, ou seja, $w_1w_2 = a_1\cdots a_mb_1\cdots b_n$.
+\end{definition}
+
+\begin{rema}
+	O leitor deve ficar atento ao fato de que a concatenação apenas combina duas palavras em uma nova palavra, sendo que, não a qualquer tipo de exigência sobre os alfabeto sobre os quais as palavras usadas na concatenação estão definidas.
+\end{rema}
+
+\begin{exem}\label{exe:Concatenacao}
+	Dado duas palavras $w_1 = abra$ e $w_2 = cadabra$ tem-se que $w_1w_2 = abracadabra$ e $w_2w_1 = cadabraabra$.
+\end{exem}
+
+Note que o Exemplo \ref{exe:Concatenacao} estabelece que a operação de concatenação entre duas palavras não é comutativa, isto é, a ordem com que as palavras aparecem na concatenação é responsável pela forma da palavra resultante da concatenação.
+
+\begin{theorem}[Associativade da Concatenação]\label{teo:AssociatividaeConcatenacao}
+	Para quaisquer $w_1, w_2$ e $w_3$ tem-se que $(w_1w_2)w_3 = w_1(w_2w_3)$.
+\end{theorem}
+
+\begin{proof}
+	Dado três palavras quaisquer $w_1 = a_1\cdots a_i, w_2 = b_1\cdots b_j$ e $w_3 = c_1\cdots c_k$ tem-se que,
+	\begin{eqnarray*}
+		(w_1w_2)w_3 & = & (a_1\cdots a_ib_1\cdots b_j)c_1\cdots c_k\\
+		& = & a_1\cdots a_ib_1\cdots b_jc_1\cdots c_k\\
+		& = & a_1\cdots a_i(b_1\cdots b_jc_1\cdots c_k)\\
+		& = & w_1(w_2w_3)
+	\end{eqnarray*}
+	o que conclui a prova.
+\end{proof}
+
+Sobre qualquer alfabeto $\Sigma$ sempre é definida uma palavra especial chamada \textbf{palavra vazia} \cite{hopcroft2008, linz2006}, esta palavra especial não possui nenhum símbolo, e em geral é usado o símbolo $\lambda$ para denotar a palavra vazia \cite{benjaLivro2010, valdi2016master}. Como destacado em \cite{benjaLivro2010, valdi2020phd} sobre a palavra vazia é importante destacar que:
+
+\begin{eqnarray}
+	w\lambda & = & \lambda w = w\\
+	|\lambda| & = &  0
+\end{eqnarray}
+
+Isto é, a palavra vazia é neutra para a operação de concatenação, além disso, a mesma apresenta comprimento nulo.
+
+\begin{definition}[Potência das palavras]\label{def:PotenciaPalavras}
+	Seja $w$ uma palavra sobre um alfabeto $\Sigma$ a potência de $w$ é definida recursivamente para todo $n \in \mathbb{N}$ como sendo:
+	\begin{eqnarray}
+		w^0 & = & \lambda\\
+		w^{n+1} & = & ww^{n}
+	\end{eqnarray}
+\end{definition}
+
+\begin{exem}
+	Sejam $w_1 = ab, w_2 = bac$ e $w_3 = cbb$ palavras sobre $\Sigma = \{a, b, c\}$ tem-se que:
+	\begin{itemize}
+		\item[(a)] $w_1^3 = w_1w_1^2 = w_1w_1w_1^1 = w_1w_1w_1w_1^0 = w_1w_1w_1\lambda = ababab$.
+		\item[(b)] $w_2^2 = w_2w_2^1 = w_2w_2w_2^0 = w_2w_2\lambda = w_2w_2 = bacbac$.
+	\end{itemize} 
+\end{exem}
+
+\begin{exem}
+	Seja $u = 01$ e $v = 231$ tem-se que: 
+	$$uv^3 = uvv^2 = uvvv^1 = uvvv\lambda = uvvv = 01231231231$$
+	e também 
+	$$u^2v = uu^1v = uu\lambda v = uuv = 0101231$$
+\end{exem}
+
+\begin{prop}
+	Para toda palavra $w$ e todo $m,n \in \mathbb{N}$ tem-se que:
+	\begin{itemize}
+		\item[(i)] $(w^m)^n = w^{mn}$.
+		\item[(ii)] $w^mw^n = w^{m+n}$.
+	\end{itemize}
+\end{prop}
+
+\begin{proof}
+	Direto das Definições \ref{def:Concatenacao} e \ref{def:PotenciaPalavras}, e portanto, ficará como exercício ao leitor.
+\end{proof}
+
+Outro importante conceito existente sobre a ideia de palavra é a noção de palavra inversa formalmente definida como se segue.
+
+\begin{definition}[Palavra Inversa]\label{def:PalavraInversa}
+	\cite{valdi2016master} Seja $w = a_1\cdots a_n$ uma palavra qualquer, a palavra inversa de $w$ denotada por $w^r$, é tal que $w^r = a_n\cdots a_1$. 
+\end{definition}
+
+\begin{exem}
+	Dado as palavras $u = aba, v = 011101$ e $w = 3021$ tem-se que $u^r = aba, v^r = 101110$ e $w^r = 1203$.
+\end{exem}
+
+\begin{rema}
+	Com respeito a noção de palavra inversa tem-se em particular que vale a seguinte igualdade $\lambda^r = \lambda$.
+\end{rema}
+
+Além das palavras, pode-se também formalizar uma série de operações sobre a própria noção de alfabeto. Em primeiro lugar, uma vez que,  alfabetos são conjuntos, obviamente todas operações usuais de união, interseção, complemento, diferença e diferença simétrica (ver Capítulo \ref{cap:Conjuntos}) também são válidas sobre alfabetos. Além dessas operações, também esta definida a operação de potência e os fechos positivo e de Kleene sobre alfabetos.
+
+\begin{definition}[Potência de um alfabeto]\label{def:PotenciaAlfabeto}
+	\cite{benjaLivro2010} Seja $\Sigma$ um alfabeto a potência de $\Sigma$ é definida recursivamente para todo $n \in \mathbb{N}$ como:
+	\begin{eqnarray}
+		\Sigma^0 & = & \{\lambda\}\\
+		\Sigma^{n+1} & = & \{aw \mid a \in \Sigma, w \in \Sigma^{n}\}
+	\end{eqnarray}
+\end{definition} 
+
+\begin{exem}
+	Dado $\Sigma = \{a, b\}$ tem-se que $\Sigma^3 = \{aaa, aab, aba, baa, abb, bab, bba, bbb\}$ e $\Sigma^1 = \{a, b\}$
+\end{exem}
+
+\begin{exem}
+	Seja $\Sigma = \{0, 1, 2\}$ tem-se que $\Sigma^2 = \{00, 01, 02, 10, 11, 12, 20, 21, 22\}$ e $\Sigma^{0} = \{\lambda\}$.
+\end{exem}
+
+O leitor mais atencioso e maduro matematicamente pode notar que para qualquer que seja $n \in \mathbb{N}$ o conjunto potência tem a propriedade de que todo $w \in \Sigma^n$ é tal que $|w| = n$, além disso, é claro que todo $\Sigma^n$ é sempre finito\footnote{Essa afirmação é facilmente verificável, uma vez que, a mesma nada mais é do que um exemplo de arranjo com repetição.}.
+
+\begin{definition}[Fechos]\label{def:FechoPositivoKleene}
+	Seja $\Sigma$ um alfabeto o fecho positivo e o fecho de Kleene de $\Sigma$, denotados respectivamente por $\Sigma^+$ e $\Sigma^*$, correspondem aos conjuntos:
+	\begin{eqnarray}
+		\Sigma^+ & = & \bigcup_{i = 1}^\infty \Sigma^i
+	\end{eqnarray}
+	e
+	\begin{eqnarray}
+		\Sigma^* & = & \bigcup_{i = 0}^\infty \Sigma^i
+	\end{eqnarray}
+\end{definition}
+
+Obviamente como dito em \cite{benjaLivro2010}, o fecho de positivo pode ser reescrito em função do fecho de Kleene usando a operação de diferença de conjunto, isto é, o fecho positivo corresponde a seguinte identidade, $\Sigma^+ = \Sigma^* - \{\lambda\}$. Sobre o fecho de Kleene com destacado em \cite{valdi2020phd} o mesmo corresponde ao monoide livremente\footnote{Relembre que uma álgebra é livremente gerada quando todo elemento possui fatoração única (a menos de isomorfismo).} gerado pelo conjunto $\Sigma$ munida da operação de concatenação.
+
+\begin{definition}[Prefixos e Sufixos]\label{def:PrefixoSufixo}
+	Uma palavra $u \in \Sigma^*$ é um prefixo de outra palavra $w \in \Sigma^*$, denotado por $u \preceq_p w$, sempre que $w = uv$, com $v \in \Sigma^*$. Por outro lado, uma palavra $u$ é um sufixo de outra palavra $w$, denotado por $u \preceq_s w$, sempre que $w = vu$.
+\end{definition}
+
+\begin{exem}
+	Seja $w = abracadabra$ tem-se qu~e as palavras $ab$ e $abrac$ são prefixos de $w$, por outro, lado $cadabra$ e $bra$ são sufixos de $w$, e a palavra $abra$ é prefixo e também sufixo. Já a palavra $cada$ não é prefixo e nem sufixo de $w$.
+\end{exem}
+
+
+\begin{definition}[Conjunto dos Prefixos e Sufixos]\label{def:ConjuntoPrefixoSufixo}
+	Seja $w \in \Sigma^*$ o conjunto de todos os prefixos de $w$ corresponde ao conjunto:
+	\begin{eqnarray}
+		PRE(w) = \{w' \in \Sigma^* \mid w' \preceq_p w\}
+	\end{eqnarray}
+	e o conjunto de todos os sufixos de $w$ corresponde ao conjunto:
+	\begin{eqnarray}
+		SUF(w) = \{w' \in \Sigma^* \mid w' \preceq_s w\}
+	\end{eqnarray}
+\end{definition}
+
+\begin{exem}
+	Seja $w = univasf$ tem-se que:
+	\begin{eqnarray*}
+		PRE(w) = \{\lambda, u, un, uni, univ, univa, univas, univasf\}
+	\end{eqnarray*}
+	e
+	\begin{eqnarray*}
+		SUF(w) = \{\lambda, f, sf, asf, vasf, ivasf, nivasf, univasf \}
+	\end{eqnarray*}
+\end{exem}
+
+\begin{exem}
+	A seguir é apresentado alguns exemplos de palavras e seus conjuntos de prefixos e sufixos.
+	\begin{itemize}
+		\item[(a)] Se $w = ab$, então $PRE(w) = \{\lambda, a, ab\}$ e  $SUF(w) = \{\lambda, b, ab\}$.
+		\item[(b)] Se $w = 001$, então $PRE(w) = \{\lambda, 0, 00, 001\}$ e  $SUF(w) = \{\lambda, 1, 01, 001\}$.
+		\item[(c)] Se $w = \lambda$, então $PRE(w) = \{\lambda\}$ e  $SUF(w) = \{\lambda\}$
+		\item[(d)] Se $w = a$, então $PRE(w) = \{\lambda, a\}$ e $SUF(w) = \{\lambda, a\}$.
+	\end{itemize}
+\end{exem}
+
+Com respeito a cardinalidade dos conjuntos de prefixos e sufixos, os mesmo apresentam as propriedades descritas pelo teorema a seguir.
+
+\begin{theorem}\label{teo:CardinalidadePrefixoSufixo}
+	Para qualquer que seja $w \in \Sigma^*$ as seguintes asserções são verdadeiras.
+	\begin{itemize}
+		\item[(i)] $\# PRE(w) = |w| + 1$.
+		\item[(ii)] $\#PRE(w) = \#SUF(w)$.
+		\item[(iii)] $\#(PRE(w) \cap SUF(w)) \geq 1$.
+	\end{itemize}
+\end{theorem}
+
+\begin{proof}
+	Dado uma palavra $w$ tem-se que:
+	\item[(i)] Sem perda de generalidade assumindo que $w = a_1\cdots a_n$ logo $w \in \Sigma^n$ (o caso quando $w = \lambda$ é trivial e não será demonstrado aqui) logo $|w| = n$ para algum $n \in \mathbb{N}$, assim existem exatamente $n$ palavras da forma $a_1 \cdots a_i$ com $1 \leq i \leq n$ tal que $a_1 \cdots a_i \preceq_p w$, portanto, para todo $1 \leq i \leq n$ tem-se que $a_1 \cdots a_i \in PRE(w)$, além disso, é claro que $w = \lambda w$, e portanto, $\lambda \in PRE(w)$, consequentemente, $\#PRE(w) = n + 1 = |w| + 1$.
+	\item[(ii)] É suficiente mostrar que $\# SUF(w) = |w| + 1$, para isso como antes sem perda de generalidade assuma que $w = a_1\cdots a_n$ e assim tem-se que $w \in \Sigma^n$ logo $|w| = n$ com $n \in \mathbb{N}$, dessa forma existem exatamente $n$ palavras da forma $a_i \cdots a_n$ com $1 \leq i \leq n$ tal que $a_i \cdots a_n \preceq_s w$, portanto, para todo $1 \leq i \leq n$ tem-se que $a_i \cdots a_n \in SUF(w)$, além disso, é claro que $w = w\lambda$, logo $\lambda \in SUF(w)$, consequentemente, $\#SUF(w) = n + 1 = |w| + 1$, e portanto, $\#PRE(w) = \#SUF(w)$. O caso $w = \lambda$ é trivial e não será demonstrado aqui.
+	\item[(iii)] Trivial, pois basta notar que $\lambda \in (PRE(w) \cap SUF(w))$, e portanto, tem-se claramente que $\#(PRE(w) \cap SUF(w)) \geq 1$.
+\end{proof}
+
+\begin{corollary}
+	Toda palavra tem pelo menos um prefixo e um sufixo.
+\end{corollary}
+
+\begin{proof}
+	Direto do item $(iii)$ do Teorema \ref{teo:CardinalidadePrefixoSufixo}.
+\end{proof}
+
+Seguindo com o texto deste manuscrito pode-se finalmente formalizar o pilar fundamental (a ideia de linguagem) necessário para desenvolver o estuda da computabilidade neste e nos próximo capítulos.
+
+\begin{definition}[Linguagem]\label{def:Linguagem}
+	Dado um alfabeto $\Sigma$, qualquer subconjunto $L \subseteq \Sigma^*$ será chamado de linguagem.
+\end{definition}
+
+\begin{exem}
+	Seja $\Sigma = \{0, 1\}$ tem-se que os conjuntos a seguir são todos linguagens sobre $\Sigma$.
+	\begin{itemize}
+		\item[(a)] $\Sigma^*$.
+		\item[(b)] $\{0^nb^n \mid n \in \mathbb{N}\}$.
+		\item[(c)] $\{\lambda, 0, 1\}$.
+		\item[(d)] $\Sigma^{22}$.
+		\item[(e)] $\emptyset$.
+	\end{itemize}
+\end{exem}
+
+Similarmente ao que ocorre com os alfabetos, as linguagens por serem conjuntos ``herdam'' as operações básicas da teoria dos conjuntos \cite{lipschutz1978-TC, lipschutz2013-MD, abe1991-TC}, isto é, estão definidas sobre as linguagens as operações de união, interseção, completo, diferença e diferença simétrica. E como par aos alfabetos novas operações são definidas.
+
+\begin{definition}[Concatenação de Linguagens]\label{def:ConcatenacaoLinguagem}
+	Sejam $L_1$ e $L_2$ duas linguagens, a concatenação de $L_1$ com $L_2$, denotado por $L_1L_2$, corresponde a seguinte linguagem:
+	\begin{eqnarray}
+		L_1L_2 = \{xy \in (\Sigma_1 \cup \Sigma_2)^* \mid x \in L_1, y \in L_2\}
+	\end{eqnarray}
+\end{definition}
+
+\begin{exem}\label{exe:ConcatenacaoLinguagem}
+	Dado as três linguagens $L_1 = \{\lambda, ab, bba\}, L_2 =\{0^{2n}1 \mid n \in \mathbb{N}\}$ e $L_3 = \{a^p \mid p \text{ é um número primo}\}$ tem-se que:
+	\begin{itemize}
+		\item[(a)] $L_1L_2 = \{w \mid w = 0^{2n}1 \text{ ou } w = ab0^{2n}1 \text{ ou } w = bba0^{2n}1 \text{ com } n \in \mathbb{N}\}$.
+		\item[(b)] $L_3L1 = \{w \mid w = a^p \text{ ou } w = a^{p+1}b \text{ ou } a^pbba \text{ onde } p \text{ é um número primo}\}$.
+		\item[(c)] $L_2L_3 = \{0^{2n}1a^p \mid n \in \mathbb{N}, p \text{ é um número primo}\}$.
+	\end{itemize}
+\end{exem}
+
+\begin{definition}[Linguagem Reversa]\label{def:LinguagemReversa}
+	Seja $L$ uma linguagem, a linguagem inversa de $L$, denotada por $L^r$, corresponde ao conjunto $\{w^r \mid w \in L\}$.
+\end{definition}
+
+\begin{exem}
+	Considerando as linguagens $L_1, L_2$ e $L_3$ do Exemplo \ref{exe:ConcatenacaoLinguagem} tem-se que:
+	\begin{itemize}
+		\item[(a)] $L_1^r = \{\lambda, ba, abb\}$.
+		\item[(b)] $L_2^r = \{10^{2n} \mid n \in \mathbb{N}\}$.
+		\item[(c)] $L_3^r = \{a^p \mid n \in \mathbb{N}, p \text{ é um número primo}\}$.
+	\end{itemize}
+\end{exem}
+
+O leitor mais atento pode perceber que a propriedade involutiva da operação reversa sobre palavras é ``herdada'' para a reversão sobre linguagens, isto é, para qualquer linguagem $L$ tem-se que $(L^r)^r = L$. 
+
+\begin{definition}[Linguagem Potência]
+	Seja $L$ uma linguagem, a linguagem potência de $L$, denotada por $L^n$, é definida recursivamente para todo $n \in \mathbb{N}$ como:
+	\begin{eqnarray}
+		L^0 & = &\{\lambda\}\\
+		L^{n+1} & = &  LL^{n}
+	\end{eqnarray}
+\end{definition}
+
+Utilizando o conceito de linguagem potência a seguir é apresentado a formalização para os fechos positivo e de Kleene sobre linguagens.
+
+\begin{definition}[Fecho positivo e Fecho de Kleene de Linguagens]\label{def:FechoPositivoKleeneLinguagem}
+	Seja $L$ uma linguagem, o fecho positivo $(L^+)$ e o fecho de Kleene $(L^*)$ de $L$ são dados pelas equações a seguir.
+	\begin{eqnarray}
+		L^+ & = & \bigcup_{i = 1}^\infty L^i\\
+		L^* & = & \bigcup_{i = 0}^\infty L^i
+	\end{eqnarray}
+\end{definition}
+
+Por fim, esta seção irá apresentar a noção de linguagem dos prefixos e sufixos.
+
+\begin{definition}[Linguagem de Prefixos e Sufixos]\label{def:LinguagemPrefixosSufixos}
+	Seja $L$ uma linguagem, a linguagem dos prefixos e dos sufixos de $L$, respectivamente $PRE(L)$ e $SUF(L)$, são exatamente os seguintes conjuntos:
+	\begin{eqnarray*}
+		PRE(L) & = & \{w' \in \Sigma^* \mid w' \preceq_p w, w \in L\}\\
+		SUF(L) & = & \{w' \in \Sigma^* \mid w' \preceq_s w, w \in L\}
+	\end{eqnarray*}
+\end{definition}
+
+Neste e nos dois próximos capítulos este manuscrito irá apresentar a formalização da ideia de computação na visão ``mecânica'' de Turing \cite{turing1937}, entretanto, em vez de apresentar de forma direta os conceitos ligados as máquinas de Turing e as computações por elas realizadas, este manuscrito opta por fazer um estudo seguindo a ideia dos cursos de linguagens formais \cite{benjaLivro2010, linz2006, menezes1998LFA}, assim sendo, este capítulo irá tratar das linguagens regulares e seus modelos de computação (os autômatos finitos) e também de seus mecanismo geradores (expressões e gramáticas regulares). 
+
+Na próxima seção será iniciado este estudo das linguagens regulares com a apresentação dos autômatos finitos em sua representação algébrica equacional e  algébrica matricial, serão discutidos aspectos semânticos de tais modelos de computação e suas limitações ou enfraquecimentos quando comparados as máquinas de Turing.
+
+\section{Autômatos Finitos}
+
+Como foi feito em \cite{valdi2016master, valdi2020phd} para facilitar o entendimento do leitor sobre o conceito formal de autômato finito será apresentado antes uma definição informal que é como dito em \cite{valdi2016master} mais frouxa, apresentada em diversos livros sobre linguagens formais, tais como \cite{benjaLivro2010, hopcroft2008, linz2006}. Nesta visão informal como explicado em \cite{benjaLivro2010}, os autômatos finitos podem ser vistos como sendo máquinas que funcionam em tempo discreto, assim sendo, em qualquer momento  no tempo $t$, a \textbf{unidade de controle} do autômato estará em algum \textbf{estado} interno possível e o \textbf{dispositivo de leitura}\footnote{Também é usado a nomenclatura cabeçote \cite{valdi2020phd, valdi2016master}.}  estará sobre alguma das \textbf{cédulas} possível da \textbf{memória}\footnote{Na literatura também é usado o termo fita \cite{valdi2020phd, menezes1998LFA}.} do autômato. 
+
+\begin{figure}[ht]
+	\centering
+	\begin{tikzpicture}
+		\tikzstyle{every path}=[very thick]
+		
+		\edef\sizetape{0.7cm}
+		\tikzstyle{tmtape}=[draw,minimum size=\sizetape]
+		\tikzstyle{tmhead}=[arrow box,draw,minimum size=.5cm,arrow box
+		arrows={east:.25cm, west:0.25cm}]
+		
+		%% Fita
+		\begin{scope}[start chain=1 going right,node distance=-0.15mm]
+			\node [on chain=1,tmtape] (input) {$y_1$};
+			\node [on chain=1,tmtape] (raiz1) {$\ldots$};
+			\node [on chain=1,tmtape] (alvo)  {$y_i$};
+			\node [on chain=1,tmtape] (raiz2) {$\ldots$};
+			\node [on chain=1,tmtape] (output){$y_n$};
+			\node [on chain=1,xshift=0.3cm]        (descr) {\textbf{Fita do autômato}};
+		\end{scope}
+		
+		%% Unidade de Controle
+		\begin{scope}
+			[shift={(1.5cm,-3.7cm)},start chain=circle placed {at=(-\tikzchaincount*30:1.5)}]
+			%\foreach \i in {q_0,p_1,q_2,q_3, q_4,\ddots,q_n}
+			\foreach \i in {q_0,q_1, q_2,q_3, q_4,q_5, q_6,q_7, \cdots,\ddots, q_{n-1},q_n}
+			\node [on chain] {$\i$};
+			
+			% Seta para estado corrente
+			\node (center) {};
+			\draw[->] (center) -- (circle-2);
+			
+			\node[rounded corners,draw=black,thick,fit=(circle-1) (circle-2) (circle-3) 
+			(circle-4) (circle-5) (circle-6) (circle-7) (circle-8) 
+			(circle-9) (circle-10) (circle-11) (circle-12),
+			label=right:\textbf{Unidade de Controle}] (fsbox)
+			{};
+		\end{scope}
+		
+		%% Draw TM head below (input) tape cell
+		\node [draw=white, thick, yshift=-.3cm] at (alvo.south)   (head3) {};
+		
+		%% Link da unidade de controle para os cabeçotes
+		\draw[-latex]  (fsbox.north) -- node[right] 
+		(headlinetext)
+		{} 
+		(head3.south);
+		
+		% Texto no Link da unidade de controle para os cabeçotes
+		\node[xshift=5.2cm] at (headlinetext)  
+		{\begin{tabular}{c} 
+				\textbf{Dispositivo de leitura}
+		\end{tabular}};
+	\end{tikzpicture}
+	\caption{Uma representação informal do conceito de autômato finito retirado de \cite{valdi2020phd}.}
+	\label{fig:AF-Informal}
+\end{figure}
+
+Com respeito a evolução do autômato para o próximo momento $t+1$ no tempo, tal evolução é dada unicamente determinado pelo \textbf{estado} atual no momento $t$ e do \textbf{símbolo} na \textbf{cédula} em que o \textbf{dispositivo de leitura} se encontrava no momento $t$. 
+
+Formalmente pode-se dizer como apontado em \cite{valdi2020phd}, que a teoria dos autômatos finitos, ou simplesmente teoria dos autômatos, teve seu desenvolvimento inicial entre os anos de 1940 e 1960 sendo este início os trabalhos de McCulloch e Pitts \cite{mcculloch1943}, Kleene \cite{kleene1951}, Mealy \cite{mealy1955}, Moore \cite{moore1956}, Rabin e Scott \cite{rabin1963, rabin1959}. De forma geral os autômatos finitos são os mais simples modelos abstratos de máquinas de computação \cite{farias2017}, sendo eles máquinas de Turing limitadas. 
+
+De forma mais precisa, os autômatos finitos são máquinas de Turing \cite{turing1937} em que o dispositivo de leitura é capaz apenas de se mover em um único sentido da esquerda pra direta, sendo tal movimento limitado a apenas uma única cédula por vez, alé disso, não é possível modificar os objetos (ou dados) na memória.
+
+Como explicado em diversas obras tais como \cite{benjaLivro2010, hopcroft2008, linz2006, menezes1998LFA}, os autômatos finitos podem ser separados em dois tipos bem definidos, a saber Autômato Finito Determinístico (AFD) e Autômato Finito Não-determinístico (AFN).
+
+\subsection{Autômato Finito Determinístico}\label{subsec:AFD}
+
+Agora este manuscrito inicia o estudo dos AFD apresentando sua forma algébrica equacional.
+
+\begin{definition}[Autômato Finito Determinístico]\label{def:AFD}
+	Um AFD é uma estrutura $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ onde: $Q$ é um conjunto finito de estados, $\Sigma$ é um alfabeto, $\delta : Q \times \Sigma \rightarrow Q$ é uma função total (chamada função de transição), $q_0 \in Q$ é um estado destacado (chamado estado inicial) e $F \subseteq$ é o conjunto de estados finais\footnote{Em algumas referências também é usado o termo conjunto de estados de aceitação \cite{de2010}.}.
+\end{definition}
+
+\begin{exem}\label{exem:AFD}
+	A estrutura $A = \langle \{q_0, q_1\}, \{a\}, \delta, q_0, \{q_0\} \rangle$ onde a função de transição é definida por: $\delta(q_0, a) = q_1$ e $\delta(q_1, a) = q_0$, é um AFD.
+\end{exem}
+
+\begin{exem}\label{exem:NaoEAFD}
+	A estrutura $B = \langle \{q_0, q_1, q_2\}, \{a, b\}, \delta, q_0, \{q_0\} \rangle$ onde a função de transição é definida por:
+	\begin{table*}[h]
+		\centering
+		\begin{tabular}{ccc}
+			$\delta(q_0, a) = q_1$ & $\delta(q_1, a) = q_2$ & $\delta(q_2, a) = q_1$\\
+			$\delta(q_0, b) = q_1$ & $\delta(q_1, b) = q_2$ & 
+		\end{tabular}
+	\end{table*}
+
+	\noindent não é um AFD, pois $\delta(q_2, b)$ não está definido, e portanto, $\delta$ não é uma função total furando assim a definição de AFD.
+\end{exem}
+
+\begin{rema}\label{rema:plural1}
+	Para simplificar a escrita neste manuscrito as siglas AFD e AFN serão usado tanto para designar o singular quanto o plural, ficando a distinção a critério dos conectivos antes de cada sigla.
+\end{rema}
+
+A função de transição $(\delta)$ pode ser interpretada semanticamente como sendo o programa que o autômato executa, assim uma aplicação qualquer de $\delta$ é uma instrução do programa do autômato, por exemplo, a aplicação $\delta(q, x) = p$ significa que, o AFD muda do estado atual $q$ para o estado $p$ quando o mecanismo de leitura lê o símbolo $x$ na memória. 
+
+Uma representação comum para os AFD é baseada no uso de grafos de transição \cite{valdi2020phd}. Em um grafo de transição os vértices irão ser representados por círculos, que neste caso são usados para representar os estados do autômato, isto é, os círculos representam os elementos de $Q$. Cada aresta $(q_i, q_j)$ são rotuladas por $x$ representando assim a transição da forma $\delta(q_i, x) = q_j$. Por fim, os estados finais, isto é, cada $q \in F$ será representado por vértices desenhados como um círculo duplo em vez de um círculo simples e o estado inicial é marcado com uma seta.
+
+\begin{exem}
+	A representação por grafo de transição do AFD descrito no Exemplo \ref{exem:AFD} corresponde a figura a seguir.
+	
+	\begin{figure}[ht]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=5.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial ,accepting]   (A)               {$q_0$};
+			\node[state] (B) [right of=A]  						 {$q_1$};
+			
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge [bend left]  				node {$a$}     		(B)
+			(B) edge [bend left]  				node {$a$}     		(A);
+		\end{tikzpicture}
+		\caption{Representação visual do AFD no Exemplo \ref{exem:AFD}.}
+		\label{fig:AFD}
+	\end{figure}
+\end{exem}
+
+\begin{exem}\label{exe:AFDS}
+	O AFD $S = \langle \{s_0, s_1, s_2\}, \{0,1\}, \delta, s_0, \emptyset \rangle$ onde a função de transição é definida como sendo: $\delta(s_0, 0) = s_1, \delta(s_1, 0) = s_2, \delta(s_2, 0) = s_1, \delta(s_0, 1) = s_, \delta(s_1, 1) = s_1$ e $\delta(s_2, 1) = s_1$, é um AFD e pode ser representado pela Figura \ref{fig:AFD2} a seguir.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]   			(A)               {$s_0$};
+			\node[]		  						(C) [right of=A] {};
+			\node[state] 						(B) [above of=C]  {$s_1$};
+			\node[state] 						(D) [below of=C]  {$s_2$};
+			
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(B) edge [loop right]               node {$1$}        ()
+			(A) edge			  				node {$0$}     		(B)
+			(A) edge			  				node {$1$}     		(D)
+			(B) edge [bend left]  				node {$0$}     		(D)
+			(D) edge [bend left]  				node [right] {$0, 1$}(B);
+		\end{tikzpicture}
+		\caption{Representação visual do AFD $S$ do Exemplo \ref{exe:AFDS}.}
+		\label{fig:AFD2}
+	\end{figure}
+\end{exem}
+
+\begin{definition}[Função de Transição Estendida]
+	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD a função $\delta$ é estendida para uma função $\widehat{\delta}: Q \times \Sigma^* \rightarrow Q$ usando recursividade como se segue.
+	\begin{eqnarray}\label{eq:ExtensaoDaFuncaoTransicaoDelta}
+		\widehat{\delta}(q, \lambda)& = & q \\
+		\widehat{\delta}(q, wa)& = & \delta(\widehat{\delta}(q, w), a)	
+	\end{eqnarray}
+	onde $q \in Q, a \in \Sigma$ e $w \in \Sigma^*$
+\end{definition}
+
+
+\section{Questionário}
+
+\begin{exercise}\label{exerc:LR1}
+	Dado o alfabeto $\Sigma = \{a, b, c\}$ e as palavras $u = aabcab, v = bbccabac$ e $w = ccbabbaaca$ determine:
+\end{exercise}
+
+\begin{enumerate}
+	\item A palavra $uv^r$.
+	\item A palavra $(w^r)^2u$.
+	\item A palavra $((u^r)^2v^0)^rv$.
+	\item A palavra $uu^2v^rw$.
+	\item A palavra $((wuv)^r)^2u$.
+	\item O valor da expressão $|w^3| + 2|v^2u| - |u|$.
+	\item O valor da expressão $2|w^r| - uv$.
+	\item O valor da expressão $|w^raaw| - |w|$.
+	\item O valor da expressão $|uv^r| - 4$.
+	\item O valor da expressão $\frac{|(w^r)^2u|}{2} - \frac{|u|}{6}$.
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR2}
+	Demonstre para quaisquer palavras $u$ e $v$ e para todo $n \in \mathbb{N}$ as asserções a seguir.
+\end{exercise}
+
+\begin{enumerate}
+	\item Se $u$ é um prefixo de $v$, então $|u| \leq |v|$.
+	\item $|u^n| = n|u|$.
+	\item $|(uv)^r| = |vu|$.
+	\item Se $|u| = n$, então $n \leq |uv|$.
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR3}
+	Considere a linguagem $L = \{\lambda, abb, a, bba\}$ e determine:
+\end{exercise}
+
+\begin{enumerate}
+	\item $L^r - \{\lambda, a\}$.
+	\item $L^3$.
+	\item $PRE(L)$.
+	\item $SUF(L^2)$.
+	\item $w$ tal que $|w| = \bigsqcup \{|w| \mid \in L^3\}$
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR4}
+	Prove que para qualquer linguagem $L$ e quaisquer $m,n \in \mathbb{N}$ as seguintes asserções.
+\end{exercise}
+
+\begin{enumerate}
+	\item $(L^m)^n = L^{mn}$.
+	\item $L^mL^n = L^{m+n}$.
+	\item $(L^r)^n = (L^n)^r$.
+	\item $\overline{L}^r = \overline{L^r}$.
+	\item $PRE(L) = (SUF(L^r))^r$.
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR5}
+	Dado duas linguagens quaisquer $L_1$ e $L_2$ demostre que:
+\end{exercise}
+
+\begin{enumerate}
+	\item Se $L_1 \cap L_2 \neq \emptyset$, então $PRE(L_1) \cap PRE(L_2) = \emptyset$.
+	\item Se $L_1 \subseteq L_2$, então $SUF(L_1) \cap SUF(L_2) = \emptyset$.
+	\item Se $L_1 \subseteq L_2$, então $L_1^r \subseteq L_2^r$.
+	\item Se $L_1 \subseteq L_2$, então para todo $L$ tem-se que $LL_1 \subseteq LL_2$. 
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR6}
+	Demonstre ou refute o predicado $(\forall L \subseteq \Sigma^*)[(\forall n \in \mathbb{N})[\overline{L}^n = \overline{L^n}]]$.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR7}
+	Esboce formalmente em que condições a igualdade 
+	$$PRE(L) = (SUF(L))^r$$ 
+	é verdadeira.
+\end{exercise}

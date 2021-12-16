@@ -1,5 +1,4 @@
 ## Ignorar scipts e outros
-*.sh
 *.swp
 *.ptc
 *.DS_Store
