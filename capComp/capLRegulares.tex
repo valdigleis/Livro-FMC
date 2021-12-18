@@ -407,13 +407,13 @@ A função de transição $(\delta)$ pode ser interpretada semanticamente como s
 
 Uma representação comum para os AFD é baseada no uso de grafos de transição \cite{valdi2020phd}. Em um grafo de transição os vértices irão ser representados por círculos, que neste caso são usados para representar os estados do autômato, isto é, os círculos representam os elementos de $Q$. Cada aresta $(q_i, q_j)$ são rotuladas por $x$ representando assim a transição da forma $\delta(q_i, x) = q_j$. Por fim, os estados finais, isto é, cada $q \in F$ será representado por vértices desenhados como um círculo duplo em vez de um círculo simples e o estado inicial é marcado com uma seta.
 
-\begin{exem}
+\begin{exem}\label{exe:AFDA}
 	A representação por grafo de transição do AFD descrito no Exemplo \ref{exem:AFD} corresponde a figura a seguir.
 	
 	\begin{figure}[ht]
 		\centering
 		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=5.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
-			\node[state, initial ,accepting]   (A)               {$q_0$};
+			\node[state, initial, accepting]   (A)               {$q_0$};
 			\node[state] (B) [right of=A]  						 {$q_1$};
 			
 			\path[->] (A) +(-1,0) edge (A)
@@ -429,13 +429,13 @@ Uma representação comum para os AFD é baseada no uso de grafos de transição
 \end{exem}
 
 \begin{exem}\label{exe:AFDS}
-	O AFD $S = \langle \{s_0, s_1, s_2\}, \{0,1\}, \delta, s_0, \emptyset \rangle$ onde a função de transição é definida como sendo: $\delta(s_0, 0) = s_1, \delta(s_1, 0) = s_2, \delta(s_2, 0) = s_1, \delta(s_0, 1) = s_, \delta(s_1, 1) = s_1$ e $\delta(s_2, 1) = s_1$, é um AFD e pode ser representado pela Figura \ref{fig:AFD2} a seguir.
+	O AFD $S = \langle \{s_0, s_1, s_2\}, \{0,1\}, \delta, s_0, \emptyset \rangle$ onde a função de transição é definida como sendo: $\delta(s_0, 0) = s_1, \delta(s_1, 0) = s_2, \delta(s_2, 0) = s_1, \delta(s_0, 1) = s_2, \delta(s_1, 1) = s_1$ e $\delta(s_2, 1) = s_1$, é um AFD e pode ser representado pela Figura \ref{fig:AFD2} a seguir.
 	
 	\begin{figure}[h]
 		\centering
 		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
 			\node[state, initial]   			(A)               {$s_0$};
-			\node[]		  						(C) [right of=A] {};
+			\node[]		  						(C) [right of=A]  {};
 			\node[state] 						(B) [above of=C]  {$s_1$};
 			\node[state] 						(D) [below of=C]  {$s_2$};
 			
@@ -443,10 +443,10 @@ Uma representação comum para os AFD é baseada no uso de grafos de transição
 			
 			%Transições:
 			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
-			(B) edge [loop right]               node {$1$}        ()
-			(A) edge			  				node {$0$}     		(B)
-			(A) edge			  				node {$1$}     		(D)
-			(B) edge [bend left]  				node {$0$}     		(D)
+			(B) edge [loop right]               node {$1$}           ( )
+			(A) edge			  				node {$0$}     		 (B)
+			(A) edge			  				node {$1$}     		 (D)
+			(B) edge [bend left]  				node {$0$}     		 (D)
 			(D) edge [bend left]  				node [right] {$0, 1$}(B);
 		\end{tikzpicture}
 		\caption{Representação visual do AFD $S$ do Exemplo \ref{exe:AFDS}.}
@@ -460,9 +460,163 @@ Uma representação comum para os AFD é baseada no uso de grafos de transição
 		\widehat{\delta}(q, \lambda)& = & q \\
 		\widehat{\delta}(q, wa)& = & \delta(\widehat{\delta}(q, w), a)	
 	\end{eqnarray}
-	onde $q \in Q, a \in \Sigma$ e $w \in \Sigma^*$
+	onde $q \in Q, a \in \Sigma$ e $w \in \Sigma^*$.
 \end{definition}
 
+A partir da definição de função de transição estendida é definida  a noção de computação para os AFD, tal conceito é formalizado a seguir.
+
+\begin{definition}[Computação em AFD]\label{def:ComputacaoAFD}
+	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD e seja $w \in \Sigma^*$ uma computação de $w$ em $A$ corresponde a aplicação $\widehat{\delta}(q_0, w)$.
+\end{definition}
+
+Note que a definição de computação em AFD pode ser interpretada como sendo a resposta ao seguinte questionamento: ``Em que estado o autômato (ou a máquina) estará após iniciar o processamento no estado inicial e ter lido todos os símbolos da palavra de entrada $w$?''
+
+\begin{exem}\label{exe:ComputacaoAFD1}
+	Considere o AFD do Exemplo \ref{exe:AFDA} e a palavra de entrada $aaaa$ tem-se que a computação desta palavra corresponde a:
+	\begin{eqnarray*}
+		\widehat{\delta}(q_0, aaaa) & = & \delta(\widehat{\delta}(q_0, aaa), a)\\
+		& = & \delta(\delta(\widehat{\delta}(q_0, aa), a), a)\\
+		& = & \delta(\delta(\delta(\widehat{\delta}(q_0, a), a), a), a)\\
+		& = & \delta(\delta(\delta(\delta(\widehat{\delta}(q_0, \lambda), a), a), a), a)\\
+		& = & \delta(\delta(\delta(\delta(q_0, a), a), a), a)\\
+		& = & \delta(\delta(\delta(q_1, a), a), a)\\
+		& = & \delta(\delta(q_0, a), a)\\
+		& = & \delta(q_1, a)\\
+		& = & q_0
+	\end{eqnarray*}
+\end{exem}
+
+\
+
+\begin{exem}\label{exe:ComputacaoAFD2}
+	Considere o AFD do Exemplo \ref{exe:AFDS} e a palavra de entrada $0101$ tem-se que a computação desta palavra corresponde a:
+	\begin{eqnarray*}
+		\widehat{\delta}(s_0, 0101) & = & \delta(\widehat{\delta}(s_0, 010), 1)\\
+		& = & \delta(\delta(\widehat{\delta}(s_0, 01), 0), 1)\\
+		& = & \delta(\delta(\delta(\widehat{\delta}(s_0, 0), 1), 0), 1)\\
+		& = & \delta(\delta(\delta(\delta(\widehat{\delta}(s_0, \lambda), 0), 1), 0), 1)\\
+		& = & \delta(\delta(\delta(\delta(s_0, 0), 1), 0), 1)\\
+		& = & \delta(\delta(\delta(s_1, 1), 0), 1)\\
+		& = & \delta(\delta(s_1, 0), 1)\\
+		& = & \delta(s_2, 1)\\
+		& = & s_1
+	\end{eqnarray*}
+\end{exem}
+
+De pose da definição de computação pode-se formalizar o conceito de reconhecimento (ou aceitação) de palavras nos AFD.
+
+\begin{definition}[Reconhecimento de palavras]\label{defi:PalavraAceitaPorAFD}
+	\cite{benjaLivro2010} Sejam $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD e seja $w \in \Sigma^*$. A palavra $w$ é dita aceita (reconhece ou computada) por $A$ sempre que $\widehat{\delta}(q_0, w) \in F$ e é rejeitada por $A$ em qualquer outro caso.
+\end{definition}
+
+É fácil perceber que $\widehat{\delta}(q_0, w) \in F$ com $w = a_1a_2\cdots a_n$ se, e somente se, existir uma sequência finita de estados $(q_i)_{i \in I}$ tal que $\delta(q_0, a_1) = q_{i_1}, \delta(q_{i_1}, a_2) = q_{i_2}, \cdots, \delta(q_{i_{n-1}}, a_{n}) = q_{i_n}$ com $q_n \in F, I$ sendo uma sequencia de números naturais e $i_1, i_2, i_{n-1}, i_n \in I$. O leitor pode notar que em particular tem-se que $\widehat{\delta}(q_0, \lambda) \in F$ se, e somente se, $q_0 \in F$.
+
+\begin{exem}\label{exe:AceiteAFD1}
+	Considerando os Exemplos \ref{exe:ComputacaoAFD1} e \ref{exe:ComputacaoAFD2} tem-se que a palavra $aaaa$ é aceita pelo AFD do Exemplo \ref{exe:ComputacaoAFD1}, uma vez que, $q_0 \in F$. Por outro, lado a palavra $0101$ não é aceita pelo AFD do Exemplo \ref{exe:ComputacaoAFD2}, uma vez que, $s_1 \notin F$, de fato o leitor atento pode notar que o AFD do Exemplo \ref{exe:ComputacaoAFD2} não aceita qualquer palavra de entrada pois $F = \emptyset$.
+\end{exem}
+
+\begin{exem}\label{exe:AceiteAFD2}
+	Considere o AFD representado pelo grafo de transições abaixo:
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.7cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]   			(A)               {$q_0$};
+			\node[state] 						(B) [right of=A]  {$q_1$};
+			\node[state, accepting]				(C) [above of=B]  {$q_2$};
+			\node[state, accepting]				(D) [below of=B]  {$q_3$};
+			\node[state] 						(E) [right of=B]  {$q_4$};
+			
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge 				            node {$1$}           (C)
+			(A) edge			  				node {$0$}     		 (D)
+			(C) edge [bend left]  				node {$1$}     		 (E)
+			(C)	edge							node [left] {$0$}	 (B)
+			(E) edge [bend left]  				node [right] {$0$} 	 (C)
+			(D) edge [bend left]  				node [right] {$0$}	 (E)
+			(D)	edge							node [left] {$1$}	 (B)
+			(E) edge [bend left]  				node {$1$} 	 		 (D)
+			(B) edge [loop left]                node {$0,1$}         ( );
+		\end{tikzpicture}
+		\caption{Um AFD com dois estados finais.}
+		\label{fig:AFD3}
+	\end{figure}
+
+	Por indução sobre o tamanho das palavras é fácil mostrar que este AFD reconhece palavras das forma $1(10)^n$ e $1(10)^n$ com $n \in \mathbb{N}$.
+\end{exem}
+
+Tendo definido precisamente as noções de AFD e de computação em AFD, agora é possível definir formalmente a ideia de linguagem reconhecida (ou computada) por um AFD.
+
+\begin{definition}[Linguagem de um AFD]\label{def:LinguagemAFD}
+	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD a linguagem reconhecida (ou computada) por $A$, denotada por $\mathcal{L}(A)$, corresponde ao conjunto de todas as palavras aceitas por $A$, formalmente tem-se que:
+	\begin{eqnarray}
+		\mathcal{L}(A) = \{w \in \Sigma^* \mid \widehat{\delta}(q_0, w) \in F\}
+	\end{eqnarray}
+\end{definition}
+
+Utilizando a definição acima o leitor deve ser capaz de perceber que se um AFD reconhece uma linguagem $L \subseteq \Sigma^*$, então ele para em estados finais apenas para as palavras $w \in L$. Em outra palavra para mostrar que uma linguagem $L$ é a linguagem de um AFD $A$, deve-se provar que $L = \mathcal{L}(A)$.
+
+\begin{exem}\label{exe:AFDLinguagem1}
+	O autômatos $A_1$ representado pelo diagrama abaixo,
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial,accepting]		(A)               {$q_0$};
+			\node[] 							(B) [right of=A]  {};
+			\node[state]						(C) [above of=B]  {$q_1$};
+			\node[state, accepting]				(D) [below of=B]  {$q_2$};
+			\node[state] 						(E) [right of=B]  {$q_3$};
+			
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge 				            node {$a$}           (C)
+			(A) edge			  				node {$b$}     		 (D)
+			(C) edge 			  				node {$b$}     		 (D)
+			(C) edge 			  				node {$a$}     		 (E)
+			(D) edge			  				node [right]{$a,b$}	 (E)
+			(E) edge [loop right]				node {$a,b$} 		 ( );
+		\end{tikzpicture}
+		\caption{AFD $A_1$.}
+		\label{fig:AFDLinguagem1}
+	\end{figure}
+	
+	\noindent reconhece a linguagem $L = \{\lambda, ab, b\}$. Para verificar a informações anterior primeiro note que,	
+	\begin{eqnarray*}
+		\widehat{\delta}(q_0, \lambda) = \delta(q_0, \lambda) = q_0
+	\end{eqnarray*}
+	e também, 
+	\begin{eqnarray*}
+		\widehat{\delta}(q_0, b) = \delta(\widehat{\delta}(q_0, \lambda), b) = \delta(q_0, b) = q_2
+	\end{eqnarray*}
+	além disso, 	
+	\begin{eqnarray*}
+		\widehat{\delta}(q_0, ab) = \delta(\widehat{\delta}(q_0, a), b) = \delta(\delta(\widehat{\delta}(q_0,\lambda), a), b) = \delta(\delta(q_0, a), b) = \delta(q_1, b) = q_2
+	\end{eqnarray*}
+	como $q_0, q_2 \in F$ tem-se que para todo $w \in L$ a relação $w \in \mathcal{L}(A)$ é verdadeira, consequentemente, $L \subseteq \mathcal{L}(A)$. Agora suponha por absurdo que existe $w \in \Sigma^*-\{\lambda, b, ab\}$ tal que $w \in \mathcal{L}(A)$, entretanto, para o caso que $|w| \geq 3$ pela definição de $\delta$ é claro que $\delta(q_0, w) = q_3$ (a prova disso fica como exercício ao leitor), e como $q_3 \notin F$ tem-se que $w \notin \mathcal{L}(A)$ o que contradiz a hipótese inicial, e portanto, pode-se concluir disso que, 
+	\begin{equation}\label{eq:ExemploLinguagemAFD1}
+		\mathcal{L}(A) \subseteq \Sigma^* - \Big(\bigcup_{i = 3}^\infty \Sigma^i\Big)
+	\end{equation}
+	por outro lado, para o caso que $|w| < 3$ tem-se obrigatoriamente que $w \in \Sigma^2 - \{ab\}$ ou $w \in \Sigma - \{b\}$, para ambos os casos desenvolvendo $\widehat{\delta}(q_0, w)$ tem-se que  $\widehat{\delta}(q_0, w) \notin F$, o que contradiz a hipótese inicial, e portanto, pode-se concluir disso que, 
+	\begin{equation}\label{eq:ExemploLinguagemAFD2}
+		\mathcal{L}(A) \subseteq \Sigma^* - \Big(\Big(\Sigma \cup \Sigma^2\Big) - \{b, ab\}\Big)
+	\end{equation}
+	consequentemente, das Equações $(\ref{eq:ExemploLinguagemAFD1})$ e $(\ref{eq:ExemploLinguagemAFD2})$ segue que, 
+	\begin{equation}\label{eq:ExemploLinguagemAFD3}
+		\mathcal{L}(A) \subseteq \Sigma^* - \Big(\Big(\bigcup_{i = 1}^\infty \Sigma^i\Big) - \{b, ab\}\Big)
+	\end{equation}
+	agora pela definição de $\delta$ é fácil notar que para todo $w \in \{\lambda, ab, b\}$ tem-se que $\widehat{\delta}(q_0, w) \in F$, desse fato e da Equação $(\ref{eq:ExemploLinguagemAFD3})$ tem-se que,  
+	$$\mathcal{L}(A) \subseteq \Sigma^* - \Big(\Big(\bigcup_{i = 0}^\infty \Sigma^i\Big) - \{\lambda, b, ab\}\Big) = \{\lambda, b, ab\}$$
+	e portanto, todo $w \in \mathcal{L}(A)$ é tal que $w \in L$, assim por definição tem-se que $\mathcal{L}(A) \subseteq L$. Por fim, uma vez que, $L \subseteq \mathcal{L}(A)$ e  $\mathcal{L}(A) \subseteq L$ por definição tem-se que $L = \mathcal{L}(A)$, o que completa a verificação.
+\end{exem}
+
+\begin{exem}\label{exe:AFDLinguagem2}
+	Seja $L = \{bba^{2n} \mid n \in \mathbb{N}\}$ é uma linguagem reconhecida pelo AFD a seguir
+\end{exem}
 
 \section{Questionário}
 
@@ -477,7 +631,7 @@ Uma representação comum para os AFD é baseada no uso de grafos de transição
 	\item A palavra $uu^2v^rw$.
 	\item A palavra $((wuv)^r)^2u$.
 	\item O valor da expressão $|w^3| + 2|v^2u| - |u|$.
-	\item O valor da expressão $2|w^r| - uv$.
+	\item O valor da expressão $2|w^r| - |uv|$.
 	\item O valor da expressão $|w^raaw| - |w|$.
 	\item O valor da expressão $|uv^r| - 4$.
 	\item O valor da expressão $\frac{|(w^r)^2u|}{2} - \frac{|u|}{6}$.
@@ -495,7 +649,7 @@ Uma representação comum para os AFD é baseada no uso de grafos de transição
 \end{enumerate}
 
 \begin{exercise}\label{exerc:LR3}
-	Considere a linguagem $L = \{\lambda, abb, a, bba\}$ e determine:
+	Considere a linguagem $L = \{\lambda, abb, a, abba\}$ e determine:
 \end{exercise}
 
 \begin{enumerate}
@@ -503,7 +657,7 @@ Uma representação comum para os AFD é baseada no uso de grafos de transição
 	\item $L^3$.
 	\item $PRE(L)$.
 	\item $SUF(L^2)$.
-	\item $w$ tal que $|w| = \bigsqcup \{|w| \mid \in L^3\}$
+	\item $w$ tal que $|w| = \bigsqcup \{|w'| \mid w' \in L^3\}$.
 \end{enumerate}
 
 \begin{exercise}\label{exerc:LR4}
