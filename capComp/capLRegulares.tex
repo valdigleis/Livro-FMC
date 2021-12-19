@@ -382,11 +382,11 @@ Agora este manuscrito inicia o estudo dos AFD apresentando sua forma algébrica 
 	Um AFD é uma estrutura $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ onde: $Q$ é um conjunto finito de estados, $\Sigma$ é um alfabeto, $\delta : Q \times \Sigma \rightarrow Q$ é uma função total (chamada função de transição), $q_0 \in Q$ é um estado destacado (chamado estado inicial) e $F \subseteq$ é o conjunto de estados finais\footnote{Em algumas referências também é usado o termo conjunto de estados de aceitação \cite{de2010}.}.
 \end{definition}
 
-\begin{exem}\label{exem:AFD}
-	A estrutura $A = \langle \{q_0, q_1\}, \{a\}, \delta, q_0, \{q_0\} \rangle$ onde a função de transição é definida por: $\delta(q_0, a) = q_1$ e $\delta(q_1, a) = q_0$, é um AFD.
+\begin{exem}\label{exe:AFD}
+	A estrutura $A = \langle \{q_0, q_1\}, \{a\}, \delta, q_0, \{q_1\} \rangle$ onde a função de transição é definida por: $\delta(q_0, a) = q_1$ e $\delta(q_1, a) = q_0$, é um AFD.
 \end{exem}
 
-\begin{exem}\label{exem:NaoEAFD}
+\begin{exem}\label{exe:NaoEAFD}
 	A estrutura $B = \langle \{q_0, q_1, q_2\}, \{a, b\}, \delta, q_0, \{q_0\} \rangle$ onde a função de transição é definida por:
 	\begin{table*}[h]
 		\centering
@@ -408,13 +408,13 @@ A função de transição $(\delta)$ pode ser interpretada semanticamente como s
 Uma representação comum para os AFD é baseada no uso de grafos de transição \cite{valdi2020phd}. Em um grafo de transição os vértices irão ser representados por círculos, que neste caso são usados para representar os estados do autômato, isto é, os círculos representam os elementos de $Q$. Cada aresta $(q_i, q_j)$ são rotuladas por $x$ representando assim a transição da forma $\delta(q_i, x) = q_j$. Por fim, os estados finais, isto é, cada $q \in F$ será representado por vértices desenhados como um círculo duplo em vez de um círculo simples e o estado inicial é marcado com uma seta.
 
 \begin{exem}\label{exe:AFDA}
-	A representação por grafo de transição do AFD descrito no Exemplo \ref{exem:AFD} corresponde a figura a seguir.
+	A representação por grafo de transição do AFD descrito no Exemplo \ref{exe:AFD} corresponde a figura a seguir.
 	
 	\begin{figure}[ht]
 		\centering
 		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=5.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
-			\node[state, initial, accepting]   (A)               {$q_0$};
-			\node[state] (B) [right of=A]  						 {$q_1$};
+			\node[state, initial]   (A)               {$q_0$};
+			\node[state, accepting] (B) [right of=A]  						 {$q_1$};
 			
 			\path[->] (A) +(-1,0) edge (A)
 			
@@ -423,7 +423,7 @@ Uma representação comum para os AFD é baseada no uso de grafos de transição
 			(A) edge [bend left]  				node {$a$}     		(B)
 			(B) edge [bend left]  				node {$a$}     		(A);
 		\end{tikzpicture}
-		\caption{Representação visual do AFD no Exemplo \ref{exem:AFD}.}
+		\caption{Representação visual do AFD no Exemplo \ref{exe:AFD}.}
 		\label{fig:AFD}
 	\end{figure}
 \end{exem}
@@ -472,7 +472,7 @@ A partir da definição de função de transição estendida é definida  a noç
 Note que a definição de computação em AFD pode ser interpretada como sendo a resposta ao seguinte questionamento: ``Em que estado o autômato (ou a máquina) estará após iniciar o processamento no estado inicial e ter lido todos os símbolos da palavra de entrada $w$?''
 
 \begin{exem}\label{exe:ComputacaoAFD1}
-	Considere o AFD do Exemplo \ref{exe:AFDA} e a palavra de entrada $aaaa$ tem-se que a computação desta palavra corresponde a:
+	Considere o AFD do Exemplo \ref{exe:AFD} e a palavra de entrada $aaaa$ tem-se que a computação desta palavra corresponde a:
 	\begin{eqnarray*}
 		\widehat{\delta}(q_0, aaaa) & = & \delta(\widehat{\delta}(q_0, aaa), a)\\
 		& = & \delta(\delta(\widehat{\delta}(q_0, aa), a), a)\\
@@ -512,7 +512,7 @@ De pose da definição de computação pode-se formalizar o conceito de reconhec
 É fácil perceber que $\widehat{\delta}(q_0, w) \in F$ com $w = a_1a_2\cdots a_n$ se, e somente se, existir uma sequência finita de estados $(q_i)_{i \in I}$ tal que $\delta(q_0, a_1) = q_{i_1}, \delta(q_{i_1}, a_2) = q_{i_2}, \cdots, \delta(q_{i_{n-1}}, a_{n}) = q_{i_n}$ com $q_n \in F, I$ sendo uma sequencia de números naturais e $i_1, i_2, i_{n-1}, i_n \in I$. O leitor pode notar que em particular tem-se que $\widehat{\delta}(q_0, \lambda) \in F$ se, e somente se, $q_0 \in F$.
 
 \begin{exem}\label{exe:AceiteAFD1}
-	Considerando os Exemplos \ref{exe:ComputacaoAFD1} e \ref{exe:ComputacaoAFD2} tem-se que a palavra $aaaa$ é aceita pelo AFD do Exemplo \ref{exe:ComputacaoAFD1}, uma vez que, $q_0 \in F$. Por outro, lado a palavra $0101$ não é aceita pelo AFD do Exemplo \ref{exe:ComputacaoAFD2}, uma vez que, $s_1 \notin F$, de fato o leitor atento pode notar que o AFD do Exemplo \ref{exe:ComputacaoAFD2} não aceita qualquer palavra de entrada pois $F = \emptyset$.
+	Considerando os Exemplos \ref{exe:ComputacaoAFD1} e \ref{exe:ComputacaoAFD2} tem-se que a palavra $aaaa$ não é aceita pelo AFD do Exemplo \ref{exe:ComputacaoAFD1}, uma vez que, $q_0 \notin F$. Já a palavra $0101$ também não é aceita pelo AFD do Exemplo \ref{exe:ComputacaoAFD2}, uma vez que, $s_1 \notin F$, de fato o leitor atento pode notar que o AFD do Exemplo \ref{exe:ComputacaoAFD2} não aceita qualquer palavra de entrada pois $F = \emptyset$.
 \end{exem}
 
 \begin{exem}\label{exe:AceiteAFD2}
@@ -557,66 +557,112 @@ Tendo definido precisamente as noções de AFD e de computação em AFD, agora �
 	\end{eqnarray}
 \end{definition}
 
-Utilizando a definição acima o leitor deve ser capaz de perceber que se um AFD reconhece uma linguagem $L \subseteq \Sigma^*$, então ele para em estados finais apenas para as palavras $w \in L$. Em outra palavra para mostrar que uma linguagem $L$ é a linguagem de um AFD $A$, deve-se provar que $L = \mathcal{L}(A)$.
+Utilizando a definição acima o leitor deve ser capaz de perceber que se um AFD reconhece uma linguagem $L \subseteq \Sigma^*$, então ele para em estados finais apenas para as palavras $w \in L$. Em outra palavra para mostrar que uma linguagem $L$ é a linguagem de um AFD $A$, deve-se provar que $L = \mathcal{L}(A)$, ou seja, deve-se provar que $w \in L \Longleftrightarrow w \in \mathcal{L}(A)$, em geral quando $L$ é infinito tal prova é por indução.
 
 \begin{exem}\label{exe:AFDLinguagem1}
-	O autômatos $A_1$ representado pelo diagrama abaixo,
+	A seguir você encontrará a prova de que a linguagem $L = \{bba^{2n} \mid n \in \mathbb{N}\}$ é reconhecida pelo AFD $A_1$ na Figura \ref{fig:AFDLinguagem1} a seguir. 
 	\begin{figure}[h]
 		\centering
-		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
-			\node[state, initial,accepting]		(A)               {$q_0$};
-			\node[] 							(B) [right of=A]  {};
-			\node[state]						(C) [above of=B]  {$q_1$};
-			\node[state, accepting]				(D) [below of=B]  {$q_2$};
-			\node[state] 						(E) [right of=B]  {$q_3$};
-			
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]				(A)               	{$q_0$};
+			\node[state] 						(B) [right of=A] 	{$q_1$};
+			\node[state, accepting]				(C) [right of=B] 	{$q_2$};
+			\node[state]						(D) [below of=C] 	{$q_3$};
+			\node[state]						(E)	[right of=C]	{$q_4$};
 			\path[->] (A) +(-1,0) edge (A)
 			
 			%Transições:
 			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
-			(A) edge 				            node {$a$}           (C)
-			(A) edge			  				node {$b$}     		 (D)
-			(C) edge 			  				node {$b$}     		 (D)
-			(C) edge 			  				node {$a$}     		 (E)
-			(D) edge			  				node [right]{$a,b$}	 (E)
-			(E) edge [loop right]				node {$a,b$} 		 ( );
+			(A) edge			  				node {$b$}		 (B)
+			(A) edge			  				node {$a$}		 (D)
+			(B) edge			  				node {$b$}		 (C)
+			(B) edge			  				node {$a$}		 (D)
+			(C) edge			  				node {$b$}		 (D)
+			(C) edge [bend right] 			  	node {$a$}		 (E)
+			(E) edge [bend right] 			  	node {$a$}		 (C)
+			(E) edge			  				node {$b$}		 (D)
+			(D) edge [loop right] 			  	node {$a,b$}	 ( );
 		\end{tikzpicture}
-		\caption{AFD $A_1$.}
+		\caption{AFD $A_1$ que reconhece a linguagem $\{bba^{2n} \mid n \in \mathbb{N}\}$.}
 		\label{fig:AFDLinguagem1}
 	\end{figure}
 	
-	\noindent reconhece a linguagem $L = \{\lambda, ab, b\}$. Para verificar a informações anterior primeiro note que,	
-	\begin{eqnarray*}
-		\widehat{\delta}(q_0, \lambda) = \delta(q_0, \lambda) = q_0
-	\end{eqnarray*}
-	e também, 
-	\begin{eqnarray*}
-		\widehat{\delta}(q_0, b) = \delta(\widehat{\delta}(q_0, \lambda), b) = \delta(q_0, b) = q_2
-	\end{eqnarray*}
-	além disso, 	
-	\begin{eqnarray*}
-		\widehat{\delta}(q_0, ab) = \delta(\widehat{\delta}(q_0, a), b) = \delta(\delta(\widehat{\delta}(q_0,\lambda), a), b) = \delta(\delta(q_0, a), b) = \delta(q_1, b) = q_2
-	\end{eqnarray*}
-	como $q_0, q_2 \in F$ tem-se que para todo $w \in L$ a relação $w \in \mathcal{L}(A)$ é verdadeira, consequentemente, $L \subseteq \mathcal{L}(A)$. Agora suponha por absurdo que existe $w \in \Sigma^*-\{\lambda, b, ab\}$ tal que $w \in \mathcal{L}(A)$, entretanto, para o caso que $|w| \geq 3$ pela definição de $\delta$ é claro que $\delta(q_0, w) = q_3$ (a prova disso fica como exercício ao leitor), e como $q_3 \notin F$ tem-se que $w \notin \mathcal{L}(A)$ o que contradiz a hipótese inicial, e portanto, pode-se concluir disso que, 
-	\begin{equation}\label{eq:ExemploLinguagemAFD1}
-		\mathcal{L}(A) \subseteq \Sigma^* - \Big(\bigcup_{i = 3}^\infty \Sigma^i\Big)
-	\end{equation}
-	por outro lado, para o caso que $|w| < 3$ tem-se obrigatoriamente que $w \in \Sigma^2 - \{ab\}$ ou $w \in \Sigma - \{b\}$, para ambos os casos desenvolvendo $\widehat{\delta}(q_0, w)$ tem-se que  $\widehat{\delta}(q_0, w) \notin F$, o que contradiz a hipótese inicial, e portanto, pode-se concluir disso que, 
-	\begin{equation}\label{eq:ExemploLinguagemAFD2}
-		\mathcal{L}(A) \subseteq \Sigma^* - \Big(\Big(\Sigma \cup \Sigma^2\Big) - \{b, ab\}\Big)
-	\end{equation}
-	consequentemente, das Equações $(\ref{eq:ExemploLinguagemAFD1})$ e $(\ref{eq:ExemploLinguagemAFD2})$ segue que, 
-	\begin{equation}\label{eq:ExemploLinguagemAFD3}
-		\mathcal{L}(A) \subseteq \Sigma^* - \Big(\Big(\bigcup_{i = 1}^\infty \Sigma^i\Big) - \{b, ab\}\Big)
-	\end{equation}
-	agora pela definição de $\delta$ é fácil notar que para todo $w \in \{\lambda, ab, b\}$ tem-se que $\widehat{\delta}(q_0, w) \in F$, desse fato e da Equação $(\ref{eq:ExemploLinguagemAFD3})$ tem-se que,  
-	$$\mathcal{L}(A) \subseteq \Sigma^* - \Big(\Big(\bigcup_{i = 0}^\infty \Sigma^i\Big) - \{\lambda, b, ab\}\Big) = \{\lambda, b, ab\}$$
-	e portanto, todo $w \in \mathcal{L}(A)$ é tal que $w \in L$, assim por definição tem-se que $\mathcal{L}(A) \subseteq L$. Por fim, uma vez que, $L \subseteq \mathcal{L}(A)$ e  $\mathcal{L}(A) \subseteq L$ por definição tem-se que $L = \mathcal{L}(A)$, o que completa a verificação.
+	\begin{proof}
+		$(\Rightarrow)$ Suponha que $w \in L$ assim $w = bba^{2n}$ e por indução sobre o tamanho das palavras tem-se que,
+		\begin{itemize}
+			\item \textbf{Base da indução}:
+			
+			Quando $n = 0$ vale que $w = bba^{2\cdot 0}$ e usando a definição do AFD tem-se que, 
+			$$\widehat{\delta}(q_0, bba^{2\cdot 0}) = \widehat{\delta}(q_0, bb) = \delta(\widehat{\delta}(q_0, b), b) = \delta(\delta(\widehat{\delta}(q_0, \lambda), b), b) = q_2$$
+			como $q_2 \in F$ tem-se que $bb \in \mathcal{L}(A_1)$.
+			
+			\item \textbf{Hipótese indutiva (HI)}:
+			
+			Suponha que para todo $n \in \mathbb{N}$ tem-se que $\widehat{\delta}(q_0, bba^{2n}) \in F$, ou seja, $\widehat{\delta}(q_0, bba^{2n}) = q_2$.
+			
+			\item \textbf{Passo indutivo}:
+			
+			Dado $w = bba^{2(n+1)}$ tem-se que
+			\begin{eqnarray*}
+				\widehat{\delta}(q_0, bba^{2(n+1)}) & = & \widehat{\delta}(q_0, bba^{2n + 2})\\
+				& = & \widehat{\delta}(q_0, bba^{2n}aa)\\
+				& = & \delta(\delta(\widehat{\delta}(q_0, bba^{2n}), a), a)\\
+				& \stackrel{\textbf{(HI)}}{=} & \delta(\delta(q_2, a), a)\\
+				& = & \delta(q_3, a)\\
+				& = & q_2
+			\end{eqnarray*} 
+			Logo $\widehat{\delta}(q_0, bba^{2n}) \in \mathcal{L}(A_1)$.
+		\end{itemize} 
+		$(\Leftarrow)$ Suponha que $w \in \mathcal{L}(A_1)$, assim pela definição do AFD $A_1$ tem-se que $\widehat{\delta}(q_0, w) = q_2$, entretanto, pela definição de $\delta$ (ver Figura \ref{fig:AFDLinguagem1}) tem-se que $q_2$ só é acessado pelas transições $\delta(q_1, b)$ e $\delta(q_4, a)$, ou seja, $w = w_1a$ ou $w = w_2b$ com $w_1, w_2 \in \Sigma^*$. Agora analisando cada possibilidade em separado tem-se que: 
+		\begin{itemize}
+			\item Para realizar o acesso via $q_1$ é necessário obviamente chegar em $q_1$ e isso só é possível a partir da transição $\delta(q_0, b)$, logo o acesso a $q_2$ via $q_1$ só é permitido para palavras com o prefixo $bb$, agora como toda palavra é prefixo de si mesmo isso já garante que $bb \in \mathcal{L}(A_1)$.
+			\item Já o acesso via $q_4$ só é permitido se antes o autômato conseguir acessar o estado $q_4$, entretanto, $q_4$ só pode ser acessado pela transição $\delta(q_2, a)$ e como visto no caso anterior $q_2$ só pode ser acessado por palavras com prefixo $bb$, note porém, que as transições $\delta(q_2, a) = q_4$ e $\delta(q_4, a) = q_2$ formam um loop e assim pode-se concluir que o acesso a $q_2$ via $q_4$ obrigatoriamente é realizado por palavras da forma $bba^{2n}$ com $n \geq 1$.
+		\end{itemize}
+		Note que a palavra $bb$ pode ser escrita como sendo $bba^0$, portanto, pelas análise anterior pode-se concluir que $\widehat{\delta}(q_0, w) = q_2$, então $w = bba^{2n}$ com $n \in \mathbb{N}$, e portanto, $w \in L$, completando assim a prova. 
+	\end{proof}
 \end{exem}
 
-\begin{exem}\label{exe:AFDLinguagem2}
-	Seja $L = \{bba^{2n} \mid n \in \mathbb{N}\}$ é uma linguagem reconhecida pelo AFD a seguir
+\begin{exem}
+	O AFD $A$ do Exemplo \ref{exe:AFD} reconhece a linguagem $L = \{a^{2n + 1} \mid n \in \mathbb{N}\}$.
+	\begin{proof}
+		$(\Rightarrow)$ Suponha que $w \in L$ assim $w = a^{2n+1}$, agora por indução sobre o tamanho das palavras tem-se que, 
+		
+		\begin{itemize}
+			\item \textbf{Base da indução}:
+			
+			Quando $n = 0$ vale a igualdade $w = a^{2\cdot 0+1}$, agora usando a definição do AFD $A$ tem-se que, 
+			\begin{eqnarray*}
+				\widehat{\delta}(q_0, a^{2\cdot 0+1}) = \widehat{\delta}(q_0, a^{1}) = \delta(\widehat{\delta}(q_0, \lambda), a) = \delta(q_0, a) = q_1
+			\end{eqnarray*}
+			e como $q_1 \in F$ tem-se que $a^{2\cdot 0+1} \in \mathcal{L}(A)$, ou seja, $w \in \mathcal{L}(A)$.
+			
+			\item \textbf{Hipótese indutiva (HI)}:
+			
+			Suponha que para todo $n \in \mathbb{N}$ tem-se que $\widehat{\delta}(q_0, a^{2n+1}) \in F$, ou seja, $\widehat{\delta}(q_0, a^{2n+1}) = q_1$.
+			
+			\item \textbf{Passo indutivo}:
+			
+			Dado $w = a^{2(n+1)+1}$ tem-se que,
+			
+			\begin{eqnarray*}
+				\widehat{\delta}(q_0, a^{2(n+1)+1}) & = & \widehat{\delta}(q_0, a^{2n+1+2})\\
+				& = & \widehat{\delta}(q_0, a^{2n+1}aa)\\
+				& = & \delta(\delta(\widehat{\delta}(q_0, a^{2n+1}), a), a)\\
+				& \stackrel{\textbf{(HI)}}{=} & \delta(\delta(q_1, a), a)\\
+				& = & \delta(q_0, a)\\
+				& = & q_1
+			\end{eqnarray*}
+		
+			$(\Leftarrow)$ A volta fica como exercício argumentativo ao leitor.
+		\end{itemize}
+	\end{proof}
 \end{exem}
+
+Pode-se agora formalizar a primeira das classes de linguagens, sendo está a classe de linguagem regulares, tal classe como será visto é momentos futuros nesse manuscrito é a que possui a menor complexidade computacional.
+
+\begin{definition}[Linguagens Regulares]\label{def:LinguagensRegulares}
+	Uma linguagem $L$ qualquer é dita ser regular se, e somente se, existe um AFD $A$ tal que $L = \mathcal{L}(A)$. A classe de todas as linguagens regulares é denotada por $\mathcal{L}_{Reg}$.
+\end{definition}
 
 \section{Questionário}
 
