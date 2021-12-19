@@ -379,7 +379,7 @@ Como explicado em diversas obras tais como \cite{benjaLivro2010, hopcroft2008, l
 Agora este manuscrito inicia o estudo dos AFD apresentando sua forma algébrica equacional.
 
 \begin{definition}[Autômato Finito Determinístico]\label{def:AFD}
-	Um AFD é uma estrutura $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ onde: $Q$ é um conjunto finito de estados, $\Sigma$ é um alfabeto, $\delta : Q \times \Sigma \rightarrow Q$ é uma função total (chamada função de transição), $q_0 \in Q$ é um estado destacado (chamado estado inicial) e $F \subseteq$ é o conjunto de estados finais\footnote{Em algumas referências também é usado o termo conjunto de estados de aceitação \cite{de2010}.}.
+	Um AFD é uma estrutura $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ onde: $Q$ é um conjunto finito de estados, $\Sigma$ é um alfabeto, $\delta : Q \times \Sigma \rightarrow Q$ é uma função total (chamada função de transição), $q_0 \in Q$ é um estado destacado (chamado estado inicial) e $F \subseteq Q$ é o conjunto de estados finais\footnote{Em algumas referências também é usado o termo conjunto de estados de aceitação \cite{de2010}.}.
 \end{definition}
 
 \begin{exem}\label{exe:AFD}
@@ -618,7 +618,7 @@ Utilizando a definição acima o leitor deve ser capaz de perceber que se um AFD
 			\item Para realizar o acesso via $q_1$ é necessário obviamente chegar em $q_1$ e isso só é possível a partir da transição $\delta(q_0, b)$, logo o acesso a $q_2$ via $q_1$ só é permitido para palavras com o prefixo $bb$, agora como toda palavra é prefixo de si mesmo isso já garante que $bb \in \mathcal{L}(A_1)$.
 			\item Já o acesso via $q_4$ só é permitido se antes o autômato conseguir acessar o estado $q_4$, entretanto, $q_4$ só pode ser acessado pela transição $\delta(q_2, a)$ e como visto no caso anterior $q_2$ só pode ser acessado por palavras com prefixo $bb$, note porém, que as transições $\delta(q_2, a) = q_4$ e $\delta(q_4, a) = q_2$ formam um loop e assim pode-se concluir que o acesso a $q_2$ via $q_4$ obrigatoriamente é realizado por palavras da forma $bba^{2n}$ com $n \geq 1$.
 		\end{itemize}
-		Note que a palavra $bb$ pode ser escrita como sendo $bba^0$, portanto, pelas análise anterior pode-se concluir que $\widehat{\delta}(q_0, w) = q_2$, então $w = bba^{2n}$ com $n \in \mathbb{N}$, e portanto, $w \in L$, completando assim a prova. 
+		Note que a palavra $bb$ pode ser escrita como sendo $bba^0$, portanto, pelas duas análises anteriores pode-se concluir que se $\widehat{\delta}(q_0, w) = q_2$, então $w = bba^{2n}$ com $n \in \mathbb{N}$, e portanto, $w \in L$, completando assim a prova. 
 	\end{proof}
 \end{exem}
 
@@ -658,11 +658,63 @@ Utilizando a definição acima o leitor deve ser capaz de perceber que se um AFD
 	\end{proof}
 \end{exem}
 
-Pode-se agora formalizar a primeira das classes de linguagens, sendo está a classe de linguagem regulares, tal classe como será visto é momentos futuros nesse manuscrito é a que possui a menor complexidade computacional.
+Pode-se agora formalizar a primeira das classes de linguagens sendo esta a classe das linguagens regulares, tal classe foi primeiramente definida por Kleene em seu trabalho \cite{kleene1951}, entretanto, em tal ocasião tais linguagens foram chamadas de eventos regulares, como será visto é momentos futuros nesse manuscrito a classe das linguagens regulares é aquela que possui o menor nível complexidade computacional.
 
 \begin{definition}[Linguagens Regulares]\label{def:LinguagensRegulares}
 	Uma linguagem $L$ qualquer é dita ser regular se, e somente se, existe um AFD $A$ tal que $L = \mathcal{L}(A)$. A classe de todas as linguagens regulares é denotada por $\mathcal{L}_{Reg}$.
 \end{definition}
+
+\subsection{Autômatos Finitos Não-determinísticos}\label{subsec:AFN}
+
+Como explicado por Peter Linz em \cite{linz2006}, um autômato finito não-determinístico, ou simplesmente AFN, é um autômato que se diferencia dos AFD apenas no quesito da função de transição. A diferença consiste no fato de que, enquanto a imagem da função de transição em um AFD é sempre um estado, nos AFN a imagem da  função de transição é um subconjunto de estados, em um sentido moderno da teoria dos autômatos, um AFN seria uma máquina que algumas transições geraria uma superposição de estados \cite{valdi2020phd}. Formalmente um AFN é como se segue.
+
+\begin{definition}[Autômato Finito Não-determinístico]\label{def:AFN}
+	Um AFN é uma estrutura $A = \langle Q, \Sigma, \delta_N, q_0, F\rangle$ onde: $Q, \Sigma, q_0$ e $F$ são da mesma forma que na Definição \ref{def:AFD}, já $\delta_N : Q \times \Sigma \rightarrow \wp(Q)$ é uma função total (chamada função de transição não determinística).
+\end{definition}
+
+\begin{exem}\label{exe:AFN1}
+	A estrutura $A = \langle \{q_0, q_1, q_2\}, \{a, b\}, \delta_N, q_0, \{q_0, q_1\}  \rangle$ onde a função $\delta$ é descrita pela Tabela \ref{tab:DeltaAFN1} a seguir é um AFN.
+	
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{c|cc}
+			 \backslashbox{$Q$}{$\Sigma$}	& $a$ & $b$\\ \hline
+			 $q_0$  & $\{q_1\}$ & $\{q_0\}$\\
+			 $q_1$  & $\{q_2\}$ & $\{q_0, q_2\}$\\
+			 $q_2$  & $\{q_1\}$ & $\{q_2\}$\\
+		\end{tabular}
+		\caption{Tabela de transição para a função $\delta_N$ do AFN no Exemplo \ref{exe:AFN1}.}
+		\label{tab:DeltaAFN1}
+	\end{table}
+\end{exem}
+
+Quando a representação visual de um AFN usando grafos de transição é construída exatamente da mesma forma que a representação de um AFD, a única diferença é o fato de poder existir múltiplas arestas rotuladas por um símbolo $a \in \Sigma$ saindo de um vértice $q_i$ e chegando em diferentes vértices, isso acontece pois a representação deve ser capaz de representar transições da forma $\delta_N(q_i, a) = \{q_j, q_k, q_l\}$ por exemplo.
+
+\begin{exem}
+	O grafo de transição representado na Figura \ref{fig:AFN1} a seguir é uma representação para o AFN do Exemplo \ref{exe:AFN1}.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial, accepting]	(A)               	{$q_0$};
+			\node[state, accepting]				(B) [right of=A] 	{$q_1$};
+			\node[state]				        (C) [right of=B] 	{$q_2$};
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge [bend right]  				node {$a$}		 (B)
+			(A) edge [loop above]  				node {$b$}		 ( )
+			(B) edge [bend right]  				node {$b$}		 (A)
+			(B) edge [bend right]  				node {$a, b$}	 (C)
+			(C) edge [bend right] 				node {$a$}		 (B)
+			(C) edge [loop above]  				node {$b$}		 ( );
+		\end{tikzpicture}
+		\caption{Grafo de transição do AFN do Exemplo \ref{exe:AFN1}.}
+		\label{fig:AFN1}
+	\end{figure}
+\end{exem}
+
 
 \section{Questionário}
 
