@@ -24,7 +24,10 @@ Atualmente os tópicos aos quais este manuscrito irá atacar são:
 - Análise de Algoritmos e Complexidade
 
 ## Informações sobre o autor
+
+<p align="justify">
 O Professor Valdigleis S. Costa sob a Tutela dos professores [Benjamín Bedregal](https://docente.ufrn.br/2212166/perfil/) e [Regivan Santiago](https://docente.ufrn.br/1345816/perfil)  recebeu seus títulos de Mestre e Doutor  pelo [Programa de Pós-graduação em Sistemas e Computação](https://sigaa.ufrn.br/sigaa/public/programa/portal.jsf?id=73) vínculado ao [Departamento de Informática e Matématica Aplicada](https://www.dimap.ufrn.br) da [Universidade Federal do Rio Grande do Norte](https://www.ufrn.br/). Atualmente é professor adjunto (A2) no [Colegiado de Ciência da Computação](https://portais.univasf.edu.br/ccicomp) da [Universidade Federal do Vale do São Francisco](https://www.portais.univasf.edu.br). Tem experiência no ensino e pesquisa nas áreas de Fundamentos Matemáticos da Computação (Álgebra, Lógica, Computabilidade, Complexidade e Teoria dos Conjuntos) e Matemática aplicada (Inteligência artificial, processamento de sinais e bio-informática).
+</p>
 
 ## Contribuções
 
