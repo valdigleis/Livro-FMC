@@ -790,3 +790,62 @@ Quando a representação visual de um AFN usando grafos de transição é constr
 	$$PRE(L) = (SUF(L))^r$$ 
 	é verdadeira.
 \end{exercise}
+
+\begin{exercise}\label{exerc:LR8}
+	Considere o autômato na Figura \ref{fig:AutomaExercicioLR8} e responda o que é solicitado.
+\end{exercise}
+
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+		\node[state, initial]				(A)               	{$s_0$};
+		\node[state, accepting]				(B) [right of=A] 	{$s_1$};
+		\node[state]				        (C) [right of=B] 	{$s_2$};
+		\node[state, accepting]		        (D) [right of=C] 	{$s_3$};
+		\node[state]				        (E) [above of=C] 	{$s_4$};
+		\path[->] (A) +(-1,0) edge (A)
+		
+		%Transições:
+		%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+		(A) edge [bend right]  				node [below] {$c$}		 (B)
+		(A) edge [loop above]  				node 		 {$a$}		 ( )
+		(A) edge [bend left]  				node [above] {$b$}		 (E)
+		(B) edge [bend right]  				node [above] {$b$}		 (A)
+		(B) edge  							node [below] {$a$}	 	 (C)
+		(B) edge [loop below]  				node 		 {$c$}		 ( )
+		(C) edge [bend left]  				node [above] {$c$}	 	 (D)
+		(C) edge [bend left]  				node [left]  {$b$}		 (E)
+		(C) edge [loop below]  				node 		 {$a$}		 ( )
+		(E) edge [bend left]  				node [right] {$b$}		 (C)
+		(E) edge [bend left]  				node [right] {$c$}	 	 (D)
+		(E) edge [loop above]  				node 		 {$a$}		 ( )
+		(D) edge [loop right]  				node 		 {$c$}       ( )
+		(D) edge [bend left]  				node [below] {$a,b$} 	 (C);
+	\end{tikzpicture}
+	\caption{Autômato para o exercício \ref{exerc:LR8}.}
+	\label{fig:AutomaExercicioLR8}
+\end{figure}
+
+\begin{enumerate}
+	\item Verifique se as palavras: $abccaaabacab, ccccbacabacbb, bbacabb, aaccca, aaabb, acacabb,$ $bbacac$ e $ccabbbacac$ são aceitas ou não pelo autômato.
+	\item $\lambda$ é aceito por este autômato?
+	\item Traduza o grafo de transição para a notação algébrica.
+	\item Determine a linguagem aceita pelo autômato.
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR9}
+	Para cada linguagem a seguir construa um AFD que a reconhece.
+\end{exercise}
+
+\begin{enumerate}
+	\item $L_1 = \{\lambda, 00101111, 11001101, 1\}$.
+	\item $L_2 = \{w10 \in \{0,1\}^* \mid w = (001)^n11 \text{ com } n \in \mathbb{N}\}$.
+	\item $L_3 = \{w \in \{a,b\}^* \mid w = a^{2m}b^{2n+1} \text{ ou } w = aab^{3m + 3}b^n \text{ com } m,n \in \mathbb{N}\}$.
+	\item $L_4 = \{w \in \{a,b,c,d\}^* \mid w \text{ não contém as subcadeias } ab \text{ e } cd\}$.
+	\item $L_5 = \{w \in \{0,1\}^* \mid (\forall n \in \mathbb{N})[|w|_1 \neq 3n]\}$ onde $|w|_1$ é a notação que representa a quantidade de 1's em $w$.
+	\item $L_6 = \{w \in \{0,1\} \mid w = x_1\cdots x_n \text{ e } x_i = 0 \text{ se } i \text{ for par, senão } x_i = 1 \text{, sendo } n \in \mathbb{N}\}$.
+	\item $L_7 = \{w \in \{x, y, z\} \mid \text{Se } w \text{ contém a subpalavra } zz \text{, então à  direita da subpalavra }$ $zz \text{ não ocorre a subpalavra } yy \}$.
+	\item $L_8 = \{aaa, aab, aba, abb, baa, bab, bba, bbb\} \cup \{bbca, ccab, ccab, baba\}$.
+	\item $L_9 = \{uv \in \{0,1\}^* \mid u = 1^m0111, v = 0100^p1 \text{ com } m, p \in \mathbb{N}\}$.
+	\item $L_{10} = \{w \in \{0,1\}^* \mid w \text{ é um número binário multiplo de  } 3\}$.
+\end{enumerate}
