@@ -718,6 +718,10 @@ Quando a representação visual de um AFN usando grafos de transição é constr
 
 \section{Questionário}
 
+\begin{rema}
+	Quando $w \in \Sigma^*$ e $c \in \Sigma$ a notação $|w|_c$ representa o número de $c$'s que existem em $w$.
+\end{rema}
+
 \begin{exercise}\label{exerc:LR1}
 	Dado o alfabeto $\Sigma = \{a, b, c\}$ e as palavras $u = aabcab, v = bbccabac$ e $w = ccbabbaaca$ determine:
 \end{exercise}
@@ -834,7 +838,7 @@ Quando a representação visual de um AFN usando grafos de transição é constr
 \end{enumerate}
 
 \begin{exercise}\label{exerc:LR9}
-	Para cada linguagem a seguir construa um AFD que a reconhece.
+	Construa um AFD que compute cada linguagem a seguir.
 \end{exercise}
 
 \begin{enumerate}
@@ -842,10 +846,46 @@ Quando a representação visual de um AFN usando grafos de transição é constr
 	\item $L_2 = \{w10 \in \{0,1\}^* \mid w = (001)^n11 \text{ com } n \in \mathbb{N}\}$.
 	\item $L_3 = \{w \in \{a,b\}^* \mid w = a^{2m}b^{2n+1} \text{ ou } w = aab^{3m + 3}b^n \text{ com } m,n \in \mathbb{N}\}$.
 	\item $L_4 = \{w \in \{a,b,c,d\}^* \mid w \text{ não contém as subcadeias } ab \text{ e } cd\}$.
-	\item $L_5 = \{w \in \{0,1\}^* \mid (\forall n \in \mathbb{N})[|w|_1 \neq 3n]\}$ onde $|w|_1$ é a notação que representa a quantidade de 1's em $w$.
+	\item $L_5 = \{w \in \{0,1\}^* \mid (\forall n \in \mathbb{N})[|w|_1 \neq 3n]\}$.
 	\item $L_6 = \{w \in \{0,1\} \mid w = x_1\cdots x_n \text{ e } x_i = 0 \text{ se } i \text{ for par, senão } x_i = 1 \text{, sendo } n \in \mathbb{N}\}$.
-	\item $L_7 = \{w \in \{x, y, z\} \mid \text{Se } w \text{ contém a subpalavra } zz \text{, então à  direita da subpalavra }$ $zz \text{ não ocorre a subpalavra } yy \}$.
+	\item $L_7 = \{w \in \{x, y, z\} \mid \text{Se } w \text{ contém a sub-palavra } zz \text{, então à  direita da sub-palavra }$ $zz \text{ não ocorre a sub-palavra } yy \}$.
 	\item $L_8 = \{aaa, aab, aba, abb, baa, bab, bba, bbb\} \cup \{bbca, ccab, ccab, baba\}$.
 	\item $L_9 = \{uv \in \{0,1\}^* \mid u = 1^m0111, v = 0100^p1 \text{ com } m, p \in \mathbb{N}\}$.
 	\item $L_{10} = \{w \in \{0,1\}^* \mid w \text{ é um número binário multiplo de  } 3\}$.
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR10}
+	Considerando o alfabeto $\Sigma = \{c, d\}$ para cada uma das linguagens definidas pelas propriedades a seguir construa um AFD que a compute.
+\end{exercise}
+
+\begin{enumerate}
+	\item $w$ possui exatamente um único símbolo $d$, e este não aparece no final das palavras.
+	\item $w$ tem apenas uma única sub-palavra $dd$.
+	\item $w$ não contém três $d$'s seguidos.
+	\item $w$ possui pelo menos um $c$.
+	\item $w$ possui 6 ou menos símbolos, e não existe as sub-palavras $cc$ e $dd$.
+	\item $w$ tem mais que $4$ símbolos $c$.
+	\item $w$ é da forma $db^4wb^5d$ com $w \in \Sigma^*$.
+	\item $w$ possui tamanho $n$ tal que $n \mod 3 \neq 0$.
+	\item $|w| = n$ com $n \geq 3$ e $|w|_c \mod 2 > 1$.
+	\item $w$ é qualquer palavra tal que $3 \leq |w|_c \leq 6$
+	\item $w$ tem a forma $c^md^n$ tal que $m$ ou $n$ não divisível por $2$.
+	\item $w$ tem a forma $c^md^nc^p$ tal que $mnp > 6$ e $mnp$ seja impar.
+	\item $w$ é tal que $|w|_d = 2$ ou $|w|_c = 1$.
+	\item $w$ tem a forma $c^md^n$ tal que $m+n > mn$.
+	\item $w$ possui a sub-palavra  $ddcd$ e $|w|_d + |w|_c > 6$.
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR11}
+	Considerando o alfabeto $\Sigma = \{2, 3, 5\}$, demonstre que as linguagens definidas pelas propriedades a seguir são regulares.
+\end{exercise}
+
+\begin{enumerate}
+	\item $L_{pp} = \{w \in \Sigma^* \mid |w|_2, |w|_5 \text{ são ambos pares}\}$.
+	\item $L_{pi} = \{w \in \Sigma^* \mid |w|_2 + |w|_3 \text{ é par e } |w|_5 \text{ é impar}\}$.
+	\item $L_{pip} = \{w \in \Sigma^* \mid |w|_2 \text{ é par,} |w|_3 \text{ é impar e } |w|_5 \text{ é par}\}$.
+	\item $L_{pu} = \{w \in \Sigma^* \mid w = x_1\cdots x_n, x_1 = x_n \text{ com } n \in \mathbb{N}\}$.
+	\item $L_{pud} = \{w \in \Sigma^* \mid w = x_1\cdots x_n, x_1 \neq x_n \text{ com } n \in \mathbb{N}\}$.
+	\item $L_{dif} = \{wuv \in \Sigma^* \mid w,v \in \{3,5\}^*, |u| \geq 3\}$.
+	\item $L_{inv} = \{wuv \in \Sigma^* \mid w \in \{2\}^*,v \in \{3,5\}^*, u \in \{3\}$.
 \end{enumerate}
