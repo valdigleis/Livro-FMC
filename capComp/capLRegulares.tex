@@ -688,7 +688,7 @@ Como explicado por Peter Linz em \cite{linz2006}, um autômato finito não-deter
 	\end{table}
 \end{exem}
 
-Quando a representação visual de um AFN usando grafos de transição é construída exatamente da mesma forma que a representação de um AFD, a única diferença é o fato de poder existir múltiplas arestas rotuladas por um símbolo $a \in \Sigma$ saindo de um vértice $q_i$ e chegando em diferentes vértices, isso acontece pois a representação deve ser capaz de representar transições da forma $\delta_N(q_i, a) = \{q_j, q_k, q_l\}$ por exemplo.
+Quando a representação visual de um AFN usando grafos de transição é construída exatamente da mesma forma que a representação de um AFD, a única diferença é o fato de poder existir múltiplas arestas rotuladas por um símbolo $a \in \Sigma$ saindo de um vértice $q_i$ e chegando em diferentes vértices $q_j \in X$ onde $X \subseteq Q$ e $\delta_N(q_i, a) = X$.
 
 \begin{exem}
 	O grafo de transição representado na Figura \ref{fig:AFN1} a seguir é uma representação para o AFN do Exemplo \ref{exe:AFN1}.
@@ -703,12 +703,12 @@ Quando a representação visual de um AFN usando grafos de transição é constr
 			
 			%Transições:
 			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
-			(A) edge [bend right]  				node {$a$}		 (B)
-			(A) edge [loop above]  				node {$b$}		 ( )
-			(B) edge [bend right]  				node {$b$}		 (A)
-			(B) edge [bend right]  				node {$a, b$}	 (C)
-			(C) edge [bend right] 				node {$a$}		 (B)
-			(C) edge [loop above]  				node {$b$}		 ( );
+			(A) edge [bend right]  				node [below] {$a$}		 (B)
+			(A) edge [loop above]  				node 		 {$b$}		 ( )
+			(B) edge [bend right]  				node [above] {$b$}		 (A)
+			(B) edge [bend right]  				node [below] {$a, b$}	 (C)
+			(C) edge [bend right] 				node [above] {$a$}		 (B)
+			(C) edge [loop above]  				node {$b$}		 		 ( );
 		\end{tikzpicture}
 		\caption{Grafo de transição do AFN do Exemplo \ref{exe:AFN1}.}
 		\label{fig:AFN1}

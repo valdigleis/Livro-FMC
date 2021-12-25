@@ -1,5 +1,14 @@
 # Um livro sobre Fundamentos da Computação
 
+<p align="left">
+	<img alt="GitHub Language Count" src="https://img.shields.io/github/languages/count/valdigleis/Livro-FMC" />
+	<img alt="GitHub Top Language" src="https://img.shields.io/github/languages/top/valdigleis/Livro-FMC" />
+	<img alt="GitHub Issues" src="https://img.shields.io/github/issues/valdigleis/Livro-FMC" />
+	<img alt="GitHub Closed Issues" src="https://img.shields.io/github/issues-closed/valdigleis/Livro-FMC" />
+	<img alt="GitHub Last Commit" src="https://img.shields.io/github/last-commit/valdigleis/Livro-FMC" />
+	<img alt="GitHub Commit Activity (Week)" src="https://img.shields.io/github/commit-activity/w/valdigleis/Livro-FMC" />
+</p>
+
 Este repositório destina-se a ser o ambiente que abriga meu projeto LaTeX do livro sobre os fundamentos matemáticos da computação.
 
 Este E-book consiste do agrupamento de minhas notas de aula na forma de um livro, seu objetivo é servir de apoio didático aos meus alunos e a quem mais se sentir interessado, este manuscrito não tem pretensões de ser publicado por qualquer editora.
