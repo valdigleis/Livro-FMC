@@ -681,7 +681,7 @@ Como explicado por Peter Linz em \cite{linz2006}, um autômato finito não-deter
 			 \backslashbox{$Q$}{$\Sigma$}	& $a$ & $b$\\ \hline
 			 $q_0$  & $\{q_1\}$ & $\{q_0\}$\\
 			 $q_1$  & $\{q_2\}$ & $\{q_0, q_2\}$\\
-			 $q_2$  & $\{q_1\}$ & $\{q_2\}$\\
+			 $q_2$  & $\{q_2\}$ & $\{q_1\}$\\
 		\end{tabular}
 		\caption{Tabela de transição para a função $\delta_N$ do AFN no Exemplo \ref{exe:AFN1}.}
 		\label{tab:DeltaAFN1}
@@ -707,14 +707,60 @@ Quando a representação visual de um AFN usando grafos de transição é constr
 			(A) edge [loop above]  				node 		 {$b$}		 ( )
 			(B) edge [bend right]  				node [above] {$b$}		 (A)
 			(B) edge [bend right]  				node [below] {$a, b$}	 (C)
-			(C) edge [bend right] 				node [above] {$a$}		 (B)
-			(C) edge [loop above]  				node {$b$}		 		 ( );
+			(C) edge [bend right] 				node [above] {$b$}		 (B)
+			(C) edge [loop above]  				node {$a$}		 		 ( );
 		\end{tikzpicture}
 		\caption{Grafo de transição do AFN do Exemplo \ref{exe:AFN1}.}
 		\label{fig:AFN1}
 	\end{figure}
 \end{exem}
 
+\begin{rema}
+	Para as transições da forma $\delta_N(q_0, a) = \emptyset$ tem-se que as mesma não são representadas no grafo de transição de um AFN.
+\end{rema}
+
+Como para o caso determinístico a função de transição, neste caso $\delta_N$, pode ser estendida para uma função $\widehat{\delta_N}$ usando recursividade como se segue.
+
+\begin{definition}[Transição não-determinística estendida]\label{def:FuncaoDeltaNDEstendida}
+	Seja $A = \langle Q, \Sigma, \delta_N, q_0, F\rangle$ um AFN, a função de transição estendida é uma função $\delta_N: Q \times \Sigma^* \rightarrow \wp(Q)$ definida pela seguinte recursão.
+	\begin{eqnarray}\label{eq:FuncaoDeltaNDEstendida}
+		\widehat{\delta_N}(q, \lambda)& = & \{q\} \\
+		\widehat{\delta_N}(q, wa)& = & \bigcup_{q' \in \widehat{\delta_N}(q, w)} \delta_N(q', q)
+	\end{eqnarray}
+\end{definition}
+
+
+Como para os AFD a noção de computação em qualquer AFN consiste simplesmente da aplicação da função $\widehat{\delta_N}$ sobre alguma palavra $w \in \Sigma^*$ e um estado $q$. 
+
+\begin{exem}\label{exe:ComputacaoAFN}
+	Considerando o AFN ilustrado na Figura \ref{fig:AFN1} e a palavra $``abb$'' tem-se que,
+	\begin{eqnarray}\label{eq:AFNComptuacao1}
+		\widehat{\delta_N}(q_0, abb) & = & \bigcup_{q' \in \widehat{\delta_N}(q_0, ab)} \delta_N(q', b)
+	\end{eqnarray}
+	mas tem-se que, 
+	\begin{eqnarray}\label{eq:AFNComptuacao2}
+		 \widehat{\delta_N}(q_0, ab) & = & \bigcup_{q'' \in \widehat{\delta_N}(q_0, a)} \delta_N(q'', b)
+	\end{eqnarray}
+	e
+	\begin{eqnarray}\label{eq:AFNComptuacao3}
+		\widehat{\delta_N}(q_0, a) & = & \bigcup_{q''' \in \widehat{\delta_N}(q_0, \lambda)} \delta_N(q''', a) \nonumber \\ 
+		& = & \bigcup_{q''' \in \{q_0\}} \delta_N(q''', a) \\
+		& = & \delta_N(q_0, a) \nonumber \\ 
+		& = & \{q_1\} \nonumber
+	\end{eqnarray}
+	substituindo a Equação (\ref{eq:AFNComptuacao3}) ma Equação (\ref{eq:AFNComptuacao2}) tem-se que, 
+	\begin{eqnarray}\label{eq:AFNComptuacao4}
+		\widehat{\delta_N}(q_0, ab) & = & \{q_0, q_2\}
+	\end{eqnarray}
+	e finalmente substituindo a Equação (\ref{eq:AFNComptuacao4}) ma Equação (\ref{eq:AFNComptuacao1}) tem-se que,
+	 \begin{eqnarray}
+	 	\widehat{\delta_N}(q_0, aba) & = & \{q_0, q_1\}
+	 \end{eqnarray}
+ 	ou seja, a computação da palavra $``abb$'' pelo AFN da Figura \ref{fig:AFN1} termina no conjunto de estados $\{q_0, q_1\}$.
+\end{exem}
+
+
+Pelo exemplo anterior o leitor pode ter notado que diferente do caso determinístico, a computação em um AFN não é linear, no sentido de um único caminho de computação\footnote{Como explicado em \cite{valdi2020phd} um caminho de computação é uma sequência de estados assumidos pela unidade central do autômato durante o processamento de uma palavra de entrada.}, em vez disso, a computação em um AFN pode ser vista como uma árvore em que a união dos estados em cada nível da árvore representa a superposição de estados assumida pela unidade de controle do autômato a cada símbolo consumido da palavra $w$, o exemplo a seguir ilustra essa ideia.
 
 \section{Questionário}
 
@@ -877,15 +923,15 @@ Quando a representação visual de um AFN usando grafos de transição é constr
 \end{enumerate}
 
 \begin{exercise}\label{exerc:LR11}
-	Considerando o alfabeto $\Sigma = \{2, 3, 5\}$, demonstre que as linguagens definidas pelas propriedades a seguir são regulares.
+	Considerando o alfabeto $\Sigma = \{2, 3, 5\}$, demonstre usando AFD que as linguagens definidas pelas propriedades a seguir são regulares.
 \end{exercise}
 
 \begin{enumerate}
 	\item $L_{pp} = \{w \in \Sigma^* \mid |w|_2, |w|_5 \text{ são ambos pares}\}$.
-	\item $L_{pi} = \{w \in \Sigma^* \mid |w|_2 + |w|_3 \text{ é par e } |w|_5 \text{ é impar}\}$.
+	\item $L_{pi} = \{w \in \Sigma^* \mid |w|_2 \cdot |w|_3 \text{ é par e } |w|_5 \text{ é impar}\}$.
 	\item $L_{pip} = \{w \in \Sigma^* \mid |w|_2 \text{ é par,} |w|_3 \text{ é impar e } |w|_5 \text{ é par}\}$.
 	\item $L_{pu} = \{w \in \Sigma^* \mid w = x_1\cdots x_n, x_1 = x_n \text{ com } n \in \mathbb{N}\}$.
 	\item $L_{pud} = \{w \in \Sigma^* \mid w = x_1\cdots x_n, x_1 \neq x_n \text{ com } n \in \mathbb{N}\}$.
 	\item $L_{dif} = \{wuv \in \Sigma^* \mid w,v \in \{3,5\}^*, |u| \geq 3\}$.
-	\item $L_{inv} = \{wuv \in \Sigma^* \mid w \in \{2\}^*,v \in \{3,5\}^*, u \in \{3\}$.
+	\item $L_{inv} = \{wuv \in \Sigma^* \mid w \in \{2\}^*,v \in \{3,5\}^+, u \in \{3\}^*\}$.
 \end{enumerate}
