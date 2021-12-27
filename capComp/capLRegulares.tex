@@ -505,7 +505,7 @@ Note que a definição de computação em AFD pode ser interpretada como sendo a
 
 De pose da definição de computação pode-se formalizar o conceito de reconhecimento (ou aceitação) de palavras nos AFD.
 
-\begin{definition}[Reconhecimento de palavras]\label{defi:PalavraAceitaPorAFD}
+\begin{definition}[Reconhecimento de palavras em AFD]\label{defi:PalavraAceitaPorAFD}
 	\cite{benjaLivro2010} Sejam $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD e seja $w \in \Sigma^*$. A palavra $w$ é dita aceita (reconhece ou computada) por $A$ sempre que $\widehat{\delta}(q_0, w) \in F$ e é rejeitada por $A$ em qualquer outro caso.
 \end{definition}
 
@@ -514,7 +514,7 @@ De pose da definição de computação pode-se formalizar o conceito de reconhec
 \begin{exem}\label{exe:AceiteAFD1}
 	Considerando os Exemplos \ref{exe:ComputacaoAFD1} e \ref{exe:ComputacaoAFD2} tem-se que a palavra $aaaa$ não é aceita pelo AFD do Exemplo \ref{exe:ComputacaoAFD1}, uma vez que, $q_0 \notin F$. Já a palavra $0101$ também não é aceita pelo AFD do Exemplo \ref{exe:ComputacaoAFD2}, uma vez que, $s_1 \notin F$, de fato o leitor atento pode notar que o AFD do Exemplo \ref{exe:ComputacaoAFD2} não aceita qualquer palavra de entrada pois $F = \emptyset$.
 \end{exem}
-
+ 
 \begin{exem}\label{exe:AceiteAFD2}
 	Considere o AFD representado pelo grafo de transições abaixo:
 	
@@ -748,11 +748,11 @@ Como para os AFD a noção de computação em qualquer AFN consiste simplesmente
 		& = & \delta_N(q_0, a) \nonumber \\ 
 		& = & \{q_1\} \nonumber
 	\end{eqnarray}
-	substituindo a Equação (\ref{eq:AFNComptuacao3}) ma Equação (\ref{eq:AFNComptuacao2}) tem-se que, 
+	substituindo a Equação (\ref{eq:AFNComptuacao3}) na Equação (\ref{eq:AFNComptuacao2}) tem-se que, 
 	\begin{eqnarray}\label{eq:AFNComptuacao4}
 		\widehat{\delta_N}(q_0, ab) & = & \{q_0, q_2\}
 	\end{eqnarray}
-	e finalmente substituindo a Equação (\ref{eq:AFNComptuacao4}) ma Equação (\ref{eq:AFNComptuacao1}) tem-se que,
+	e finalmente substituindo a Equação (\ref{eq:AFNComptuacao4}) na Equação (\ref{eq:AFNComptuacao1}) tem-se que,
 	 \begin{eqnarray}
 	 	\widehat{\delta_N}(q_0, aba) & = & \{q_0, q_1\}
 	 \end{eqnarray}
@@ -760,7 +760,80 @@ Como para os AFD a noção de computação em qualquer AFN consiste simplesmente
 \end{exem}
 
 
-Pelo exemplo anterior o leitor pode ter notado que diferente do caso determinístico, a computação em um AFN não é linear, no sentido de um único caminho de computação\footnote{Como explicado em \cite{valdi2020phd} um caminho de computação é uma sequência de estados assumidos pela unidade central do autômato durante o processamento de uma palavra de entrada.}, em vez disso, a computação em um AFN pode ser vista como uma árvore em que a união dos estados em cada nível da árvore representa a superposição de estados assumida pela unidade de controle do autômato a cada símbolo consumido da palavra $w$, o exemplo a seguir ilustra essa ideia.
+Pelo exemplo anterior o leitor mais atento pode ter notado que diferente do caso determinístico, a computação em um AFN não é linear, no sentido de que não existe um único caminho de computação\footnote{Como explicado em \cite{valdi2020phd} um caminho de computação é uma sequência de estados assumidos pela unidade central do autômato durante o processamento de uma palavra de entrada.}, em vez disso, a computação em um AFN pode ser vista como uma árvore em que a união dos estados em cada nível da árvore representa a superposição de estados assumida pela unidade de controle do autômato a cada símbolo consumido (computado ou lido) da palavra $w$, o exemplo a seguir ilustra bem essa ideia de árvore de computação.
+
+\begin{exem}\label{exe:ArvoreComputacaoAFN}
+	Considerando o AFN ilustrado na Figura \ref{fig:AFN1} e a palavra ``$abab$'' tem-se que o processo de computação para tal palavra poder ser representado pela árvore da Figura \ref{fig:ArvoreComputacaoAFN} a seguir.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}
+			\node {$q_0$}
+			child { node {$q_1$} 
+						child {node {$q_0$}
+							child {node {$q_1$}
+								child {node {$q_0$}
+									edge from parent [->] node [left, purple] {$b$}
+								}
+								child {node {$q_2$}
+									edge from parent [->] node [right, purple] {$b$}
+								}
+								edge from parent [->] node [left, purple] {$a$}
+							}
+							edge from parent [->] node [left, purple] {$b$}
+						}
+						child {node {$q_2$}
+							child {node {$q_2$}
+								child {node {$q_1$}
+									edge from parent [->] node [right, purple] {$b$}
+								}
+								edge from parent [->] node [right, purple] {$a$}
+							}
+							edge from parent [->] node [right, purple] {$b$}
+						}
+						edge from parent [->] node [left, purple] {$a$}
+			}
+			;
+		\end{tikzpicture}
+		\caption{Árvore de computação da palavra ``$abab$'' no AFN da Figura \ref{fig:AFN1}.}
+		\label{fig:ArvoreComputacaoAFN}
+	\end{figure}
+\end{exem}
+
+Pode-se agora apresentar a noção de aceitação (reconhecimento ou computação) de palavras nos AFD.
+
+\begin{definition}[Reconhecimento de palavras em AFN]\label{defi:PalavraAceitaPorAFN}
+	Sejam $A = \langle Q, \Sigma, \delta_N, q_0, F\rangle$ um AFN e seja $w \in \Sigma^*$. A palavra $w$ é dita aceita (reconhece ou computada) por $A$ sempre que $\widehat{\delta}(q_0, w) \cap F \neq \emptyset$ e é rejeitada por $A$ em qualquer outro caso.
+\end{definition}
+
+Note que a Definição \ref{defi:PalavraAceitaPorAFN} pode ser informalmente interpretada da seguinte forma, uma palavra é aceita por um AFN $A$ se existe pelo menos um caminho de computação para $w$ que termine em um estado final, isto é, pelo menos uma das folhas na árvore de computação deve ser um estado $q \in F$, neste caso $w$ é aceita por $A$.
+
+\begin{exem}\label{exe:AceitacaoEmAFN}
+	Considerando o AFN representado pela Figura \ref{fig:AFN2} a seguir tem-se que $\widehat{\delta_N}(q_0, aabbbba) = \{q_1, q_3\}$ logo ``$aabbbba$'' é aceita por tal AFN, pois uma vez que, $q_1 \in F$ segue que  $\widehat{\delta_N}(q_0, aabbbba) \cap F \neq \emptyset$. Por outro lado, para a palavra ``$aabb$'' tem-se que $\widehat{\delta_N}(q_0, aabb) = \{q_2, q_3\}$, consequentemente, $\widehat{\delta_N}(q_0, aabb) \cap F = \emptyset$, e portanto, ``$aabb$'' não é aceita pelo AFN.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]				(A)               	{$q_0$};
+			\node[state, accepting]				(B) [right of=A] 	{$q_1$};
+			\node[state]				        (C) [right of=B] 	{$q_2$};
+			\node[state]				        (D) [right of=C] 	{$q_3$};
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge 			 				node [below] {$a$}		 (B)
+			(A) edge [loop above]  				node 		 {$a$}		 ( )
+			(B) edge 			  				node [above] {$b$}		 (C)
+			(C) edge [loop above]  				node 		 {$b$}		 ( )
+			(C) edge 			  				node [above] {$b$}		 (D)
+			(D) edge [loop above]  				node 		 {$a$}		 ( )
+			(D) edge [bend left]  				node [below] {$a$}		 (B);
+		\end{tikzpicture}
+		\caption{Grafo de transição de um AFN.}
+		\label{fig:AFN2}
+	\end{figure}
+\end{exem}
 
 \section{Questionário}
 
