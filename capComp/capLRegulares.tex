@@ -652,9 +652,8 @@ Utilizando a definição acima o leitor deve ser capaz de perceber que se um AFD
 				& = & \delta(q_0, a)\\
 				& = & q_1
 			\end{eqnarray*}
-		
-			$(\Leftarrow)$ A volta fica como exercício argumentativo ao leitor.
 		\end{itemize}
+		$(\Leftarrow)$ A volta fica como exercício argumentativo ao leitor.
 	\end{proof}
 \end{exem}
 
@@ -809,7 +808,11 @@ Pode-se agora apresentar a noção de aceitação (reconhecimento ou computaçã
 Note que a Definição \ref{defi:PalavraAceitaPorAFN} pode ser informalmente interpretada da seguinte forma, uma palavra é aceita por um AFN $A$ se existe pelo menos um caminho de computação para $w$ que termine em um estado final, isto é, pelo menos uma das folhas na árvore de computação deve ser um estado $q \in F$, neste caso $w$ é aceita por $A$.
 
 \begin{exem}\label{exe:AceitacaoEmAFN}
-	Considerando o AFN representado pela Figura \ref{fig:AFN2} a seguir tem-se que $\widehat{\delta_N}(q_0, aabbbba) = \{q_1, q_3\}$ logo ``$aabbbba$'' é aceita por tal AFN, pois uma vez que, $q_1 \in F$ segue que  $\widehat{\delta_N}(q_0, aabbbba) \cap F \neq \emptyset$. Por outro lado, para a palavra ``$aabb$'' tem-se que $\widehat{\delta_N}(q_0, aabb) = \{q_2, q_3\}$, consequentemente, $\widehat{\delta_N}(q_0, aabb) \cap F = \emptyset$, e portanto, ``$aabb$'' não é aceita pelo AFN.
+	Considerando o AFN representado pela Figura \ref{fig:AFN2} a seguir e as palavras ``$aabbbba$'' e ``$aabb$'' tem-se que: 
+	$$\widehat{\delta_N}(q_0, aabbbba) = \{q_1, q_3\}$$ 
+	e  
+	$$\widehat{\delta_N}(q_0, aabb) = \{q_2, q_3\}$$ 
+	logo a palavra ``$aabbbba$'' é aceita por tal AFN. Por outro lado, a palavra ``$aabb$'' não é aceita pelo AFN.
 	
 	\begin{figure}[h]
 		\centering
@@ -834,6 +837,246 @@ Note que a Definição \ref{defi:PalavraAceitaPorAFN} pode ser informalmente int
 		\label{fig:AFN2}
 	\end{figure}
 \end{exem}
+
+Usando a definição apresentada anteriormente de palavra aceita pode-se finalmente introduzir formalmente a noção de linguagem aceita (computada ou reconhecida) pelos AFN.
+
+\begin{definition}[Linguagem de um AFN]\label{def:LinguagemAFN}
+	Seja $A = \langle Q, \Sigma, \delta_N, q_0, F\rangle$ um AFN a linguagem reconhecida (ou computada) por $A$, denotada por $\mathcal{L}(A)$, corresponde ao conjunto de todas as palavras aceitas por $A$, formalmente tem-se que:
+	\begin{eqnarray}
+		\mathcal{L}(A) = \{w \in \Sigma^* \mid \widehat{\delta_N}(q_0, w) \cap F \neq \emptyset\}
+	\end{eqnarray}
+\end{definition}
+
+De forma similar ao que ocorre com os AFD, para mostrar que uma linguagem $L$ é aceita por algum AFN $A$ deve-se provar a igualdade $L = \mathcal{L}(A)$, ou seja, deve-se provar que $w \in L \Longleftrightarrow w \in \mathcal{L}(A)$.
+
+\begin{exem}\label{exe:LinguagemAFN1}
+	A linguagem $L = \{a^i(ba)^j \mid i \geq 1,j \geq 0\}$ é aceita pelo AFN $A$ representado pelo grafo de transição da Figura \ref{fig:AFN3} a seguir.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]				(A)               	{$s_0$};
+			\node[state, accepting]				(B) [right of=A] 	{$s_1$};
+			\node[state]				        (C) [right of=B] 	{$s_2$};
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge [loop above]  				node 		 {$a$}		 ( )
+			(A) edge 			  				node 		 {$a$}		 (B)
+			(B) edge [bend left]  				node 		 {$b$}		 (C)
+			(C) edge [bend left]  				node 		 {$a$}		 (B);
+		\end{tikzpicture}
+		\caption{Grafo de transição de um AFN.}
+		\label{fig:AFN3}
+	\end{figure}
+
+	\begin{proof}
+		$(\Rightarrow)$ Suponha que $w \in L$, portanto, $w = a^m(ba)^n$,  e agora por indução dupla sobre o par $(m,n)$ tem-se que:
+		
+		\begin{itemize}
+			\item \textbf{Base da indução}:
+			
+			Quando com $m = 1$ e $n = 0$ vale a igualdade $w = a^1(ba)^0 = a$, agora usando a definição de $\delta_N$ do AFN $A$ como representado na Figura \ref{fig:AFN3} tem-se que, 
+			\begin{eqnarray*}
+				\widehat{\delta_N}(s_0, a) = \bigcup_{s' \in \widehat{\delta}(s_0, \lambda)} \delta_N(s', a) = \delta_N(s_0, a) = \{s_0, s_1\}
+			\end{eqnarray*}
+			uma vez que, $s_1 \in F$ tem-se que $\widehat{\delta_N}(s_0, a) \cap F \neq \emptyset$, e portanto, $w \in \mathcal{L}(A)$. Agora suponha que para $w = a^1(ba)^n$ com $n \geq 0$ tem-se que $\widehat{\delta_N}(s_0, a^1(ba)^n) \cap F \neq \emptyset$. Assim dado $a^1(ba)^{n+1}$ por definição tem-se que:
+			\begin{eqnarray}\label{eq:ProvaAFNLinguagem1}
+				\widehat{\delta_N}(s_0, a^1(ba)^{n+1}) & = & \widehat{\delta_N}(s_0, a^1(ba)^{n}ba)\nonumber\\
+				& = & \bigcup_{s' \in \widehat{\delta_N}(s_0, a^1(ba)^{n}b)} \delta_N(s', a)
+			\end{eqnarray}
+			agora fazendo,
+			\begin{eqnarray}\label{eq:ProvaAFNLinguagem2}
+				K = \bigcup_{s'' \in \widehat{\delta_N}(s_0, a^1(ba)^{n})} \delta_N(s'', b)
+			\end{eqnarray}
+			e reescrevendo a Equação (\ref{eq:ProvaAFNLinguagem1}) usando a Equação (\ref{eq:ProvaAFNLinguagem2}) tem-se que,
+			\begin{eqnarray}\label{eq:ProvaAFNLinguagem3}
+				\widehat{\delta_N}(s_0, a^1(ba)^{n+1}) & = & \bigcup_{s' \in K} \delta_N(s', a)
+			\end{eqnarray}
+			entretanto, por hipótese tem-se que $\widehat{\delta_N}(s_0, a^1(ba)^n) \cap F \neq \emptyset$, consequentemente, tem-se que $s_1 \in \widehat{\delta_N}(s_0, a^1(ba)^n)$ dessa forma pela Equação (\ref{eq:ProvaAFNLinguagem2}) é claro que $\delta_N(s_1, b) \subseteq K$. Mas $\delta_N(s_1, b) = \{s_2\}$ logo pela Equação (\ref{eq:ProvaAFNLinguagem3}) tem-se que $\delta_N(s_2, a) \subseteq \widehat{\delta_N}(s_0, a^1(ba)^{n+1})$, desde que $\delta_N(s_2, a) = \{s_1\}$, tem-se $s_1 \in \widehat{\delta_N}(s_0, a^1(ba)^{n+1})$, portanto, $\widehat{\delta_N}(s_0, a^1(ba)^{n+1}) \cap F \neq \emptyset$, consequentemente $a^1(ba)^{n+1} \in \mathcal{L}(A)$.
+			\item \textbf{Hipótese indutiva (HI)}:
+			
+			Assuma que para todo $n \geq 0$ tem-se que $\widehat{\delta_N}(s_0, a^m(ba)^n)  \cap F \neq \emptyset$.
+			\item \textbf{Passo indutivo}:
+			
+			Primeiro seja $w \in L$ de forma que $w = a^{m+1}(ba)^0$ logo pela hipótese indutiva segue que, 
+			\begin{eqnarray*}
+				\widehat{\delta_N}(s_0, a^{m+1}(ba)^0) \cap F \neq \emptyset
+			\end{eqnarray*}
+			consequentemente, $a^{m+1}(ba)^0 \in \mathcal{L}(A)$. Por outro lado, sendo $w \in L$ tal que $w = a^{m+1}(ba)^n$, usando a  definição de $\widehat{\delta_N}$ tem-se para $a^{m+1}(ba)^{n+1}$ que, 
+			\begin{eqnarray}\label{eq:ProvaAFNLinguagem4}
+				\widehat{\delta_N}(s_0, a^{m+1}(ba)^{n+1}) & = & \widehat{\delta_N}(s_0, a^{m+1}(ba)^{n}ba)\nonumber\\
+				& = & \bigcup_{s' \in \widehat{\delta_N}(s_0, a^{m+1}(ba)^{n}b)} \delta_N(s', a)
+			\end{eqnarray}
+			agora desenvolvendo o termo $\widehat{\delta_N}(s_0, a^{m+1}(ba)^{n}b)$ tem-se
+			\begin{eqnarray*}
+				\widehat{\delta_N}(s_0, a^{m+1}(ba)^{n}b) & = & \bigcup_{s'' \in \widehat{\delta_N}(s_0, a^{m+1}(ba)^{n})} \delta_N(s'', b)
+			\end{eqnarray*}
+			pela hipótese indutiva tem-se que $\widehat{\delta_N}(s_0, a^{m+1}(ba)^{n}) \cap F = \emptyset$, consequentemente, $s_1 \in \widehat{\delta_N}(s_0, a^{m+1}(ba)^{n})$, logo $\delta_N(s_1, b) \subseteq \widehat{\delta_N}(s_0, a^{m+1}(ba)^{n})$, uma vez que, $\delta_N(s_1, b) = \{s_2\}$, tem-se que $\{s_2\} \subseteq \widehat{\delta_N}(s_0, a^{m+1}(ba)^{n})$, assim pela Equação (\ref{eq:ProvaAFNLinguagem4}) segue que $\delta_N(s_2, a) \subseteq \widehat{\delta_N}(s_0, a^{m+1}(ba)^{n+1})$, mas por definição $\delta_N(s_2, a) = \{s_1\}$, portanto, tem-se que $\{s_1\} \subseteq \widehat{\delta_N}(s_0, a^{m+1}(ba)^{n+1})$, logo $\widehat{\delta_N}(s_0, a^{m+1}(ba)^{n+1}) \cap F \neq \emptyset$ e assim $a^{m+1}(ba)^{n+1} \in \mathcal{L}(A)$.
+		\end{itemize}
+		$(\Leftarrow)$ Suponha que $w \in \mathcal{L}(A)$ assim $s_1 \in \widehat{\delta_N}(s_0, w)$, note porém que $s_1$ só é acessível a partir de duas transições: 
+		\begin{itemize}
+			\item (1) $\delta_N(s_0, a)$ e
+			\item (2) $\delta_N(s_2, a)$. 
+		\end{itemize}
+		Note que devido ao \textit{loop} fornecido pelo fato de que $s_0 \in \delta_N(s_0, a)$ a transição (1) pode ser executada $m$ vezes com $m \geq 1$, em que para cada execução um novo ramo com o estado $s_1$ é gerado na árvore de computação de $A$, entretanto, executar $m$ vezes a transição $\delta_N(s_0, a)$ implica em executar a computação $\widehat{\delta_N}(s_0, a^m)$, pelo fato\footnote{Fica para o leitor a tarefa de provar que para todo $m \geq 1$ tem-se que $s_1 \in \widehat{\delta_N}(s_0, a^m)$.} de que $s_1 \in \widehat{\delta_N}(s_0, a^m)$ tem-se que $a^m \in \mathcal{L}(A)$, e uma vez que $a^m = a^m(ba)^0$ tem-se que a primeira forma de $\widehat{\delta_N}(s_0, w) \cap F \neq \emptyset$ é que $w = a^m(ba)^0$ e assim $w \in L$. Por outro lado, para acessar $s_1$ via a transição (2) é necessário antes chegar a um ramo de computação em que o estado $s_2$ seja uma folha, mas pela definição de $A$ isso só é possível se a transição $\delta_N(s_1, b)$ for usada, note entretanto, que as transições $\delta_N(s_1, b) = \{s_2\}$ e $\widehat{\delta_N}(s_2, a) = \{s_1\}$ também geram um \textit{loop} que pode ser executado $n$ vezes com $n \geq 0$, mas executar esse \textit{loop} $n$ vezes corresponde a executar $\widehat{\delta_N}(s_1, (ba)^n)$, e como dito anteriormente, $s_1$ só é acessível pela definição de $A$ usando a computação $\widehat{\delta_N}(s_0, a^m)$, portanto, para que $s_1 \in \widehat{\delta_N}(s_0, w) \cap F$, obrigatoriamente, $w = a^m(ba)^n$ com $m \geq 1, n \geq 0$, e portanto, $w \in L$.
+	\end{proof}
+\end{exem}
+
+\begin{exem}\label{exe:LinguagemAFN2}
+	O AFN $S$ representado no grafo de transição exposto na Figura \ref{fig:AFN4} a seguir reconhece a linguagem $L = \{uv \mid u \in \{0,1\}^*,  v \in \{0,1\}\}$.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]						(A)               	{$s_0$};
+			\node										(B) [right of=A] 	{ };
+			\node[state, accepting]				        (C) [above of=B] 	{$s_1$};
+			\node[state, accepting]				        (D) [below of=B] 	{$s_2$};
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge [loop above]  				node 		 {$0, 1$}		 ( )
+			(A) edge							node 		 {$0$}			 (C)
+			(A) edge							node 		 {$1$}			 (D);
+		\end{tikzpicture}
+		\caption{Grafo de transição de um AFN $S$.}
+		\label{fig:AFN4}
+	\end{figure}
+
+	\begin{proof}
+		$(\Rightarrow)$ A ida fica a cargo do leitor. $(\Leftarrow)$ Suponha que $w \in \mathcal{L}(A)$ assim por definição $\widehat{\delta_N}(s_0, w) \cap \{s_1, s_2\} \neq \emptyset$, agora pela definição de $\delta_N$ é claro que toda árvore de computação de $A$ apresenta a propriedade de sempre conter um dos estados $s_1$ ou $s_2$, mas nunca os dois simultaneamente\footnote{A prova desta propriedade fica como exercício ao leitor.}, além disso, o fato de $s_0 \in \widehat{\delta_N}(s_0, a)$ para todo $a \in \{0,1\}$, garante que qualquer palavra não a vazia $u$ sobre o alfabeto $\{0,1\}$ pode ser gerada, por fim, no último passo de computação é claro que $s_1$ ou $s_2$ será uma folha da árvore, entretanto, $s_1$ só será tal folha no caso da palavra terminar em $0$ caso contrário a folha será $s_2$, e portanto, todo $w \in \mathcal{L}(A)$ tem a foma $uv$ com $u \in \{0, 1\}^*$ e $v \in \{0,1\}$, consequentemente $w \in L$.
+	\end{proof}
+\end{exem}
+
+De forma ingênua o leitor pode vim a imaginar que a possibilidade da unidade de controle de um AFN poder assumir mais de um estado interno simultaneamente, faz com que os AFN sejam mais poderosos que os AFD, entretanto, como será exibido pelos resultados a seguir, isso não ocorre, de fato, como dito \cite{benjaLivro2010, linz2006} apesar de tornar mais fácil a tarefa de construir um autômato quem reconheça uma linguagem $L$, o não-determinismo não aumenta nem nada o poder de computação dos autômatos finitos.
+
+\begin{theorem}[Transformação AFD - AFN]\label{teo:AFD-Para-AFN}
+	Se $L = \mathcal{L}(A)$ para algum AFD $A$, então existe um AFN $A'$ tal que $L = \mathcal{L}(A')$.
+\end{theorem}
+
+\begin{proof}
+	A prova é trivial, uma vez que, todo AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ pode ser convertido em um AFN $A' = \langle Q, \Sigma, \delta_N, q_0, F\rangle$ apenas realizando as transformações das transições $\delta(q_i, a) = q_j$ nas transições não-determinísticas $\delta_N(q_i, a) = \{q_j\}$ e mantendo todo o resto da estrutura igual.
+\end{proof}
+
+O próximo resultado estabelece a contraparte do Teorema \ref{teo:AFD-Para-AFN}, isto é, tal resultado mostrará que sempre é possível obter um AFD que pode ``simular''\footnote{Um termo simular aqui, diz respeito a ideia de que cada aplicação de um função de transição não-determinística pode ser representada de forma precisa por uma aplicação de uma função de transição determinística, para detalhes consulte \cite{hopcroft2008, menezes1998LFA}.} um AFN.
+
+\begin{theorem}[Transformação AFN - AFD]\label{teo:AFN-Para-AFD}
+	Se $L = \mathcal{L}(A)$ para algum AFN $A$, então existe um AFD $A'$ tal que $L = \mathcal{L}(A')$.
+\end{theorem}
+
+\begin{proof}
+	Suponha que $L = \mathcal{L}(A)$ para algum AFN $A = \langle Q, \Sigma, \delta_N, q_0, F\rangle$, agora é construído um  autômato $A' = \langle \wp(Q), \Sigma, \delta, \{q_0\}, F' \rangle$ onde para todo $X \in \wp(Q)$ e $a \in \Sigma$ tem-se
+	\begin{eqnarray}\label{eq:TranformacaoDelta-DeltaN}
+		\delta(X, a) = \bigcup_{q \in X} \delta_N(q, a)
+	\end{eqnarray}
+	claramente este autômato é realmente determinístico, e para todo $X \in \wp(Q)$  tem-se que $X \in F'$ se, e somente se, $X \cap F \neq \emptyset$. Agora será mostrado por indução sobre o tamanho de $w \in \Sigma^*$ que:
+	$$\widehat{\delta}(\{q_0\}, w) = \widehat{\delta_N}(q_0, w)$$
+	\begin{itemize}
+		\item \textbf{Base da indução}:
+		
+		Quando $|w| = 0$ isto é $w = \lambda$ tem-se trivialmente pela definição das funções de transição estendidas que $\widehat{\delta}(\{q_0\}, \lambda) = \widehat{\delta_N}(q_0, \lambda)$.
+		
+		\item \textbf{Hipótese indutiva (HI)}:
+		
+		Suponha que para todo $w \in \Sigma^*$ com $|w| \geq 0$ tem-se que $\widehat{\delta}(\{q_0\}, w) = \widehat{\delta_N}(q_0, w)$.
+		\item \textbf{Passo indutivo}:
+		
+		Dado $w = ua$ com $u \in \Sigma^*$, $|u| \geq 0$ e $a \in \Sigma$ tem-se que, 
+		\begin{eqnarray*}
+			\widehat{\delta}(\{q_0\}, w) & = & \widehat{\delta}(\{q_0\}, ua)\\
+			& = & \delta(\widehat{\delta}(\{q_0\}, u), a)\\
+			& \stackrel{\textbf{(HI)}}{=} & \delta(\widehat{\delta_N}(q_0, u), a)\\
+			& \stackrel{Eq. (\ref{eq:TranformacaoDelta-DeltaN})}{=} & \bigcup_{q \in \widehat{\delta_N}(q_0, u)} \delta_N(q, a)\\
+			& = & \widehat{\delta_N}(q_0, ua)\\
+			& = & \widehat{\delta_N}(q_0, w)
+		\end{eqnarray*}
+	\end{itemize}
+	Portanto, pode-se concluir que $w \in \mathcal{L}(A)$ se, e somente se, $w \in \mathcal{L}(A')$, ou seja, $L = \mathcal{L}(A')$ o que completa a prova.
+\end{proof}
+
+Observe que o método de construção usado na prova do Teorema \ref{teo:AFN-Para-AFD} cria um AFD cujo número de estado cresce em razão de uma potência de 2 quando comparado com o quantitativo de estados do AFN original. Como consequência deste resultado segue o seguinte corolário.
+
+\begin{corollary}
+	Uma linguagem $L$ é regular se, e somente se, existe um AFN $A$ tal que $L = \mathcal{L}(A)$.
+\end{corollary}
+
+\begin{proof}
+	$(\Rightarrow)$ Assuma que $L$ é regular, assim por definição existe um AFD $A'$ tal que $L = \mathcal{L}(A')$, entretanto, pelo Teorema \ref{teo:AFD-Para-AFN} existe um AFN $A$ tal que $L = \mathcal{L}(A)$. $(\Leftarrow)$ Suponha que $L = \mathcal{L}(A)$ para algum AFN $A$, agora pelo Teorema \ref{teo:AFN-Para-AFD} existe um AFD $A'$ tal que $L = \mathcal{L}(A')$, e portanto, por definição $L$ é regular.
+\end{proof}
+
+\
+
+É importante destacar que o método de construção do AFD usado na prova do Teorema \ref{teo:AFN-Para-AFD}, conhecido como método de construção das partes introduzido por Rabin e Scott em \cite{rabin1959}, tem a característica de poder vim a produzir durante sua execução alguns estados inúteis\footnote{Um estado $q$ em um AFD é dito inútil se não existe um $w \in \Sigma^*$ tal que $\widehat{\delta}(q_0, w) = q$. Vale também ressaltar como destaco em \cite{benjaLivro2010, hopcroft2008} que estados inúteis não aumentam o poder de computação nos AFD.} no AFD resultante, além disso,  o método de construção das partes em alguns cenários pode ser tornar impraticável, pois se o AFN de entrada possuir $n$ estados, o AFD resultante do método terá $2^n$ estados, ou seja, o crescimento no número de estados do AFD resultante do método cresce proposicional a uma potência de 2, o que rapidamente gera um número exponencialmente grande de estados. 
+
+A seguir o leitor será apresentado a uma melhoria no algoritmo de construção das partes, no sentido de que, a execução de tal algoritmo não produz estados inúteis no AFD de saída, o algoritmo a seguir é um pseudo-código baseado na versão textual apresentada no livro de por Bedregal \textit{et al.} \cite{benjaLivro2010}. A melhoria no Algoritmo \ref{alg:AFN-AFD} consiste do fato dele não considerar simplesmente o conjunto $\wp(Q)$ no AFD de saída em vez disso ele constrói um conjunto de estados $Q' \subseteq \wp(Q)$, onde no pior caso\footnote{A expressão ``no pior caso'' é típica da análise de algoritmos, em momentos futuros essa ideia de pior caso será melhor desenvolvida.} $Q' = \wp(Q)$.
+
+\begin{algorithm}[h]
+	\Entrada{Um AFN $A = \langle Q, \Sigma, \delta_N, q_0, F\rangle$}
+	\Saida{Um AFD $A' = \langle Q', \Sigma, \delta, \{q_0\}, F' \rangle$}
+	\Inicio{
+		Inicialize o conjuntos $Q_u$ com um  estado rotulado por $\{q_0\}$\\
+		Inicialize o conjuntos $Q'$ com um  estado rotulado por $\{q_0\}$\\
+		Inicialize o conjunto $F'$ como sendo vazio\\
+		\Repita{$Q_u = \emptyset$}{
+			Selecione um estado $X \in Q_u$\\
+			\ParaCada{$a \in \Sigma$}{
+				Determine o conjunto $\displaystyle Y = \bigcup_{q \in X}\delta_N(q, a)$\\
+				\eSe{$Y \notin Q'$}{
+					Adicione um estado rotulado por $Y$ em $Q'$\\
+					Adicione um estado rotulado por $Y$ em $Q_u$\\
+					Defina a transição $\delta(X, a) = Y$\\
+				}{
+					Defina a transição $\delta(X, a) = Y$\\
+				}
+			}
+			Remova $X$ de $Q_u$
+		}
+		\ParaCada{$X \in Q'$}{
+			\Se{$X \cap F \neq \emptyset$}{
+				Adicione $X$ ao conjunto $F'$
+			}
+		}
+		\Retorna{$A' = \langle Q', \Sigma, \delta, \{q_0\}, F' \rangle$}
+	}
+	\caption{Algoritmo para converter AFN em AFD sem estados inúteis.}
+	\label{alg:AFN-AFD}
+\end{algorithm}
+
+\begin{exem}\label{exe:ConvertendoAFN-AFD}
+	Usando o Algoritmo \ref{alg:AFN-AFD}  no AFN representado pelo grafo de transição da Figura \ref{fig:AFN2} é obtido o AFD representado no grafo de transição da Figura \ref{fig:AFN-AFD1} exposta a seguir.
+\end{exem}
+
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+		\node[state, initial]				(A)               	{$\{q_0\}$};
+		\node[state, accepting]				(B) [right of=A] 	{$\{q_0, q_1\}$};
+		\node[state]				        (C) [right of=B] 	{$\{q_2\}$};
+		\node[state]				        (D) [right of=C] 	{$\{q_2, q_3\}$};
+		\node[state, accepting]				(E) [below of=D] 	{$\{q_1, q_3\}$};
+		\node[state]				        (F) [below of=B] 	{$\emptyset$};
+		\path[->] (A) +(-1,0) edge (A)
+		
+		%Transições:
+		%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+		(A) edge 			 				node		 {$a$}		 (B)
+		(A) edge 			 				node  		 {$b$}		 (F)
+		(B) edge [loop below] 				node 		 {$a$}		 ( )
+		(B) edge 			 				node  		 {$b$}		 (C)
+		(C) edge 			 				node  		 {$a$}		 (F)
+		(C) edge 			 				node  		 {$b$}		 (D)
+		(D) edge 			 				node  		 {$a$}		 (E)
+		(D) edge [loop right] 				node  		 {$b$}		 ( )
+		(E) edge [loop right] 				node  		 {$a$}	 	 ( )
+		(E) edge 			 				node  		 {$b$}		 (C)
+		(F) edge [loop left] 				node  		 {$a,b$}	 ( );
+	\end{tikzpicture}
+	\caption{Grafo de transição de um AFD equivalente ao AFN da Figura \ref{fig:AFN2}.}
+	\label{fig:AFN-AFD1}
+\end{figure}
 
 \section{Questionário}
 
