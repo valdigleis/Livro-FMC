@@ -1011,7 +1011,7 @@ Observe que o método de construção usado na prova do Teorema \ref{teo:AFN-Par
 
 É importante destacar que o método de construção do AFD usado na prova do Teorema \ref{teo:AFN-Para-AFD}, conhecido como método de construção das partes introduzido por Rabin e Scott em \cite{rabin1959}, tem a característica de poder vim a produzir durante sua execução alguns estados inúteis\footnote{Um estado $q$ em um AFD é dito inútil se não existe um $w \in \Sigma^*$ tal que $\widehat{\delta}(q_0, w) = q$. Vale também ressaltar como destaco em \cite{benjaLivro2010, hopcroft2008} que estados inúteis não aumentam o poder de computação nos AFD.} no AFD resultante, além disso,  o método de construção das partes em alguns cenários pode ser tornar impraticável, pois se o AFN de entrada possuir $n$ estados, o AFD resultante do método terá $2^n$ estados, ou seja, o crescimento no número de estados do AFD resultante do método cresce proposicional a uma potência de 2, o que rapidamente gera um número exponencialmente grande de estados. 
 
-A seguir o leitor será apresentado a uma melhoria no algoritmo de construção das partes, no sentido de que, a execução de tal algoritmo não produz estados inúteis no AFD de saída, o algoritmo a seguir é um pseudo-código baseado na versão textual apresentada no livro de por Bedregal \textit{et al.} \cite{benjaLivro2010}. A melhoria no Algoritmo \ref{alg:AFN-AFD} consiste do fato dele não considerar simplesmente o conjunto $\wp(Q)$ no AFD de saída em vez disso ele constrói um conjunto de estados $Q' \subseteq \wp(Q)$, onde no pior caso\footnote{A expressão ``no pior caso'' é típica da análise de algoritmos, em momentos futuros essa ideia de pior caso será melhor desenvolvida.} $Q' = \wp(Q)$.
+A seguir o leitor será apresentado a uma melhoria no algoritmo de construção das partes, no sentido de que, a execução de tal algoritmo não produz estados inúteis no AFD de saída, o algoritmo a seguir é um pseudo-código baseado na versão textual apresentada no livro de por Bedregal \textit{et al.} \cite{benjaLivro2010}. A melhoria no Algoritmo \ref{alg:AFN-AFD} consiste do fato dele não considerar simplesmente o conjunto $\wp(Q)$ no AFD de saída, em vez disso, ele constrói interativamente um conjunto de estados $Q' \subseteq \wp(Q)$, que no pior caso\footnote{A expressão ``no pior caso'' é típica da análise de algoritmos, em momentos futuros essa ideia de pior caso será melhor desenvolvida neste manuscrito.} $Q' = \wp(Q)$.
 
 \begin{algorithm}[h]
 	\Entrada{Um AFN $A = \langle Q, \Sigma, \delta_N, q_0, F\rangle$}
@@ -1077,6 +1077,8 @@ A seguir o leitor será apresentado a uma melhoria no algoritmo de construção 
 	\caption{Grafo de transição de um AFD equivalente ao AFN da Figura \ref{fig:AFN2}.}
 	\label{fig:AFN-AFD1}
 \end{figure}
+
+\subsection{$\lambda$-Autômatos Finitos Não-determinísticos}\label{subsec:LAFN}
 
 \section{Questionário}
 
@@ -1209,8 +1211,8 @@ A seguir o leitor será apresentado a uma melhoria no algoritmo de construção 
 	\item $L_3 = \{w \in \{a,b\}^* \mid w = a^{2m}b^{2n+1} \text{ ou } w = aab^{3m + 3}b^n \text{ com } m,n \in \mathbb{N}\}$.
 	\item $L_4 = \{w \in \{a,b,c,d\}^* \mid w \text{ não contém as subcadeias } ab \text{ e } cd\}$.
 	\item $L_5 = \{w \in \{0,1\}^* \mid (\forall n \in \mathbb{N})[|w|_1 \neq 3n]\}$.
-	\item $L_6 = \{w \in \{0,1\} \mid w = x_1\cdots x_n \text{ e } x_i = 0 \text{ se } i \text{ for par, senão } x_i = 1 \text{, sendo } n \in \mathbb{N}\}$.
-	\item $L_7 = \{w \in \{x, y, z\} \mid \text{Se } w \text{ contém a sub-palavra } zz \text{, então à  direita da sub-palavra }$ $zz \text{ não ocorre a sub-palavra } yy \}$.
+	\item $L_6 = \{w \in \{0,1\}^* \mid w = x_1\cdots x_n \text{ e } x_i = 0 \text{ se } i \text{ for par, senão } x_i = 1 \text{, sendo } n \in \mathbb{N}\}$.
+	\item $L_7 = \{w \in \{x, y, z\}^* \mid \text{Se } w \text{ contém a sub-palavra } zz \text{, então à  direita da sub-palavra }$ $zz \text{ não ocorre a sub-palavra } yy \}$.
 	\item $L_8 = \{aaa, aab, aba, abb, baa, bab, bba, bbb\} \cup \{bbca, ccab, ccab, baba\}$.
 	\item $L_9 = \{uv \in \{0,1\}^* \mid u = 1^m0111, v = 0100^p1 \text{ com } m, p \in \mathbb{N}\}$.
 	\item $L_{10} = \{w \in \{0,1\}^* \mid w \text{ é um número binário multiplo de  } 3\}$.
@@ -1250,4 +1252,71 @@ A seguir o leitor será apresentado a uma melhoria no algoritmo de construção 
 	\item $L_{pud} = \{w \in \Sigma^* \mid w = x_1\cdots x_n, x_1 \neq x_n \text{ com } n \in \mathbb{N}\}$.
 	\item $L_{dif} = \{wuv \in \Sigma^* \mid w,v \in \{3,5\}^*, |u| \geq 3\}$.
 	\item $L_{inv} = \{wuv \in \Sigma^* \mid w \in \{2\}^*,v \in \{3,5\}^+, u \in \{3\}^*\}$.
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR12}
+	Dado um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ qualquer, mostre que para todo $u,v \in \Sigma^*$ tem-se que $\widehat{\delta}(q_0, uv) = \widehat{\delta}(\widehat{\delta}(q_0, u), v)$.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR13}
+	Considerando os AFN das Figuras  \ref{fig:AFN1}, \ref{fig:AFN2} e \ref{fig:AFN3} execute as computações das palavras $aabbababa, bbababba, bbbbabaabb, bababaaa$ e $ababababbb$.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR14}
+	Considerando o AFN da Figura  \ref{fig:AFN4} construa as árvores de computação para as palavras $010101$ e $11001101$.
+\end{exercise}
+
+
+\begin{exercise}\label{exerc:LR15}
+	Converta os AFN das Figuras  \ref{fig:AFN1}, \ref{fig:AFN2}, \ref{fig:AFN3} e \ref{fig:AFN4} para a notação algébrica.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR16}
+	Encontre os AFD equivalentes aos AFN das Figuras  \ref{fig:AFN1}, \ref{fig:AFN2} e \ref{fig:AFN3}.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR17}
+	Seja $L = \{01, 012\}$, construa um AFN com $4$ estados (ou menos)  que aceita a linguagem $L^*$.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR18}
+	Dado a linguagem $L = \{0101^m \mid m \leq 1\} \cup \{010^n \mid n \in \mathbb{N}\}$ construa um AFN com 5 ou menos estados que aceite a linguagem $L$.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR19}
+	Dado os AFN que você construiu nos Exercícios \ref{exerc:LR17} e \ref{exerc:LR18}, encontre os AFD equivalentes a ele.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR20}
+	Considerando o AFN representado pelo grafo de transição na Figura \ref{fig:AutomaExercicioLR20} responda o que é solicitado.
+\end{exercise}
+
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+		\node[state, initial]				(A)               	{$q_0$};
+		\node[state]						(B) [right of=A] 	{$q_1$};
+		\node[state]				        (C) [right of=B] 	{$q_2$};
+		\node[state, accepting]		        (D) [right of=C] 	{$q_3$};
+		
+		\path[->] (A) +(-1,0) edge (A)
+		
+		%Transições:
+		%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+		(A) edge 			  				node [below] {$b,a$}	 (B)
+		(A) edge [loop above]  				node 		 {$a$}		 ( )
+		(B) edge 			  				node [below] {$a$}		 (C)
+		(B) edge [loop above]  				node 		 {$a,b$}	 ( )
+		(C) edge 			  				node [below] {$b,a$}	 (D)
+		(C) edge [loop above]  				node 		 {$a$}	 	 ( )
+		(D) edge [loop above]  				node 		 {$a,b$} 	 ( );
+	\end{tikzpicture}
+	\caption{Autômato para o exercício \ref{exerc:LR20}.}
+	\label{fig:AutomaExercicioLR20}
+\end{figure}
+
+\begin{enumerate}
+	\item Realize a computação para as palavras $aaba$ e $baba$.
+	\item Esboce a árvore de computação para a palavra $abbaabaab$.
+	\item Encontre um AFD equivalente ao AFN da Figura \ref{fig:AutomaExercicioLR20}.
 \end{enumerate}
