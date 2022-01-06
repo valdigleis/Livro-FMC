@@ -616,7 +616,7 @@ Utilizando a definição acima o leitor deve ser capaz de perceber que se um AFD
 		$(\Leftarrow)$ Suponha que $w \in \mathcal{L}(A_1)$, assim pela definição do AFD $A_1$ tem-se que $\widehat{\delta}(q_0, w) = q_2$, entretanto, pela definição de $\delta$ (ver Figura \ref{fig:AFDLinguagem1}) tem-se que $q_2$ só é acessado pelas transições $\delta(q_1, b)$ e $\delta(q_4, a)$, ou seja, $w = w_1a$ ou $w = w_2b$ com $w_1, w_2 \in \Sigma^*$. Agora analisando cada possibilidade em separado tem-se que: 
 		\begin{itemize}
 			\item Para realizar o acesso via $q_1$ é necessário obviamente chegar em $q_1$ e isso só é possível a partir da transição $\delta(q_0, b)$, logo o acesso a $q_2$ via $q_1$ só é permitido para palavras com o prefixo $bb$, agora como toda palavra é prefixo de si mesmo isso já garante que $bb \in \mathcal{L}(A_1)$.
-			\item Já o acesso via $q_4$ só é permitido se antes o autômato conseguir acessar o estado $q_4$, entretanto, $q_4$ só pode ser acessado pela transição $\delta(q_2, a)$ e como visto no caso anterior $q_2$ só pode ser acessado por palavras com prefixo $bb$, note porém, que as transições $\delta(q_2, a) = q_4$ e $\delta(q_4, a) = q_2$ formam um loop e assim pode-se concluir que o acesso a $q_2$ via $q_4$ obrigatoriamente é realizado por palavras da forma $bba^{2n}$ com $n \geq 1$.
+			\item Já o acesso via $q_4$ só é permitido se antes o autômato conseguir acessar o estado $q_4$, entretanto, $q_4$ só pode ser acessado pela transição $\delta(q_2, a)$ e como visto no caso anterior $q_2$ só pode ser acessado por palavras com prefixo $bb$, note porém, que as transições $\delta(q_2, a) = q_4$ e $\delta(q_4, a) = q_2$ formam um \textit{loop} e assim pode-se concluir que o acesso a $q_2$ via $q_4$ obrigatoriamente é realizado por palavras da forma $bba^{2n}$ com $n \geq 1$.
 		\end{itemize}
 		Note que a palavra $bb$ pode ser escrita como sendo $bba^0$, portanto, pelas duas análises anteriores pode-se concluir que se $\widehat{\delta}(q_0, w) = q_2$, então $w = bba^{2n}$ com $n \in \mathbb{N}$, e portanto, $w \in L$, completando assim a prova. 
 	\end{proof}
@@ -662,6 +662,7 @@ Pode-se agora formalizar a primeira das classes de linguagens sendo esta a class
 \begin{definition}[Linguagens Regulares]\label{def:LinguagensRegulares}
 	Uma linguagem $L$ qualquer é dita ser regular se, e somente se, existe um AFD $A$ tal que $L = \mathcal{L}(A)$. A classe de todas as linguagens regulares é denotada por $\mathcal{L}_{Reg}$.
 \end{definition}
+
 
 \subsection{Autômatos Finitos Não-determinísticos}\label{subsec:AFN}
 
@@ -724,7 +725,7 @@ Como para o caso determinístico a função de transição, neste caso $\delta_N
 	Seja $A = \langle Q, \Sigma, \delta_N, q_0, F\rangle$ um AFN, a função de transição estendida é uma função $\delta_N: Q \times \Sigma^* \rightarrow \wp(Q)$ definida pela seguinte recursão.
 	\begin{eqnarray}\label{eq:FuncaoDeltaNDEstendida}
 		\widehat{\delta_N}(q, \lambda)& = & \{q\} \\
-		\widehat{\delta_N}(q, wa)& = & \bigcup_{q' \in \widehat{\delta_N}(q, w)} \delta_N(q', q)
+		\widehat{\delta_N}(q, wa)& = & \bigcup_{q' \in \widehat{\delta_N}(q, w)} \delta_N(q', a)
 	\end{eqnarray}
 \end{definition}
 
@@ -1080,11 +1081,255 @@ A seguir o leitor será apresentado a uma melhoria no algoritmo de construção 
 
 \subsection{$\lambda$-Autômatos Finitos Não-determinísticos}\label{subsec:LAFN}
 
-\section{Questionário}
+Os $\lambda$-Autômatos Finitos Não-determinísticos, ou simplesmente, $\lambda$-AFN são como dito em \cite{menezes1998LFA}, uma generalização do modelo de AFN  introduzido na seção anterior e que são permitidas transições entre estados diferentes usando (ou consumindo) a palavra vazia, tais transições recebem o nome de $\lambda$-transições, a seguir tais autômatos serão apresentados formalmente.
+
+\begin{definition}[$\lambda$-Autômatos Finitos Não-determinísticos]\label{def:LAFN}
+	Um $\lambda$-AFN é uma estrutura $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, F\rangle$ onde: $Q, \Sigma, q_0$ e $F$ são da mesma forma que na Definição \ref{def:AFD}, já $\underline{\delta_N} : Q \times (\Sigma \cup \{\lambda\}) \rightarrow \wp(Q)$ é uma função total (chamada $\lambda$-função de transição não determinística).
+\end{definition}
+
+A representação usando grafos de transição dos $\lambda$-AFN e similar a representação dos AFN da seção anterior, a única diferença é que podem haver transições rotuladas pelo símbolo $\lambda$, isto é, podem existir no grafo arestas entre vértices que são rotuladas por $\lambda$, e o mesmo vale para a representação das árvores de computação.
+
+\begin{exem}\label{exe:LAFN1}
+	A estrutura $A = \langle \{q_0, q_1, q_2\}, \{0,1\}, \underline{\delta_N}, q_0, \{q_0\}\rangle$ com $\underline{\delta_N}$ sendo especificada pela Tabela \ref{tab:DeltaLAFN1} a seguir é um $\lambda$-AFN.
+	
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{c|ccc}
+			\backslashbox{$Q$}{$\Sigma \cup \{\lambda\}$}	& $0$ & $1$ & $\lambda$\\ \hline
+			$q_0$  & $\emptyset$ & $\emptyset$ & $\{q_1\}$\\
+			$q_1$  & $\{q_1\}$ & $\{q_2\}$ & $\{q_2\}$\\
+			$q_2$  & $\{q_2\}$ & $\{q_2\}$ & $\{q_0, q_2\}$ \\
+		\end{tabular}
+		\caption{Tabela de transição para a função $\delta_N$ do AFN no Exemplo \ref{exe:LAFN1}.}
+		\label{tab:DeltaLAFN1}
+	\end{table}
+\end{exem} 
 
 \begin{rema}
-	Quando $w \in \Sigma^*$ e $c \in \Sigma$ a notação $|w|_c$ representa o número de $c$'s que existem em $w$.
+	Uma interpretação para as transições da forma $\underline{\delta_N}(q, \lambda) = X$ é que a unidade de controle do autômato consegue mudar seu estado interno $q$ para um subconjunto de estados $X$ sem precisar acessar a memória.
 \end{rema}
+
+\begin{exem}
+	O grafo de transição representado na Figura \ref{fig:LAFN1} a seguir é uma representação para o $\lambda$-AFN do Exemplo \ref{exe:LAFN1}.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial, accepting]	(A)               	{$q_0$};
+			\node[state, accepting]				(B) [right of=A] 	{$q_1$};
+			\node[state]				        (C) [right of=B] 	{$q_2$};
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge							node 		 {$\lambda$} (B)
+			(B) edge							node [above] {$1, \lambda$} (C)
+			(B) edge [loop above]  				node 		 {$0$} 		 ( )
+			(C) edge [loop above]  				node 		 {$1, 0, \lambda$} ( )
+			(C) edge [bend left]  				node [below] {$\lambda$} (A);
+		\end{tikzpicture}
+		\caption{Grafo de transição do $\lambda$-AFN do Exemplo \ref{exe:LAFN1}.}
+		\label{fig:LAFN1}
+	\end{figure}
+\end{exem}
+
+Note porém que a definição da função de transição $\underline{\delta_N}$ garante que as transições em um $\lambda$-AFN acontece apenas em duas situações, a primeira em relação símbolos individuais do alfabeto $\Sigma$ e a segunda com relação a palavra vazia, assim não existe uma forma de computar uma palavra $w$ de forma que $|w| > 1$. A saída para contorna esse fato é estender a função de transição do autômato, similarmente ao que é feito para os AFD e AFN, para isso entretanto, é necessária algumas definições adicionais.
+
+\begin{definition}[Função $\delta_\lambda$]\label{def:L-fecho}
+	Seja $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, F\rangle$ um $\lambda$-AFN, então a função $\delta_\lambda: Q \rightarrow \wp(Q)$ é definida como,
+	\begin{equation}
+		\delta_\lambda(q) = \bigcup_{i = 0}^n\lambda\text{-fecho}^i(q)
+	\end{equation}
+	onde $n = \# Q - 1$ e
+	\begin{eqnarray}
+		\lambda\text{-fecho}^0(q) & = & \{q\}\\
+		\lambda\text{-fecho}^{i}(q) & = & \bigcup_{q' \in \lambda\text{-fecho}^{i-1}(q)} \delta_N(q', \lambda)
+	\end{eqnarray}
+\end{definition}
+
+\begin{exem}
+	Considere o $\lambda$-AFN da Figura \ref{fig:LAFN1} tem-se para o estado $q_0$ que,
+	\begin{eqnarray}\label{eq:LAFNeq1}
+		\lambda\text{-fecho}^{2}(q_1) & = &  \bigcup_{q' \in \lambda\text{-fecho}^{1}(q_1)} \delta_N(q', \lambda)
+	\end{eqnarray}
+	desenvolvendo $q' \in \lambda\text{-fecho}^{1}(q_0)$ tem-se que,
+	\begin{eqnarray*}
+		\lambda\text{-fecho}^{1}(q_1) & = &  \bigcup_{q' \in \lambda\text{-fecho}^{0}(q_1)} \delta_N(q', \lambda)
+	\end{eqnarray*}
+	mas, 
+	\begin{eqnarray*}
+		\lambda\text{-fecho}^{0}(q_1) & = & \{q_1\}
+	\end{eqnarray*}
+	assim, 
+	\begin{eqnarray*}
+		\lambda\text{-fecho}^{1}(q_1) & = &  \{q_2\}
+	\end{eqnarray*}
+	substituindo tal resultado na Equação \ref{eq:LAFNeq1} tem-se que, 
+	\begin{eqnarray*}\label{eq:LAFNeq2}
+		\lambda\text{-fecho}^{2}(q_1) & = & \bigcup_{q' \in \{q_2\}} \delta_N(q', \lambda)\\
+		& = & \{q_2, q_0\}
+	\end{eqnarray*}
+	logo $\delta_\lambda(q_1) = \{q_0, q_1, q_2\}$.
+\end{exem}
+
+Uma interpretação semântica para a função $\delta_\lambda$ é que ela representa a resposta ao questionamento: ``Estando no estado $q$ e executando $n$ $\lambda$-transições qual subconjunto de estados a unidade central do autômato irá assumir?''. Assim como acontecer com as funções de transição a função $\delta_\lambda$ pode ser estendida, a seguir é exposto tal extensão.
+
+\begin{definition}[Função $\widehat{\delta_\lambda}$]\label{def:L-Fecho}
+	Seja $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, F\rangle$ um $\lambda$-AFN, então a função $\widehat{\delta_\lambda}: \wp(Q) \rightarrow \wp(Q)$ é definida como,
+	\begin{equation}
+		\widehat{\delta_\lambda}(X) = \bigcup_{q \in X} \delta_\lambda(q)
+	\end{equation}
+\end{definition} 
+
+\begin{exem}
+	Considere o $\lambda$-AFN da Figura \ref{fig:LAFN1} tem-se para o conjunto $\{q_1, q_2\}$ que,
+	\begin{eqnarray*}
+		\widehat{\delta_\lambda}(\{q_1, q_2\}) & = & \bigcup_{q \in \{q_1, q_2\}} \delta_\lambda(q)\\
+		& = & \delta_\lambda(q_1) \cup \delta_\lambda(q_2)\\
+		& = & \{q_0, q_1, q_2\} \cup \{q_0, q_2, q_1\}\\
+		& = & \{q_0, q_2, q_1\}
+	\end{eqnarray*}
+\end{exem}
+
+Agora usando as definições de $\delta_\lambda$ e $\widehat{\delta_\lambda}$ pode-se apresentar a extensão da função de transição dos $\lambda$-AFN.
+
+\begin{definition}[$\lambda$-Transição não-determinística estendida]\label{def:FuncaoLDeltaNDEstendida}
+	Seja $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, F\rangle$  um $\lambda$-AFN a função $\underline{\delta_N}$ é estendido para a função $\widehat{\underline{\delta_N}}: Q \times \Sigma^* \rightarrow \wp(Q)$ definida pela seguinte recursão:
+	\begin{eqnarray}\label{eq:FuncaoLDeltaNDEstendida}
+		\widehat{\underline{\delta_N}}(q, \lambda)& = &  \delta_\lambda(q)\\
+		\widehat{\underline{\delta_N}}(q, wa) & = & \bigcup_{q' \in \widehat{\underline{\delta_N}}(q, w)} \widehat{\delta_\lambda}(\underline{\delta_N}(q', a))
+	\end{eqnarray}
+\end{definition}
+
+\begin{exem}
+	Considere o $\lambda$-AFN da Figura \ref{fig:LAFN1} tem-se a seguinte computação para a palavra $``10''$:
+	\begin{eqnarray}\label{eq:ExemLAFN1}
+		\widehat{\underline{\delta_N}}(q_0, 10) & = & \bigcup_{q' \in \widehat{\underline{\delta_N}}(q_0, 1)} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 0))\nonumber\\
+		& = & \bigcup_{q' \in \widehat{\underline{\delta_N}}(q_0, 1)} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 0))
+	\end{eqnarray}
+	mas,
+	\begin{eqnarray}\label{eq:ExemLAFN2}
+		\widehat{\underline{\delta_N}}(q_0, 1) & = & \bigcup_{q' \in \widehat{\underline{\delta_N}}(q_0, \lambda)} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 1))\nonumber\\
+		& = & \bigcup_{q' \in \delta_\lambda(q_0)} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 1))\nonumber\\
+		& = & \bigcup_{q' \in \{q_2\}} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 1))\\
+		& = & \widehat{\delta_\lambda}(\underline{\delta_N}(q_2, 1))\nonumber\\
+		& = & \{q_0, q_1, q_2\}\nonumber
+	\end{eqnarray}
+	substituindo o valor da Equação (\ref{eq:ExemLAFN2}) na Equação (\ref{eq:ExemLAFN2}) tem-se que, 
+	\begin{eqnarray*}
+		\widehat{\underline{\delta_N}}(q_0, 10) & = & \bigcup_{q' \in \{q_0, q_1, q_2\}} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 0))\\
+		& = & \widehat{\delta_\lambda}(\underline{\delta_N}(q_0, 0)) \cup \widehat{\delta_\lambda}(\underline{\delta_N}(q_1, 0)) \cup \widehat{\delta_\lambda}(\underline{\delta_N}(q_2, 0))\\
+		& = & \{q_0, q_1, q_2\}
+	\end{eqnarray*}
+\end{exem}
+
+Assim como para o caso dos AFN uma palavra qualquer $w \in \Sigma^*$ será dita aceita por um $\lambda$-AFN quando a computação da palavra $w$ para em pelo menos um estado final, ou seja, $w$ é reconhecida pelo $\lambda$-AFN sempre que $\widehat{\underline{\delta_N}}(q_0, w) \cap F \neq \emptyset$, e assim pode-se definir formalmente a noção de linguagem para os $\lambda$-AFN.
+
+\begin{definition}[Linguagem de um $\lambda$-AFN]\label{def:LinguagelLAFN}
+	Seja $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, F\rangle$ um $\lambda$-AFN a linguagem aceita por $A$, denotado por $\mathcal{L}(A)$, corresponde ao seguinte conjunto.
+	\begin{eqnarray}
+		\mathcal{L}(A) = \{w \in \Sigma^* \mid \widehat{\underline{\delta_N}}(q_0, w) \cap F \neq \emptyset\}
+	\end{eqnarray}
+\end{definition}
+
+Os aspectos relacionados a mostrar que um $\lambda$-AFN reconhece uma linguagem $L$ são similares ao mesmo aspectos com respeito aos AFN. A seguir serão mostrados alguns $\lambda$-AFN e as linguagens aceitas por eles, ficando a prova dessas aceitações como atividade de exercício ao leitor. 
+
+\begin{exem}\label{exe:LinguagemLAFN1}
+	O $\lambda$-AFN representado pelo grafo de transição da Figura \ref{fig:Linguagem-LAFN1} a seguir reconhece a linguagem $L = \{w \in \{1,2,3\}^* \mid w = 1^i2^j3^k \text{ com } i,j,k \in \mathbb{N}\}$.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial, accepting]	(A)               	{$s_0$};
+			\node[state, accepting]				(B) [right of=A] 	{$s_1$};
+			\node[state]				        (C) [right of=B] 	{$s_2$};
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge [loop above]  				node 		 {$1$} 		 ( )
+			(A) edge 			  				node 		 {$\lambda$} (B)
+			(B) edge [loop above]  				node 		 {$2$} 		 ( )
+			(B) edge 			  				node 		 {$\lambda$} (C)
+			(C) edge [loop above]  				node 		 {$3$} 		 ( );
+		\end{tikzpicture}
+		\caption{Grafo de transição do $\lambda$-AFN do Exemplo \ref{exe:LinguagemLAFN1}.}
+		\label{fig:Linguagem-LAFN1}
+	\end{figure}
+\end{exem}
+
+\begin{rema}
+	A partir deste ponto sempre que $w \in \Sigma^*$ e $c \in \Sigma$ a notação $|w|_c$ irá representar o número de $c$'s que existem na palavra $w$.
+\end{rema}
+
+\begin{exem}\label{exe:LinguagemLAFN2}
+	O $\lambda$-AFN representado pelo grafo de transição esboçado pela Figura \ref{fig:Linguagem-LAFN2}  a seguir aceita a linguagem $L = \{uv \in \{a,b\}^* \mid u \in \{a\}^*, |u|_a = 2k\text{ ou } |u|_a = 3k, v=bx, x \in \{a,b\}^*, k \in \mathbb{N}\}$.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]				(A)               	{$s_0$};
+			\node								(B) [right of=A]	{};
+			\node[state]						(C) [above of=B] 	{$s_1$};
+			\node[state]				        (D) [below of=B] 	{$s_2$};
+			\node[state]						(E) [right of=B] 	{$s_3$};
+			\node[state, accepting]				(F) [right of=E] 	{$s_4$};
+			\node[state]				        (G) [left of=D] 	{$s_5$};
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge 			  				node [below] {$\lambda$} (E)
+			(A) edge [bend left]  				node 		 {$a$} 		 (C)
+			(C) edge [bend left]  				node 		 {$a$} 		 (A)
+			(A) edge 			  				node 		 {$a$} 		 (D)
+			(D) edge 			  				node 		 {$a$} 		 (G)
+			(G) edge 			  				node 		 {$a$} 		 (A)
+			(E) edge 			  				node 		 {$b$} 		 (F)
+			(F) edge [loop right]  				node 		 {$a,b$}	 ( );
+		\end{tikzpicture}
+		\caption{Grafo de transição do $\lambda$-AFN do Exemplo \ref{exe:LinguagemLAFN2}.}
+		\label{fig:Linguagem-LAFN2}
+	\end{figure}
+\end{exem}
+
+Como discutido em \cite{benja-2011, benja-2015, hopcroft2008, linz2006}, as $\lambda$-transições não aumentam o poder computacional dos autômatos finitos, assim o problema de remover as $\lambda$-transições dos $\lambda$-AFN deve ser decidível, de fato, como mostrado em \cite{benjaLivro2010, hopcroft2008} existe um algoritmo que é capaz de remover todas as $\lambda$-transições de qualquer um $\lambda$-AFN, a seguir tal algoritmo é apresentado.
+
+\begin{algorithm}[h]
+	\Entrada{Um $\lambda$-AFN $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, F\rangle$}
+	\Saida{Um AFD $A' = \langle Q', \Sigma, \delta, \delta_\lambda(q_0), F' \rangle$}
+	\Inicio{
+		Inicialize o conjuntos $Q_u$ com um  estado rotulado por $\delta_\lambda(q_0)$\\
+		Inicialize o conjuntos $Q'$ com um  estado rotulado por $\delta_\lambda(q_0)$\\
+		Inicialize o conjunto $F'$ como sendo vazio\\
+		\Repita{$Q_u = \emptyset$}{
+			Selecione um estado $X \in Q_u$\\
+			\ParaCada{$a \in \Sigma$}{
+				Determine o conjunto $\displaystyle Y = \widehat{\delta_\lambda}\Big(\bigcup_{q \in X} \underline{\delta_N}(q, a)\Big)$\\
+				\eSe{$Y \notin Q'$}{
+					Adicione um estado rotulado por $Y$ em $Q'$\\
+					Adicione um estado rotulado por $Y$ em $Q_u$\\
+					Defina a transição $\delta(X, a) = Y$\\
+				}{
+					Defina a transição $\delta(X, a) = Y$\\
+				}
+			}
+			Remova $X$ de $Q_u$
+		}
+		\ParaCada{$X \in Q'$}{
+			\Se{$X \cap F \neq \emptyset$}{
+				Adicione $X$ ao conjunto $F'$
+			}
+		}
+		\Retorna{$A' = \langle Q', \Sigma, \delta, \delta_\lambda(q_0), F' \rangle$}
+	}
+	\caption{Algoritmo para remoção de $\lambda$-transições de um $\lambda$-AFN.}
+	\label{alg:LAFN-AFD}
+\end{algorithm}
+
+Argumentações sobre a corretude do Algoritmo \ref{alg:LAFN-AFD} podem ser consultadas em \cite{hopcroft2008}. Um ponto interessante de tal algoritmo é que ele não apenas remove as $\lambda$-transições como também elimina simultaneamente o não-determinismo por símbolo e ainda preservar a linguagem reconhecida como explicado em \cite{benjaLivro2010}. 
+
+\section{Questionário}
 
 \begin{exercise}\label{exerc:LR1}
 	Dado o alfabeto $\Sigma = \{a, b, c\}$ e as palavras $u = aabcab, v = bbccabac$ e $w = ccbabbaaca$ determine:
@@ -1318,5 +1563,42 @@ A seguir o leitor será apresentado a uma melhoria no algoritmo de construção 
 \begin{enumerate}
 	\item Realize a computação para as palavras $aaba$ e $baba$.
 	\item Esboce a árvore de computação para a palavra $abbaabaab$.
+	\item Converta o AFN da Figura \ref{fig:AutomaExercicioLR20} para a notação algébrica.
 	\item Encontre um AFD equivalente ao AFN da Figura \ref{fig:AutomaExercicioLR20}.
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR21}
+	Considerando o AFN representado pelo grafo de transição na Figura \ref{fig:AutomaExercicioLR21} responda o que é solicitado.
+\end{exercise}
+
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+		\node[state, initial]				(A)               	{$q_0$};
+		\node[state, accepting]				(B) [right of=A] 	{$q_1$};
+		\node[state]				        (C) [right of=B] 	{$q_2$};
+		\node[state, accepting]		        (D) [right of=C] 	{$q_3$};
+		
+		\path[->] (A) +(-1,0) edge (A)
+		
+		%Transições:
+		%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+		(A) edge 			  				node {$0$}	 	 (B)
+		(A) edge [bend right]  				node {$0,1$}	 (D)
+		(B) edge [loop above]  				node {$0,1$}	 ( )
+		(B) edge 			  				node {$0,1$} 	 (C)
+		(C) edge [loop above]  				node {$1$}		 ( )
+		(C) edge 							node [below] {$0,1$}	 (D)
+		(D) edge [bend right]				node [above] {$0,1$}	 (C);
+		
+	\end{tikzpicture}
+	\caption{Autômato para o exercício \ref{exerc:LR21}.}
+	\label{fig:AutomaExercicioLR21}
+\end{figure}
+
+\begin{enumerate}
+	\item Realize a computação para as palavras $01110$ e $1001011$.
+	\item Esboce a árvore de computação para a palavra $110110101$.
+	\item Converta o AFN da Figura \ref{fig:AutomaExercicioLR21} para a notação algébrica.
+	\item Encontre um AFD equivalente ao AFN da Figura \ref{fig:AutomaExercicioLR21}.
 \end{enumerate}
