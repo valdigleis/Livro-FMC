@@ -1010,9 +1010,9 @@ Observe que o método de construção usado na prova do Teorema \ref{teo:AFN-Par
 
 \
 
-É importante destacar que o método de construção do AFD usado na prova do Teorema \ref{teo:AFN-Para-AFD}, conhecido como método de construção das partes introduzido por Rabin e Scott em \cite{rabin1959}, tem a característica de poder vim a produzir durante sua execução alguns estados inúteis\footnote{Um estado $q$ em um AFD é dito inútil se não existe um $w \in \Sigma^*$ tal que $\widehat{\delta}(q_0, w) = q$. Vale também ressaltar como destaco em \cite{benjaLivro2010, hopcroft2008} que estados inúteis não aumentam o poder de computação nos AFD.} no AFD resultante, além disso,  o método de construção das partes em alguns cenários pode ser tornar impraticável, pois se o AFN de entrada possuir $n$ estados, o AFD resultante do método terá $2^n$ estados, ou seja, o crescimento no número de estados do AFD resultante do método cresce proposicional a uma potência de 2, o que rapidamente gera um número exponencialmente grande de estados. 
+É importante destacar que o método de construção do AFD usado na prova do Teorema \ref{teo:AFN-Para-AFD}, conhecido como método de construção das partes introduzido por Rabin e Scott em \cite{rabin1959}, tem a característica de poder vim a produzir durante sua execução alguns estados inacessíveis\footnote{Um estado $q$ em um AFD é dito inacessível se não existe um $w \in \Sigma^*$ tal que $\widehat{\delta}(q_0, w) = q$. Vale também ressaltar como destaco em \cite{benjaLivro2010, hopcroft2008} que estados inacessíveis não aumentam o poder de computação nos AFD.} no AFD resultante, além disso,  o método de construção das partes em alguns cenários pode ser tornar impraticável, pois se o AFN de entrada possuir $n$ estados, o AFD resultante do método terá $2^n$ estados, ou seja, o crescimento no número de estados do AFD resultante do método cresce proposicional a uma potência de 2, o que rapidamente gera um número exponencialmente grande de estados. 
 
-A seguir o leitor será apresentado a uma melhoria no algoritmo de construção das partes, no sentido de que, a execução de tal algoritmo não produz estados inúteis no AFD de saída, o algoritmo a seguir é um pseudo-código baseado na versão textual apresentada no livro de por Bedregal \textit{et al.} \cite{benjaLivro2010}. A melhoria no Algoritmo \ref{alg:AFN-AFD} consiste do fato dele não considerar simplesmente o conjunto $\wp(Q)$ no AFD de saída, em vez disso, ele constrói interativamente um conjunto de estados $Q' \subseteq \wp(Q)$, que no pior caso\footnote{A expressão ``no pior caso'' é típica da análise de algoritmos, em momentos futuros essa ideia de pior caso será melhor desenvolvida neste manuscrito.} $Q' = \wp(Q)$.
+A seguir o leitor será apresentado a uma melhoria no algoritmo de construção das partes, no sentido de que, a execução de tal algoritmo não produz estados inacessíveis no AFD de saída, o algoritmo a seguir é um pseudo-código baseado na versão textual apresentada no livro de por Bedregal \textit{et al.} \cite{benjaLivro2010}. A melhoria no Algoritmo \ref{alg:AFN-AFD} consiste do fato dele não considerar simplesmente o conjunto $\wp(Q)$ no AFD de saída, em vez disso, ele constrói interativamente um conjunto de estados $Q' \subseteq \wp(Q)$, que no pior caso\footnote{A expressão ``no pior caso'' é típica da análise de algoritmos, em momentos futuros essa ideia de pior caso será melhor desenvolvida neste manuscrito.} $Q' = \wp(Q)$.
 
 \begin{algorithm}[h]
 	\Entrada{Um AFN $A = \langle Q, \Sigma, \delta_N, q_0, F\rangle$}
@@ -1042,7 +1042,7 @@ A seguir o leitor será apresentado a uma melhoria no algoritmo de construção 
 		}
 		\Retorna{$A' = \langle Q', \Sigma, \delta, \{q_0\}, F' \rangle$}
 	}
-	\caption{Algoritmo para converter AFN em AFD sem estados inúteis.}
+	\caption{Algoritmo para converter AFN em AFD sem estados inacessíveis.}
 	\label{alg:AFN-AFD}
 \end{algorithm}
 
@@ -1211,14 +1211,13 @@ Agora usando as definições de $\delta_\lambda$ e $\widehat{\delta_\lambda}$ po
 	\begin{eqnarray}\label{eq:ExemLAFN2}
 		\widehat{\underline{\delta_N}}(q_0, 1) & = & \bigcup_{q' \in \widehat{\underline{\delta_N}}(q_0, \lambda)} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 1))\nonumber\\
 		& = & \bigcup_{q' \in \delta_\lambda(q_0)} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 1))\nonumber\\
-		& = & \bigcup_{q' \in \{q_2\}} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 1))\\
-		& = & \widehat{\delta_\lambda}(\underline{\delta_N}(q_2, 1))\nonumber\\
+		& = & \bigcup_{q' \in \{q_0, q_1, q_2\}} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 1))\\
+		& = & \widehat{\delta_\lambda}(\{q_1, q_2\})\nonumber\\
 		& = & \{q_0, q_1, q_2\}\nonumber
 	\end{eqnarray}
-	substituindo o valor da Equação (\ref{eq:ExemLAFN2}) na Equação (\ref{eq:ExemLAFN2}) tem-se que, 
+	substituindo o valor da Equação (\ref{eq:ExemLAFN2}) na Equação (\ref{eq:ExemLAFN1}) tem-se que, 
 	\begin{eqnarray*}
 		\widehat{\underline{\delta_N}}(q_0, 10) & = & \bigcup_{q' \in \{q_0, q_1, q_2\}} \widehat{\delta_\lambda}(\underline{\delta_N}(q', 0))\\
-		& = & \widehat{\delta_\lambda}(\underline{\delta_N}(q_0, 0)) \cup \widehat{\delta_\lambda}(\underline{\delta_N}(q_1, 0)) \cup \widehat{\delta_\lambda}(\underline{\delta_N}(q_2, 0))\\
 		& = & \{q_0, q_1, q_2\}
 	\end{eqnarray*}
 \end{exem}
@@ -1232,7 +1231,7 @@ Assim como para o caso dos AFN uma palavra qualquer $w \in \Sigma^*$ será dita 
 	\end{eqnarray}
 \end{definition}
 
-Os aspectos relacionados a mostrar que um $\lambda$-AFN reconhece uma linguagem $L$ são similares ao mesmo aspectos com respeito aos AFN. A seguir serão mostrados alguns $\lambda$-AFN e as linguagens aceitas por eles, ficando a prova dessas aceitações como atividade de exercício ao leitor. 
+Os aspectos relacionados a mostrar que um $\lambda$-AFN reconhece uma linguagem $L$ são similares ao mesmo aspectos com respeito aos AFN.
 
 \begin{exem}\label{exe:LinguagemLAFN1}
 	O $\lambda$-AFN representado pelo grafo de transição da Figura \ref{fig:Linguagem-LAFN1} a seguir reconhece a linguagem $L = \{w \in \{1,2,3\}^* \mid w = 1^i2^j3^k \text{ com } i,j,k \in \mathbb{N}\}$.
@@ -1258,42 +1257,102 @@ Os aspectos relacionados a mostrar que um $\lambda$-AFN reconhece uma linguagem 
 	\end{figure}
 \end{exem}
 
-\begin{rema}
-	A partir deste ponto sempre que $w \in \Sigma^*$ e $c \in \Sigma$ a notação $|w|_c$ irá representar o número de $c$'s que existem na palavra $w$.
-\end{rema}
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.7cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+		\node[state, initial]				(A)               	{$s_0$};
+		\node[state, accepting]				(B) [right of=A]	{$s_3$};
+		\node[state] 						(C) [above of=B] 	{$s_1$};
+		\node[state] 						(D) [below of=B] 	{$s_2$};
+		\node[state]						(E) [right of=B] 	{$s_5$};
+		\node[state] 						(F) [above of=E] 	{$s_4$};
+		\node[state] 						(G) [right of=D] 	{$s_6$};
+		
+		
+		\path[->] (A) +(-1,0) edge (A)
+		
+		%Transições:
+		%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)  [loop right]  
+		(A) edge  							node 		 {$\lambda$}	 (C)
+		(A) edge  							node 		 {$\lambda$}	 (D)
+		(A) edge  							node 		 {$b$}	 		 (B)
+		(B) edge [loop right]  				node 		 {$a,b$}		 ( )
+		(C) edge [bend left]				node 		 {$a$}			 (F)
+		(C) edge							node		 {$b$}			 (B)
+		(F) edge [bend left]				node 		 {$a$}			 (C)
+		(D) edge							node		 {$a$}			 (G)
+		(G) edge							node		 {$a$}			 (E)
+		(E) edge							node		 {$a$}			 (D)
+		(D) edge							node		 {$b$}			 (B);
+	\end{tikzpicture}
+	\caption{Grafo de transição do $\lambda$-AFN do Exemplo \ref{exe:LinguagemLAFN2}.}
+	\label{fig:Linguagem-LAFN2}
+\end{figure}
+
 
 \begin{exem}\label{exe:LinguagemLAFN2}
-	O $\lambda$-AFN representado pelo grafo de transição esboçado pela Figura \ref{fig:Linguagem-LAFN2}  a seguir aceita a linguagem $L = \{uv \in \{a,b\}^* \mid u \in \{a\}^*, |u|_a = 2k\text{ ou } |u|_a = 3k, v=bx, x \in \{a,b\}^*, k \in \mathbb{N}\}$.
-	
-	\begin{figure}[h]
-		\centering
-		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
-			\node[state, initial]				(A)               	{$s_0$};
-			\node								(B) [right of=A]	{};
-			\node[state]						(C) [above of=B] 	{$s_1$};
-			\node[state]				        (D) [below of=B] 	{$s_2$};
-			\node[state]						(E) [right of=B] 	{$s_3$};
-			\node[state, accepting]				(F) [right of=E] 	{$s_4$};
-			\node[state]				        (G) [left of=D] 	{$s_5$};
-			\path[->] (A) +(-1,0) edge (A)
-			
-			%Transições:
-			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
-			(A) edge 			  				node [below] {$\lambda$} (E)
-			(A) edge [bend left]  				node 		 {$a$} 		 (C)
-			(C) edge [bend left]  				node 		 {$a$} 		 (A)
-			(A) edge 			  				node 		 {$a$} 		 (D)
-			(D) edge 			  				node 		 {$a$} 		 (G)
-			(G) edge 			  				node 		 {$a$} 		 (A)
-			(E) edge 			  				node 		 {$b$} 		 (F)
-			(F) edge [loop right]  				node 		 {$a,b$}	 ( );
-		\end{tikzpicture}
-		\caption{Grafo de transição do $\lambda$-AFN do Exemplo \ref{exe:LinguagemLAFN2}.}
-		\label{fig:Linguagem-LAFN2}
-	\end{figure}
+	O $\lambda$-AFN representado pelo grafo de transição esboçado pela Figura \ref{fig:Linguagem-LAFN2}, aceita a linguagem $L = \{uv \mid u \in \{a\}^*, |u|_a = 2k\text{ ou } |u|_a = 3k, v=bx, x \in \{a,b\}^*, k \in \mathbb{N}\}$.
 \end{exem}
 
-Como discutido em \cite{benja-2011, benja-2015, hopcroft2008, linz2006}, as $\lambda$-transições não aumentam o poder computacional dos autômatos finitos, assim o problema de remover as $\lambda$-transições dos $\lambda$-AFN deve ser decidível, de fato, como mostrado em \cite{benjaLivro2010, hopcroft2008} existe um algoritmo que é capaz de remover todas as $\lambda$-transições de qualquer um $\lambda$-AFN, a seguir tal algoritmo é apresentado.
+\begin{theorem}[Transformação $\lambda$-AFN-AFD]\label{teo:LAFN-AFD}
+	Se $L = \mathcal{L}(A)$ para algum $\lambda$-AFN $A$, então existe um  AFD $A'$ tal que $L = \mathcal{L}(A')$.
+\end{theorem}
+
+\begin{proof}
+	Suponha que $L = \mathcal{L}(A)$ para algum $\lambda$-AFN $A =  \langle Q, \Sigma, \underline{\delta_N}, q_0, F \rangle$ agora defina o seguinte o autômato $A' = \langle \wp(Q), \Sigma, \delta, \delta_\lambda(q_0), F' \rangle$ onde para todo $X \in \wp(Q)$ tem-se que $X \in F'$ se, e somente se, $X \cap F \neq \emptyset$, e além disso, para todo $X \in \wp(Q)$ e $a \in \Sigma$ tem-se:
+	\begin{eqnarray}\label{eq:LAFN-AFD}
+		\delta(X, a) & = & \bigcup_{q \in X} \widehat{\delta_\lambda}\Big(\underline{\delta_N}(q, a)\Big)
+	\end{eqnarray}
+	por essa construção obviamente esse autômato é um AFD\footnote{A prova desse fato fica como exercício ao leitor.}. Agora será mostrado por indução sobre o tamanho de $w \in \Sigma^*$ que:
+	$$\widehat{\delta}(\delta_\lambda(q_0), w) = \widehat{\underline{\delta_N}}(q_0, w)$$
+	\begin{itemize}
+		\item \textbf{Base da indução}:
+		
+		Quando $|w| = 0$ isto é $w = \lambda$ tem-se trivialmente pela definição das funções de transição estendidas que, 
+		\begin{eqnarray*}
+			\widehat{\delta}(\delta_\lambda(q_0), \lambda) & = & \delta_\lambda(q_0)\\
+			& = & \widehat{\underline{\delta_N}}(q_0, \lambda)
+		\end{eqnarray*}
+		
+		\item \textbf{Hipótese indutiva (HI)}:
+		
+		Suponha que para todo $w \in \Sigma^*$ com $|w| \geq 0$ tem-se que $\widehat{\delta}(\delta_\lambda(q_0), w) = \widehat{\underline{\delta_N}}(q_0, w)$.
+		\item \textbf{Passo indutivo}:
+		
+		Dado $w = ua$ com $u \in \Sigma^*$, $|u| \geq 0$ e $a \in \Sigma$ tem-se que, 
+		\begin{eqnarray*}
+			\widehat{\delta}(\delta_\lambda(q_0), w) & = & \widehat{\delta}(\delta_\lambda(q_0), ua)\\
+			& = & \delta(\widehat{\delta}(\delta_\lambda(q_0), u), a)\\
+			& \stackrel{\textbf{(HI)}}{=} & \delta(\widehat{\underline{\delta_N}}(q_0, w), a)\\
+			& \stackrel{Eq. (\ref{eq:LAFN-AFD})}{=} & \bigcup_{q \in \widehat{\underline{\delta_N}}(q_0, w)} \widehat{\delta_\lambda}\Big(\underline{\delta_N}(q, a)\Big)\\
+			& = & \widehat{\underline{\delta_N}}(q_0, ua)\\
+			& = & \widehat{\underline{\delta_N}}(q_0, w)
+		\end{eqnarray*}
+	\end{itemize}
+	Portanto, pode-se concluir que $w \in \mathcal{L}(A)$ se, e somente se, $w \in \mathcal{L}(A')$, ou seja, $L = \mathcal{L}(A')$ o que completa a prova.
+\end{proof}
+
+\begin{theorem}[Transformação AFD-$\lambda$-AFN]\label{teo:AFD-LAFN}
+	Se $L = \mathcal{L}(A)$ para algum AFD $A$, então existe um $\lambda$-AFN $A'$ tal que $L = \mathcal{L}(A')$.
+\end{theorem}
+
+\begin{proof}
+	Trivial e ficará como exercício ao leitor.
+\end{proof}
+
+\begin{corollary}\label{col:RegularLAFN}
+	Uma linguagem $L$ é regular se, e somente se, existe um $\lambda$-AFN $A$ tal que $L = \mathcal{L}(A)$.
+\end{corollary}
+
+\begin{proof}
+	$(\Rightarrow)$ Assuma que $L$ é regular, assim por definição existe um AFD $A'$ tal que $L = \mathcal{L}(A')$, entretanto, pelo Teorema \ref{teo:AFD-LAFN} existe um $\lambda$-AFN $A$ tal que $L = \mathcal{L}(A)$. $(\Leftarrow)$ Suponha que $L = \mathcal{L}(A)$ para algum $\lambda$-AFN $A$, agora pelo Teorema \ref{teo:LAFN-AFD} existe um AFD $A'$ tal que $L = \mathcal{L}(A')$, e portanto, por definição $L$ é regular.
+\end{proof}
+
+\begin{rema}
+	Note que o Corolário \ref{col:RegularLAFN} estabelece que a existência de $\lambda$-transições não aumenta o poder de computação dos autômatos finitos.
+\end{rema}
+
+Assim como para o caso da transformação de AFN em AFD, o processo de usar a construção do conjunto das partes no Teorema \ref{teo:LAFN-AFD} possui a desvantagem de gera estados inacessíveis. Mas como discutido em \cite{benja-2011, benja-2015, hopcroft2008, linz2006}, algumas simples modificações no Algoritmo \ref{alg:AFN-AFD} fazem com que o novo algoritmo gerado seja capaz de remover as $\lambda$-transições e não sejam produzidos estados inacessíveis a seguir é apresentado este novo algoritmo.
 
 \begin{algorithm}[h]
 	\Entrada{Um $\lambda$-AFN $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, F\rangle$}
@@ -1327,9 +1386,37 @@ Como discutido em \cite{benja-2011, benja-2015, hopcroft2008, linz2006}, as $\la
 	\label{alg:LAFN-AFD}
 \end{algorithm}
 
-Argumentações sobre a corretude do Algoritmo \ref{alg:LAFN-AFD} podem ser consultadas em \cite{hopcroft2008}. Um ponto interessante de tal algoritmo é que ele não apenas remove as $\lambda$-transições como também elimina simultaneamente o não-determinismo por símbolo e ainda preservar a linguagem reconhecida como explicado em \cite{benjaLivro2010}. 
+\begin{rema}
+	Argumentações sobre a corretude e a completude do Algoritmo \ref{alg:LAFN-AFD} podem ser consultadas em \cite{hopcroft2008}.
+\end{rema}
+
+\begin{exem}
+	Aplicando o Algoritmo \ref{alg:LAFN-AFD} ao $\lambda$-AFN do Exemplo \ref{exe:LinguagemLAFN2} é obtido como saída o AFD $A = \langle Q', \Sigma, \delta, \{s_0, s_1, s_2\}, F' \rangle$ onde $F' = \{\{s_3\}\}$ e $\delta$ é descrito pela Tabela \ref{tab:DeltaAFD} a seguir. 
+	
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{c|cc}
+			\backslashbox{$Q'$}{$\Sigma$}	& $a$ & $b$\\ \hline
+			$\{s_0, s_1, s_2\}$  & $\{s_4, s_6\}$ & $\{s_3\}$\\
+			$\{s_4, s_6\}$  & $\{s_1, s_5\}$ & $\emptyset$\\
+			$\{s_3\}$ & $\{s_3\}$ & $\{s_3\}$\\
+			$\{s_1, s_5\}$ & $\{s_2, s_4\}$ & $\{s_3\}$\\
+			$\{s_2, s_4\}$ & $\{s_1, s_6\}$ & $\{s_3\}$\\
+			$\{s_1, s_6\}$ & $\{s_4, s_5\}$ & $\{s_3\}$\\
+			$\{s_4, s_5\}$ & $\{s_1, s_2\}$ & $\emptyset$\\
+			$\{s_1, s_2\}$ & $\{s_4, s_6\}$ & $\{s_3\}$\\ 
+			$\emptyset$ & $\emptyset$ & $\emptyset$
+		\end{tabular}
+		\caption{Tabela da função $\delta$ do AFD obtido aplicando o  Algoritmo \ref{alg:LAFN-AFD} no $\lambda$-AFN da Figura \ref{exe:LinguagemLAFN2}.}
+		\label{tab:DeltaAFD}
+	\end{table}
+\end{exem}
 
 \section{Questionário}
+
+\begin{rema}
+	Para esse questionário sempre que $w \in \Sigma^*$ e $c \in \Sigma$ a notação $|w|_c$ irá representar o número de $c$'s que existem na palavra $w$.
+\end{rema}
 
 \begin{exercise}\label{exerc:LR1}
 	Dado o alfabeto $\Sigma = \{a, b, c\}$ e as palavras $u = aabcab, v = bbccabac$ e $w = ccbabbaaca$ determine:
