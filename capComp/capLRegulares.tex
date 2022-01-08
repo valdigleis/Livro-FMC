@@ -1689,3 +1689,76 @@ Assim como para o caso da transformação de AFN em AFD, o processo de usar a co
 	\item Converta o AFN da Figura \ref{fig:AutomaExercicioLR21} para a notação algébrica.
 	\item Encontre um AFD equivalente ao AFN da Figura \ref{fig:AutomaExercicioLR21}.
 \end{enumerate}
+
+\begin{exercise}\label{exerc:LR22}
+	Considerando o $\lambda$-AFN do Exemplo \ref{exe:LinguagemLAFN1} responda o que é solicitado. 
+\end{exercise}
+
+\begin{enumerate}
+	\item Calcule $\delta_\lambda(q_0), \delta_\lambda(q_1)$ e $\delta_\lambda(q_2)$.
+	\item Compute $\widehat{\underline{\delta_N}}(q_0, 11233)$.
+	\item Apresente um AFD equivalente ao $\lambda$-AFN.
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR23}
+	Considerando $\Sigma_1 = \{0, 1\}$  e $\Sigma_2 = \{2, 3\}$ construa um $\lambda$-AFN com um único estado final que aceita a linguagem $\{w \in \Sigma_1^* \mid |w|_1 = 2i, i \in \mathbb{N}\} \cup \{w \in \Sigma_2^* \mid |w|_3 = 2j + 1, j\in \mathbb{N}\} $. 
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR24}
+	Considere o alfabeto $\Sigma = \{a, b, c\}$ e as linguagens  $L_1 = \{w \in \Sigma^* \mid |w|_a \geq 0, |w|_b > 0, |w|_c = 2k, k \in \mathbb{N}\}$ e $L_2 = \{abaccc, ababc, abacab, acbcc, bacbaaa,$ $abb, bba, aaaabbbb, cac, ccba, caccabcac\}$. Para cada uma das linguagens $L_1 \cup L_2$, $L_1L_2$ e $L_2L_1$ construa um $\lambda$-AFN $A$ que as aceite.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR25}
+	Considerando o $\lambda$-AFN $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, \{q_2\} \rangle$ onde $\underline{\delta_N}$ é especificada pela Tabela \ref{tab:DeltaLAFN-Exe25}, responda o que é solicitado.
+\end{exercise}
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{c|cccc}
+		\backslashbox{$Q'$}{$\Sigma$}	& $\lambda$ & $a$ & $b$ & $c$\\\hline
+		$q_0$ & $\emptyset$ & $\{q_0\}$ & $\{q_1\}$ & $\{q_2\}$\\
+		$q_1$ & $\{q_0\}$ & $\{q_1\}$ & $\{q_2\}$ & $\emptyset$\\
+		$q_2$ & $\{q_1\}$ & $\{q_2\}$ & $\emptyset$ & $\{q_0\}$ 		
+	\end{tabular}
+	\caption{Tabela da função de transição do $\lambda$-AFN do exercício \ref{exerc:LR25}.}
+	\label{tab:DeltaLAFN-Exe25}
+\end{table}
+
+\begin{enumerate}
+	\item Para cada estado do autômato calcule $\delta_\lambda$.
+	\item Esboce todos os $w$ pertencentes a linguagem do autômato tal que $|w| \leq 4$.
+	\item Encontre um AFD equivalente $A$. 
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR26}
+	Considerando o $\lambda$-AFN $S = \langle Q, \Sigma, \underline{\delta_N}, s_0, \{s_2\} \rangle$ onde $\underline{\delta_N}$ é especificada pela Tabela \ref{tab:DeltaLAFN-Exe26}, responda o que é solicitado.
+\end{exercise}
+
+\begin{table}[h]
+	\centering
+	\begin{tabular}{c|cccc}
+		\backslashbox{$Q'$}{$\Sigma$}	& $\lambda$ & $0$ & $1$ & $2$\\\hline
+		$s_0$ & $\{s_1, s_2\}$ & $\emptyset$  & $\{s_1\}$ & $\{s_2\}$\\
+		$s_1$ & $\emptyset$ & $\{s_0\}$ & $\{s_2\}$ & $\{s_0, s_2\}$ \\
+		$s_2$ & $\emptyset$ & $\emptyset$ & $\emptyset$ & $\emptyset$ 		
+	\end{tabular}
+	\caption{Tabela da função de transição do $\lambda$-AFN do exercício \ref{exerc:LR26}.}
+	\label{tab:DeltaLAFN-Exe26}
+\end{table}
+
+\begin{enumerate}
+	\item Para cada estado do autômato calcule $\delta_\lambda$.
+	\item Esboce todos os $w$ pertencentes a linguagem do autômato tal que $|w| \leq 3$.
+	\item Encontre um AFD equivalente $S$. 
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR27}
+	Para as linguagens especificadas pelos enunciados a seguir construa $\lambda$-AFN que as aceite.
+\end{exercise}
+
+\begin{enumerate}
+	\item A linguagem de todas as palavras que começam e terminam com qualquer letra do alfabeto $\{a,b,c\}$, porém não existe nas palavras dois $a$'s e dois $c$'s seguidos.
+	\item A linguagem de todas as palavras sobre o alfabeto $\{0,1\}$ que iniciam com o prefixo $(01)^n$ e termina com o sufixo $10$ ou começam com o prefixo $(101)^n$ e terminam com o sufixo $00$, sendo $n \in \mathbb{N}$ tal que $n \geq 1$.
+	\item A linguagem de todas as palavras sobre o alfabeto $\{x, y\}$ tal que no mínimo uma das quatro últimas letras da palavra é um $x$.
+	\item A linguagem de todas as palavras sobre o alfabeto $\{x, y, z\}$ tal que no máximo uma das três primeiras letras da palavra é um $y$ ou as duas primeiras são $z$.
+\end{enumerate}
