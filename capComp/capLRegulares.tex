@@ -1424,14 +1424,21 @@ Este resultado da existência de um AFD mínimo recebe o nome de \textbf{Teorema
 	Seja $L$ uma linguagem qualquer\footnote{Não necessariamente regular.} sobre o alfabeto $\Sigma$, para qualquer palavra $w$ é definido o conjunto $L_w = \{x \mid wx \in L\}$. A família $\{L_w \mid w \in \Sigma^*\}$ construída sobre $L$ será denotada por $\mathcal{H}_L$, ou seja, $\mathcal{H}_L = \{L_w \mid w \in \Sigma^*\}$
 \end{definition}
 
+Com respeito aos conjuntos $L_w$ o leitor mais atento pode notar que $L_\lambda = L$, além disso,  os conjuntos $L_w$ também apresentam a seguinte propriedade básica.
 
 \begin{prop}
-	Dado $L \subseteq \Sigma^*$ as seguintes asserções acontecem.
-	\begin{itemize}
-		\item[(i)] $L_\lambda = L$.
-		\item[(ii)] Se $L_w = L_{w'}$, então $L_{wa} = L_{w'a}$ para todo $a \in \Sigma$.
-	\end{itemize}
+	Dado $L \subseteq \Sigma^*$. Se $L_w = L_{w'}$, então $L_{wa} = L_{w'a}$ para todo $a \in \Sigma$.
 \end{prop}
+
+\begin{proof}
+	Suponha que $L_w = L_{w`}$, assim para todo $a \in \Sigma^*$ tem-se que:
+	\begin{eqnarray*}
+		x \in L_{wa} &\Longleftrightarrow & wax \in L\\
+		& \Longleftrightarrow  & ax \in L_w\\
+		& \stackrel{Hip.}{\Longleftrightarrow} & ax \in L_{w'}\\
+		& \Longleftrightarrow  & x \in L_{w'a}
+	\end{eqnarray*}
+\end{proof}
 
 
 \section{Questionário}
