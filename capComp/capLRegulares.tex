@@ -454,7 +454,7 @@ Uma representação comum para os AFD é baseada no uso de grafos de transição
 	\end{figure}
 \end{exem}
 
-\begin{definition}[Função de Transição Estendida]
+\begin{definition}[Função de Transição Estendida]\label{def:DeltaEstendido}
 	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD a função $\delta$ é estendida para uma função $\widehat{\delta}: Q \times \Sigma^* \rightarrow Q$ usando recursividade como se segue.
 	\begin{eqnarray}\label{eq:ExtensaoDaFuncaoTransicaoDelta}
 		\widehat{\delta}(q, \lambda)& = & q \\
@@ -1412,13 +1412,13 @@ Assim como para o caso da transformação de AFN em AFD, o processo de usar a co
 	\end{table}
 \end{exem}
 
-\subsection{A minimização de Autômatos}
+\subsection{Teorema Myhill-Nerode e a  minimização de AFD}
 
 Até agora este manuscrito se preocupou com a tarefa de saber se uma linguagem pode ou não ser reconhecida por um autômato finito,  seja ele determinístico ou não-determinístico. Nesta seção será apresentada ao leitor a questão de eficiência no reconhecimento de linguagens em relação aos autômatos finitos, aqui será mostrado que o problema de encontrar um menor AFD que reconhece uma linguagem $L$ é decidível. 
 
 Na teoria dos autômatos quando se usa a palavra ``menor'', se está querendo dizer simplesmente aquele com o menor número possível de estados, ou seja, o AFD mínimo.  Mais adiante será aqui provado, que esse AFD mínimo é único a menos de isomorfismo, ou seja, se dois AFD reconhecem a mesma linguagem, cada um tendo o menor número possível de estados, então eles são são isomórficos. Isso significa que cada linguagem regular está associada com um AFD mínimo. 
 
-Este resultado da existência de um AFD mínimo recebe o nome de \textbf{Teorema de Myhill-Nerode}, em homenagem aos matemáticos John Myhill\footnote{O professor Myhill também é conhecido por seu Teorema de isomorfismo\cite{myhill1957-isomorfismo}, que pode ser visto como um análogo dentro da teoria da computabilidade ao teorema de Cantor–Bernstein–Schroeder e pelo famoso pelo Teorema  de Rice–Myhill–Shapiro, mais comumente conhecido como teorema de Rice \cite{benjaLivro2010, rice1953-teorema-Rice}.} (1923-1987) e Anil Nerode (1932-), que o provaram na Universidade de Chicago em 1958 no artigo \cite{nerode1958}, de forma geral tal resultado fornece as condições suficientes e necessárias para que uma linguagem $L$ seja regular, para construir tal resultado antes é necessário algumas definições básicas e alguns resultados auxiliares.
+Este resultado da existência de um AFD mínimo recebe o nome de \textbf{Teorema Myhill-Nerode}, em homenagem aos matemáticos John Myhill\footnote{O professor Myhill também é conhecido por seu Teorema de isomorfismo\cite{myhill1957-isomorfismo}, que pode ser visto como um análogo dentro da teoria da computabilidade ao teorema de Cantor–Bernstein–Schroeder e pelo famoso pelo Teorema  de Rice–Myhill–Shapiro, mais comumente conhecido como teorema de Rice \cite{benjaLivro2010, rice1953-teorema-Rice}.} (1923-1987) e Anil Nerode (1932-), que o provaram na Universidade de Chicago em 1958 no artigo \cite{nerode1958}, de forma geral tal resultado fornece as condições suficientes e necessárias para que uma linguagem $L$ seja regular, para construir tal resultado antes é necessário considerar algumas definições básicas e alguns resultados auxiliares.
 
 \begin{definition}[A família $\mathcal{H}_L$]\label{def:FamiliaH-L}
 	Seja $L$ uma linguagem qualquer\footnote{Não necessariamente regular.} sobre o alfabeto $\Sigma$, para qualquer palavra $w$ é definido o conjunto $L_w = \{x \mid wx \in L\}$. A família $\{L_w \mid w \in \Sigma^*\}$ construída sobre $L$ será denotada por $\mathcal{H}_L$, ou seja, $\mathcal{H}_L = \{L_w \mid w \in \Sigma^*\}$
@@ -1438,7 +1438,163 @@ Com respeito aos conjuntos $L_w$ o leitor mais atento pode notar que $L_\lambda 
 		& \stackrel{Hip.}{\Longleftrightarrow} & ax \in L_{w'}\\
 		& \Longleftrightarrow  & x \in L_{w'a}
 	\end{eqnarray*}
+	concluindo a prova.
 \end{proof}
+
+Um fato importante sobre AFD que será usado a seguir e que não foi mencionado diretamente até agora é o exposto pelo resultado a seguir.
+
+\begin{prop}\label{prop:AssociatividadeDelta}
+	Se $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ é um AFD, então $\widehat{\delta}(q_0, uv) = \widehat{\delta}( \widehat{\delta}(q_0, u), v)$ para todo $u,v \in \Sigma^*$.
+\end{prop}
+
+\begin{proof}
+	A prova é por indução sobre o tamanho da palavra $uv$ e ficará como exercício ao leitor.
+\end{proof}
+
+O lema a seguir mostra que $\# \mathcal{H}_L$ é na verdade um limite inferior para o número de estados em um AFD. 
+
+\begin{lema}\label{lema:LimiteInferiorEstados}
+	Se $L = \mathcal{L}(A)$ para algum AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$, então $\# \mathcal{H}_L \leq |Q|$.
+\end{lema}
+
+\begin{proof}
+	Suponha que $L = \mathcal{L}(A)$ para algum AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$, agora para todo $q \in Q$ defina um novo AFD $A_q$ igual ao anterior em todos os aspectos menos no estado inicial pois este será o estado $q$, ou seja,  $A_q = \langle Q, \Sigma, \delta, q, F\rangle$. Agora para toda palavra $w \in \Sigma^*$ suponha que $\widehat{\delta}(q_0, w) = q$, por definição note que, 
+	\begin{eqnarray*}
+		x \in L_w & \stackrel{Def. \ \ref{def:FamiliaH-L}}{\Longleftrightarrow} & wx \in L\\
+		& \Longleftrightarrow & wx \in \mathcal{L}(A)\\
+		& \Longleftrightarrow & \widehat{\delta}(q_0, wx) \in F\\
+		& \stackrel{Prop. \ \ref{prop:AssociatividadeDelta}}{\Longleftrightarrow} & \widehat{\delta}(\widehat{\delta}(q_0, w), x) \in F\\
+		& \stackrel{Hip.}{\Longleftrightarrow} & \widehat{\delta}(q, x) \in F\\
+		& \Longleftrightarrow & x \in \mathcal{L}(A_q)
+	\end{eqnarray*}
+	Dessa forma tem-se que $\mathcal{L}(A_q) = L_w$, e obviamente $\mathcal{L}(A_{q_0}) = L$. Logo com $A$ fixo, tem-se que $L_w$ depende apenas do estado obtido quando a computação $w$ começa em $q_0$, e assim o número de $L_w$ distintos, ou seja, os elementos de $\mathcal{H}_L$ não pode ser maior que o número de estados em $A$, portanto, $\#\mathcal{H}_L \leq |Q|$.
+\end{proof}
+
+O próximo lema estabelece que para alguma linguagem $L$ no caso $\mathcal{H}_L$ ser finito, então sua cardinalidade será o limite superior no número de estados em um AFD capaz de reconhecer $L$.
+
+\begin{lema}\label{lema:LimiteSuperiorEstados}
+	Seja $L \subseteq \Sigma^*$. Se $\mathcal{H}_L$ é finito, então existe um AFD $A _L$ tal que $L = \mathcal{L}(A_L)$ e $A_L$ possui exatamente $\#\mathcal{H}_L$ estados.
+\end{lema}
+
+\begin{proof}
+	Dado $L \subseteq \Sigma^*$ assuma que $\mathcal{H}_L$ é finito, dito isto pode-se construir o seguinte AFD $A_L = \langle \mathcal{H}_L, \Sigma, \delta, q_0, F \rangle$ onde:
+	\begin{eqnarray}\label{eq:EstadoInicial}
+		q_0 = L
+	\end{eqnarray}
+	e para todo $L_w \in \mathcal{H}_L$ e $a \in \Sigma$ tem-se
+	\begin{eqnarray}\label{eq:Delta-AL}
+		\delta(L_w, a) = L_{wa}
+	\end{eqnarray}
+	e
+	\begin{eqnarray}\label{eq:EstadosFinais}
+		F = \{L_w \in \mathcal{H}_L \mid \lambda \in L_w\}
+	\end{eqnarray}
+	sobre a definição de $A_L$ por indução sobre o tamanho de $w \in \Sigma^*$ pode-se facilmente verificar que, 
+	\begin{eqnarray}\label{eq:DeltaEstendido-AL}
+		\widehat{\delta}(q_0, w) = L_w
+	\end{eqnarray}
+	além disso, claramente $A_L$ possui exatamente $\#\mathcal{H}_L$ estados, dito isto, note que:
+	\begin{eqnarray*}
+		w \in L & \stackrel{Def. \ \ref{def:FamiliaH-L}}{\Longleftrightarrow} & \lambda \in L_w\\
+		& \stackrel{Eq. (\ref{eq:EstadosFinais})}{\Longleftrightarrow} & L_w \in F\\
+		& \stackrel{Eq. (\ref{eq:DeltaEstendido-AL})}{\Longleftrightarrow} & \widehat{\delta}(q_0, w) \in F\\
+		& \Longleftrightarrow & w \in \mathcal{L}(A_L)
+	\end{eqnarray*}
+	e portanto, $L = \mathcal{L}(A_L)$ concluindo assim a prova.
+\end{proof}
+
+\begin{definition}[Dimensão de AFD]
+	Seja $A = \langle Q, \Sigma, \delta', q_0, F \rangle$ um AFD a dimensão de $A$, denotado por $dim(A)$, é igual a quantidade de estados em $A$, isto é, $dim(A) = \# Q$. 
+\end{definition}
+
+\begin{definition}[AFD Mínimo]
+	Seja $L$ uma linguagem regular tal que $L = \mathcal{L}(A)$ para algum um AFD $A$. O AFD $A$ será dito ser mínimo se, e somente se,  e para todo outro AFD $B$ tal que $L= \mathcal{L}(B)$ tem-se que $dim(A) \leq dim(B)$. 
+\end{definition}
+
+O próximo resultado mostra que não existe nenhum autômato como menos estados que o AFD construído na prova do Lema \ref{lema:LimiteSuperiorEstados}, ou seja, o método de construção mostrado na  na prova do Lema \ref{lema:LimiteSuperiorEstados} gera o AFD mínimo de qualquer linguagem.
+
+\begin{lema}\label{lema:UnicadadeMinAFD}
+	Seja $L$ uma linguagem regular, assim o  AFD $A_L$ construído no Lema \ref{lema:LimiteSuperiorEstados} é o único (a menos de isomorfismo) mínimo AFD que aceita $L$.
+\end{lema}
+
+\begin{proof}
+	Suponha que existe outro AFD mínimo $N = \langle Q, \Sigma, \delta', q'_0, F' \rangle$ tal que $L = \mathcal{L}(N)$ diferente do AFD $A_L = \langle \mathcal{H}_L, \Sigma, \delta, L, F \rangle$ construído na prova do Lema \ref{lema:LimiteSuperiorEstados}. Agora será definida uma função $f: Q \rightarrow \mathcal{H}_L$ definida simplesmente como: 
+	\begin{eqnarray*}
+		f(q) & = & \left\{\begin{array}{ll}	L, & \hbox{se } q = q_0\\	\mathcal{L}(A_q),  & \hbox{senão}\end{array}\right.
+	\end{eqnarray*}
+	para todo $q \in Q$, onde $\mathcal{L}(A_q)$ é da mesma forma que na prova do Lema \ref{lema:LimiteInferiorEstados} onde o AFD fixo é exatamente $A_L$. Por esta definição é claro que: 
+	\begin{itemize}
+		\item[(1)] Se $q_i \neq q_j$, então tem-se que $f(q_i) \neq f(q_j)$, consequentemente a função $f$ é injetora.
+		\item[(2)] $f$ preserva a condição de estado inicial.
+		\item[(3)] Para $a \in \Sigma, w \in \Sigma^*$ e $q, p \in Q$ assuma que $\delta(q, a) = p$ e $f(q) = \mathcal{L}(A_q) = L_w$ assim para qualquer $u \in \Sigma^*$ tem-se que
+		\begin{eqnarray*}
+			u \in f(p) & \Longleftrightarrow & u \in \mathcal{L}(A_p)\\
+			& \Longleftrightarrow &  \widehat{\delta}(p, u) \in F\\
+			& \Longleftrightarrow &  \widehat{\delta}(\widehat{\delta}(q, a), u) \in F\\
+			& \Longleftrightarrow &  \widehat{\delta}(q, au) \in F\\
+			& \Longleftrightarrow &  au \in \mathcal{L}(A_q)\\
+			& \Longleftrightarrow &  au \in f(q)\\
+			& \Longleftrightarrow &  au \in L_w\\
+			& \Longleftrightarrow &  wau \in L\\
+			& \Longleftrightarrow &  u \in L_{wa}
+		\end{eqnarray*} 
+		portanto, $f(p) = L_{wa}$, ou seja, $f$ preserva transições\footnote{Isto é o mesmo que dizer que $f(\delta'(q, a)) = \delta(f(q), a)$.}.
+		\item[(4)] Agora note que pela definição de estado final e pela construção de $A_L$ tem-se que 
+		$$q \in F' \Longleftrightarrow \widehat{\delta}(q, \lambda) \in F' \Longleftrightarrow  \lambda \in \mathcal{L}(A_q) \Longleftrightarrow \mathcal{L}(A_q) \in F \Longleftrightarrow f(q) \in F$$
+		portanto, a função $f$ preserva estados finais.
+		\item[(5)] Agora dado $w \in \Sigma^*$ assuma que $\widehat{\delta}(q_0, w) = q$, assim pela prova do Lema \ref{lema:LimiteInferiorEstados} para todo $L_w \in \mathcal{H}_L$, ou seja, para todo $L_w \in Ima(f)$ tem-se que $L_w = \mathcal{L}(A_q)$, e portanto, pela definição de $f$ tem-se que existe $q \in D	om(f)$ tal que $L_w = f(q)$, ou seja, $f$ é sobrejetora.
+	\end{itemize}
+	Desde que $f$ é injetora e sobrejetora tem-se que $f$ é uma bijeção, e portanto, $\#Q = \#\mathcal{H}_L$, logo $dim(N) = dim(A_L)$. Agora desde que $f$ preserva o estado inicial, os estados finais e as transições tem-se que $f$ é um isomorfismo do AFN $N$ para o AFD $A_L$, e portanto, eles são o mesmo AFD se diferenciando apenas pela rotulação dos seus estados. 
+\end{proof}
+
+Pode-se agora finalmente enunciar o Teorema Myhill-Nerode que estabelece uma caracterização para as linguagens regulares.
+
+\begin{theorem}[Teorema Myhill-Nerode]\label{teo:Myhill-Nerode}
+	Uma linguagem $L \subseteq \Sigma^*$ será regular se, e somente se, $\mathcal{H}_L$ é finito e existe um AFD mínimo $A$ com exatamente $\# \mathcal{H}_L$ estados tal que $\mathcal{L}(A) = L$.
+\end{theorem}
+
+\begin{proof}
+	Direto dos Lemas \ref{lema:LimiteInferiorEstados}, \ref{lema:LimiteSuperiorEstados} e \ref{lema:UnicadadeMinAFD}.
+\end{proof}
+
+Apesar de extremamente elegante o resultado exposto pelo Teorema Myhill-Nerode apresentado anteriormente, não fornecem um procedimento (ou algoritmo) geral explícito para construir um AFD mínimo equivalente a partir de AFD dado. Esse processo de obter um AFD mínimo é chamado de minimização \cite{benjaLivro2010, linz2006, hopcroft2008}, e o mesmo é baseado na ideia de equivalência entre estados. Primeiro será apresentado a formalização matemática da construção do AFD quociente e depois o pseudo-código de tal construção
+
+\begin{definition}[Estados Equivalentes]\label{def:EquivalenciaEstados}
+	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD. A relação de equivalência entre dois estados $q, q' \in Q$ será denotado por $q \equiv_Q q'$ e será verdadeira quando para todo $w \in \Sigma^*$ tem-se que $\widehat{\delta}(q, w) \in F \Longleftrightarrow \widehat{\delta}(q', w) \in F$.
+\end{definition} 
+
+O resultado a seguir diz que se dois estados são equivalentes, então seus sucessores também o são.
+
+\begin{lema}
+	Dado um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$. Se $q \equiv_Q q'$, então $\delta(q, a) \equiv_Q \delta(q', a)$.
+\end{lema}
+
+\begin{proof}
+	Dado $a \in \Sigma$, por contrapositiva será mostrado que: 
+	\begin{center}
+		Se $\delta(q, a) \not\equiv_Q \delta(q', a)$, então $q \not\equiv_Q q'$. 
+	\end{center}
+	Inicialmente assuma que $\delta(q, a) \not\equiv_Q \delta(q', a)$, assim pela Definição \ref{def:EquivalenciaEstados} existe um $w \in \Sigma^*$ tal que um dos dois casos a seguir acontece:
+	\begin{itemize}
+		\item[(1)] $\widehat{\delta}(\delta(q, a), w)  \in F$ e $\widehat{\delta}(\delta(q', a), w)  \notin F$ ou
+		\item[(2)] $\widehat{\delta}(\delta(q, a), w)  \notin F$ e $\widehat{\delta}(\delta(q', a), w)  \in F$.
+	\end{itemize}
+	em particular quando $w = \lambda$, para o primeiro caso (a prova é similar para o caso (2)) tem-se pela Definição \ref{def:DeltaEstendido} que:
+	\begin{eqnarray*}
+		\widehat{\delta}(\delta(q, a), w)  \in F \text{ e } \widehat{\delta}(\delta(q', a), w)  \notin F \Longleftrightarrow \delta(q, a)  \in F \text{ e }\delta(q', a)  \notin F
+	\end{eqnarray*}
+	e desde que $a \in \Sigma^*$ pela Definição \ref{def:EquivalenciaEstados} tem-se que $q \not\equiv_Q q'$, o que conclui a prova da contrapositiva. Desde que a contrapositiva é verdadeira tem-se que afirmação original ``Se $q \equiv_Q q'$, então $\delta(q, a) \equiv_Q \delta(q', a)$'' é também verdadeira.
+\end{proof}
+
+Usando a definição anterior é definido a operação de colapso quociente sobre AFD como se segue.
+
+\begin{definition}[Colapso quociente]\label{def:AFD-Quociente}
+	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD. O colapso quociente de $A$ é o AFD $A_{/\equiv_Q} = \langle Q_{/\equiv_Q}, \Sigma, \delta^*, [q_0],  F_{/\equiv_Q}\rangle$ onde $[q_0]$ é a classe de equivalência do estado $q_0$ e para todo $q \in Q$ e $a \in \Sigma$ tem-se que,
+	\begin{eqnarray}\label{eq:TransicaoEquivalencia}
+		\delta^*([q], a) = [\delta(q, a)]
+	\end{eqnarray}
+	e $F_{/\equiv_Q} = \{[q] \mid q \in F\}$.
+\end{definition}
 
 
 \section{Questionário}
