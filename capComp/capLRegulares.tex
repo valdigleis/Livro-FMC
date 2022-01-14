@@ -1418,7 +1418,7 @@ Até agora este manuscrito se preocupou com a tarefa de saber se uma linguagem p
 
 Na teoria dos autômatos quando se usa a palavra ``menor'', se está querendo dizer simplesmente aquele com o menor número possível de estados, ou seja, o AFD mínimo.  Mais adiante será aqui provado, que esse AFD mínimo é único a menos de isomorfismo, ou seja, se dois AFD reconhecem a mesma linguagem, cada um tendo o menor número possível de estados, então eles são são isomórficos. Isso significa que cada linguagem regular está associada com um AFD mínimo. 
 
-Este resultado da existência de um AFD mínimo recebe o nome de \textbf{Teorema Myhill-Nerode}, em homenagem aos matemáticos John Myhill\footnote{O professor Myhill também é conhecido por seu Teorema de isomorfismo\cite{myhill1957-isomorfismo}, que pode ser visto como um análogo dentro da teoria da computabilidade ao teorema de Cantor–Bernstein–Schroeder e pelo famoso pelo Teorema  de Rice–Myhill–Shapiro, mais comumente conhecido como teorema de Rice \cite{benjaLivro2010, rice1953-teorema-Rice}.} (1923-1987) e Anil Nerode (1932-), que o provaram na Universidade de Chicago em 1958 no artigo \cite{nerode1958}, de forma geral tal resultado fornece as condições suficientes e necessárias para que uma linguagem $L$ seja regular, para construir tal resultado antes é necessário considerar algumas definições básicas e alguns resultados auxiliares.
+Este resultado da existência de um AFD mínimo recebe o nome de \textbf{Teorema Myhill-Nerode}, em homenagem aos matemáticos John Myhill\footnote{O professor Myhill também é conhecido por seu Teorema de isomorfismo\cite{myhill1957-isomorfismo}, que pode ser visto como um análogo dentro da teoria da computabilidade ao teorema de Cantor–Bernstein–Schroeder e pelo famoso pelo Teorema  de Rice–Myhill–Shapiro, mais comumente conhecido como Teorema de Rice \cite{benjaLivro2010, rice1953-teorema-Rice}.} (1923-1987) e Anil Nerode (1932-), que o provaram na Universidade de Chicago em 1958 no artigo \cite{nerode1958}, de forma geral tal resultado fornece as condições suficientes e necessárias para que uma linguagem $L$ seja regular, para construir tal resultado antes é necessário considerar algumas definições básicas e alguns resultados auxiliares.
 
 \begin{definition}[A família $\mathcal{H}_L$]\label{def:FamiliaH-L}
 	Seja $L$ uma linguagem qualquer\footnote{Não necessariamente regular.} sobre o alfabeto $\Sigma$, para qualquer palavra $w$ é definido o conjunto $L_w = \{x \mid wx \in L\}$. A família $\{L_w \mid w \in \Sigma^*\}$ construída sobre $L$ será denotada por $\mathcal{H}_L$, ou seja, $\mathcal{H}_L = \{L_w \mid w \in \Sigma^*\}$
@@ -1557,24 +1557,24 @@ Pode-se agora finalmente enunciar o Teorema Myhill-Nerode que estabelece uma car
 	Direto dos Lemas \ref{lema:LimiteInferiorEstados}, \ref{lema:LimiteSuperiorEstados} e \ref{lema:UnicadadeMinAFD}.
 \end{proof}
 
-Apesar de extremamente elegante o resultado exposto pelo Teorema Myhill-Nerode apresentado anteriormente, não fornecem um procedimento (ou algoritmo) geral explícito para construir um AFD mínimo equivalente a partir de AFD dado. Esse processo de obter um AFD mínimo é chamado de minimização \cite{benjaLivro2010, linz2006, hopcroft2008}, e o mesmo é baseado na ideia de equivalência entre estados. Primeiro será apresentado a formalização matemática da construção do AFD quociente e depois o pseudo-código de tal construção
+Apesar de extremamente elegante o resultado exposto pelo Teorema Myhill-Nerode apresentado anteriormente, não fornece um procedimento (ou algoritmo) geral explícito para construir um AFD mínimo equivalente a outro AFD dado. Esse processo de obter um AFD mínimo é chamado de minimização \cite{benjaLivro2010}, e o mesmo é baseado na ideia de relação equivalência entre estados e do espaço quociente de estados em um AFD. Primeiro será apresentado a formalização matemática da construção do AFD quociente e depois o pseudo-código de tal construção
 
 \begin{definition}[Estados Equivalentes]\label{def:EquivalenciaEstados}
-	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD. A relação de equivalência entre dois estados $q, q' \in Q$ será denotado por $q \equiv_Q q'$ e será verdadeira quando para todo $w \in \Sigma^*$ tem-se que $\widehat{\delta}(q, w) \in F \Longleftrightarrow \widehat{\delta}(q', w) \in F$.
+	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD. A relação de equivalência entre dois estados $q, q' \in Q$ será denotado por $q \equiv q'$ e será verdadeira quando para todo $w \in \Sigma^*$ tem-se que $\widehat{\delta}(q, w) \in F \Longleftrightarrow \widehat{\delta}(q', w) \in F$.
 \end{definition} 
 
 O resultado a seguir diz que se dois estados são equivalentes, então seus sucessores também o são.
 
-\begin{lema}
-	Dado um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$. Se $q \equiv_Q q'$, então $\delta(q, a) \equiv_Q \delta(q', a)$.
+\begin{lema}\label{lema:SucessoresEquivalentes}
+	Dado um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$. Se $q \equiv q'$, então $\delta(q, a) \equiv \delta(q', a)$.
 \end{lema}
 
 \begin{proof}
 	Dado $a \in \Sigma$, por contrapositiva será mostrado que: 
 	\begin{center}
-		Se $\delta(q, a) \not\equiv_Q \delta(q', a)$, então $q \not\equiv_Q q'$. 
+		Se $\delta(q, a) \not\equiv \delta(q', a)$, então $q \not\equiv q'$. 
 	\end{center}
-	Inicialmente assuma que $\delta(q, a) \not\equiv_Q \delta(q', a)$, assim pela Definição \ref{def:EquivalenciaEstados} existe um $w \in \Sigma^*$ tal que um dos dois casos a seguir acontece:
+	Inicialmente assuma que $\delta(q, a) \not\equiv \delta(q', a)$, assim pela Definição \ref{def:EquivalenciaEstados} existe um $w \in \Sigma^*$ tal que um dos dois casos a seguir acontece:
 	\begin{itemize}
 		\item[(1)] $\widehat{\delta}(\delta(q, a), w)  \in F$ e $\widehat{\delta}(\delta(q', a), w)  \notin F$ ou
 		\item[(2)] $\widehat{\delta}(\delta(q, a), w)  \notin F$ e $\widehat{\delta}(\delta(q', a), w)  \in F$.
@@ -1583,19 +1583,216 @@ O resultado a seguir diz que se dois estados são equivalentes, então seus suce
 	\begin{eqnarray*}
 		\widehat{\delta}(\delta(q, a), w)  \in F \text{ e } \widehat{\delta}(\delta(q', a), w)  \notin F \Longleftrightarrow \delta(q, a)  \in F \text{ e }\delta(q', a)  \notin F
 	\end{eqnarray*}
-	e desde que $a \in \Sigma^*$ pela Definição \ref{def:EquivalenciaEstados} tem-se que $q \not\equiv_Q q'$, o que conclui a prova da contrapositiva. Desde que a contrapositiva é verdadeira tem-se que afirmação original ``Se $q \equiv_Q q'$, então $\delta(q, a) \equiv_Q \delta(q', a)$'' é também verdadeira.
+	e desde que $a \in \Sigma^*$ pela Definição \ref{def:EquivalenciaEstados} tem-se que $q \not\equiv q'$, o que conclui a prova da contrapositiva. Desde que a contrapositiva é verdadeira tem-se que afirmação original ``Se $q \equiv q'$, então $\delta(q, a) \equiv \delta(q', a)$'' é também verdadeira.
 \end{proof}
 
-Usando a definição anterior é definido a operação de colapso quociente sobre AFD como se segue.
+Usando a definição anterior a seguir será apresentado a definição de  AFD (ou colapso) quociente sobre um determinado AFD dado.
 
-\begin{definition}[Colapso quociente]\label{def:AFD-Quociente}
-	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD. O colapso quociente de $A$ é o AFD $A_{/\equiv_Q} = \langle Q_{/\equiv_Q}, \Sigma, \delta^*, [q_0],  F_{/\equiv_Q}\rangle$ onde $[q_0]$ é a classe de equivalência do estado $q_0$ e para todo $q \in Q$ e $a \in \Sigma$ tem-se que,
-	\begin{eqnarray}\label{eq:TransicaoEquivalencia}
-		\delta^*([q], a) = [\delta(q, a)]
-	\end{eqnarray}
-	e $F_{/\equiv_Q} = \{[q] \mid q \in F\}$.
+\begin{definition}[AFD quociente]\label{def:AFD-Quociente}
+	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD. O AFD (ou colapso) quociente de $A$ é o AFD $A_{/\equiv} = \langle Q_{/\equiv}, \Sigma, \delta^*, [q_0],  F_{/\equiv}\rangle$ onde $[q_0]$ é a classe de equivalência do estado $q_0$ e para todo $q \in Q$ e $a \in \Sigma$ tem-se que $\delta^*([q], a) = [\delta(q, a)]$ e  $F_{/\equiv} = \{[q] \mid q \in F\}$.
 \end{definition}
 
+\begin{theorem}\label{teo:ExtensaoDeltaEstrela}
+	Seja  $A_{/\equiv} = \langle Q_{/\equiv}, \Sigma, \delta^*, [q_0],  F_{/\equiv}\rangle$ o AFD quociente obtido a partir de um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$. Então para todo $w \in \Sigma^*$ tem-se que $\widehat{\delta^*}([q], w) = [\widehat{\delta}(q, w)]$.
+\end{theorem}
+
+\begin{proof}
+	Por indução sobre o tamanho de $w \in \Sigma^*$ será mostrado a seguinte igualdade $\widehat{\delta^*}([q], w) = [\widehat{\delta}(q, w)]$.
+	\begin{itemize}
+		\item \textbf{Base da indução}:
+		
+		Quando $|w| = 0$ ($w = \lambda$) tem-se trivialmente que $\widehat{\delta^*}([q], \lambda) = [q] = [\widehat{\delta}(q, \lambda)]$.
+		
+		\item \textbf{Hipótese indutiva (HI)}:
+		
+		Suponha que para todo $w \in \Sigma^*$ com $|w| \geq 0$ tem-se que $\widehat{\delta^*}([q], w) = [\widehat{\delta}(q, w)]$
+		\item \textbf{Passo indutivo}:
+		
+		Dado $w = ua$ com $u \in \Sigma^*$, $|u| \geq 0$ e $a \in \Sigma$ tem-se que, 
+		\begin{eqnarray*}
+			\widehat{\delta^*}([q], w) & = & \widehat{\delta^*}([q], ua)\\
+			& = & \delta^*(\widehat{\delta^*}([q], u),a)\\
+			& \stackrel{\textbf{(HI)}}{=} & \delta^*([\widehat{\delta}(q, u)],a)\\
+			& = & [\delta(\widehat{\delta}(q, u),a)]\\
+			& = & [\widehat{\delta}(q, ua)]\\
+			& = & [\widehat{\delta}(q, w)]
+		\end{eqnarray*}
+	\end{itemize}
+	O que completa a prova.
+\end{proof}
+
+\begin{theorem}\label{teo:FinalQuociente}
+	Seja  $A_{/\equiv} = \langle Q_{/\equiv}, \Sigma, \delta^*, [q_0],  F_{/\equiv}\rangle$ o AFD quociente obtido a partir de um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$. Então $q \in F \Longleftrightarrow [q] \in F_{/\equiv}$
+\end{theorem}
+
+\begin{proof}
+	$(\Rightarrow)$ Trivial pela própria definição de $ F_{/\equiv}$. $(\Leftarrow)$ É suficiente mostrar que se $q \equiv p$ e $q \in F$, então $p \in F$. Para provar isto, suponha que $q \equiv p$ e $q \in F$, mas note que $q \in F \Longleftrightarrow \widehat{\delta}(q, \lambda) \in F$, mas como $q \equiv p$, por definição tem-se para todo $w \in \Sigma^*$ que $\widehat{\delta}(q, w) \in F \Longleftrightarrow \widehat{\delta}(p, w) \in F$, assim no particular quando $w = \lambda$ tem-se que  $\widehat{\delta}(p, \lambda) \in F$, mas $\widehat{\delta}(p, \lambda) = p$, portanto, $p \in F$.
+\end{proof}
+
+
+O próximo resultado mostra que o colapso de um AFD para seu AFD quociente preserva a linguagem aceita pelo autômato. 
+
+\begin{theorem}\label{teo:LinguagemQuociente}
+	Seja  $A_{/\equiv} = \langle Q_{/\equiv}, \Sigma, \delta^*, [q_0],  F_{/\equiv}\rangle$ o AFD quociente obtido a partir de um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$. Então $\mathcal{L}(A_{/\equiv}) = \mathcal{L}(A)$.
+\end{theorem}
+
+\begin{proof}
+	Basta notar que para qualquer $w \in \Sigma^*$ tem-se que:
+	\begin{eqnarray*}
+		w \in \mathcal{L}(A_{/\equiv}) & \Longleftrightarrow & \widehat{\delta^*}([q_0], w) \in F_{/\equiv}\\
+		& \stackrel{Teo. \ \ref{teo:ExtensaoDeltaEstrela}}{\Longleftrightarrow} & [\widehat{\delta}(q_0, w)] \in F_{/\equiv}\\
+		& \stackrel{Teo. \ \ref{teo:FinalQuociente}}{\Longleftrightarrow} & \widehat{\delta}(q_0, w) \in F\\
+		& \Longleftrightarrow & w \in \mathcal{L}(A)
+	\end{eqnarray*}
+	Portanto, $\mathcal{L}(A_{/\equiv}) = \mathcal{L}(A)$.
+\end{proof}
+
+%Agora é aceitável que o leitor possa se questionar sobre o que acontece quando se tenta colapsar um AFD que já é um AFD quociente. A resposta para esse fato é simples, não acontece nada, isto é, se $A_{/\equiv}$ é o AFD quociente, então o colapso dele é ele próprio, a prova disto pode ser vista em \cite{martin2003}.
+
+\begin{rema}
+	Um fato importante sobre o AFD quociente é que ele é mínimo a menos de isomorfismo \cite{martin2003}, isto é, a construção do quociente é equivalente ao Teorema Myhill-Nerode.
+\end{rema}
+
+Agora obviamente a construção do AFD quociente pode ser visa como um algoritmo, nesse sentido o algoritmo consiste em realizar três tarefas básicas, a primeira é de encontrar os estados do autômato que são equivalentes, depois a partir o algoritmo deve construir as classes de equivalência dos estados em reunir todas as classes no conjunto (ou espaço) quociente $Q_{/\equiv}$, depois disso o algoritmo deve definir as transições entre  os estados são agora representados pelas classes de equivalência, isto é, o algoritmo deve construir a função $\delta^*$, e por fim, definir um conjunto de estados finais, onde novamente os estados são classes de equivalência, ou seja, o último passo do algoritmo é construir o conjunto $F_{/\equiv}$.
+
+Em termos de ``implementação'' o Algoritmo \ref{alg:AFD-Quociente}  a seguir esboça o pseudo-código para a construção do AFD quociente, a ideia do mesmo é, primeiro usar os elementos em uma matriz de relação para marcar estados equivalentes, depois a partir desta matriz construir as classes de equivalência. Obviamente este texto não está preocupado com desempenho, assim possivelmente o pseudo-código a seguir pode não ser o mais eficiente, em termos da análise de algoritmo.
+
+\begin{rema}
+	Um ponto a ressaltar é que o Algoritmo \ref{alg:AFD-Quociente} não utilizar a matriz inteira para representar a relação de equivalência, isso acontece por que toda relação de equivalência é reflexiva e simétrica, assim basta se preocupar com as posições acima da diagonal principal da matriz, pois como explicado em \cite{benjaLivro2010}, os elementos abaixo da diagonal principal são na verdade a contraparte simétrica da relação de equivalência e os elementos na diagonal são as informações da parte reflexiva da relação.
+\end{rema}
+
+\begin{algorithm}[!h]
+	\Entrada{Um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$}
+	\Saida{O AFD quociente $A_{/\equiv} = \langle Q_{/\equiv}, \Sigma, \delta^*, [q_0],  F_{/\equiv}\rangle$}
+	\Inicio{
+		Defina uma matriz $M$ de dimensão $\#Q$ por $\#Q$\\
+		\ParaCada{$(i, j) \in \{0, \cdots, \#Q-1\} \times \{0, \cdots, \#Q-1\}$ tal que $j > i$}{
+			\Se{$q_i \in F, q_j \notin F$ ou $q_i \notin F, q_j \in F$}{
+				Marque a posição $M(i,j)$ com um $X$
+			}
+		}
+		\ParaCada{$(i, j) \in \{0, \cdots, \#Q-1\} \times \{0, \cdots, \#Q-1\}$ tal que $j > i$}{
+			\Se{$M(i,j)$ não foi marcado}{
+				\ParaCada{$a \in \Sigma$}{
+					\Se{$\delta(q_i, a) \in F, \delta(q_j, a) \notin F$ ou $\delta(q_i, a) \notin F, \delta(q_j, a) \in F$}{
+						Marque a posição $M(i,j)$ com um $X$
+					}
+				}
+			}
+		}
+		Defina $T = \{0, \cdots, \#Q \}$\\
+		Defina $Q_{/\equiv}$ como sendo vazio\\
+		\Enqto{$T \neq \emptyset$}{
+			Selecione o menor $i \in T$\\
+			\Se{$\nexists [q] \in Q_{/\equiv}$ tal que $q_i \in [q]$}{
+				Defina uma classe de equivalência $[q_i] = \{q_i\}$\\
+				\ParaTodo{$j \in T$ tal que $i \neq j$}{
+					\Se{$M(i,j)$ não estiver marcado}{
+						Adicione $q_j$ na classe de equivalência $[q_i]$\\
+						Remova $j$ de $T$\\
+					}
+				}
+			}
+			Remova $i$ de $T$\\
+		}
+		\ParaCada{$([q], a) \in Q_{/\equiv} \times \Sigma$}{
+			Defina $\delta^*([q], a) = [\delta(q, a)]$
+		}
+		Considere inicialmente $F_{/\equiv}$ como vazio\\
+		\ParaCada{$[q] \in Q_{/\equiv}$}{
+			\Se{$q \in F$}{
+				Adicione $[q]$ ao conjunto $F_{/\equiv}$ 
+			}
+		}
+		\Retorna{$A_{/\equiv} = \langle Q_{/\equiv}, \Sigma, \delta^*, [q_0],  F_{/\equiv}\rangle$}
+	}
+	\caption{Algoritmo para construção do AFD quociente.}
+	\label{alg:AFD-Quociente}
+\end{algorithm}
+
+\begin{exem}\label{exe:AFDMinimizacao}
+	Inicialmente considere que o Algoritmo \ref{alg:AFD-Quociente} recebe como entrada o  AFD representado pelo grafo de transições esboçado pela Figura \ref{fig:Linguagem-AFDM-1} a seguir.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]				(A)               	{$q_0$};
+			\node[state, accepting]				(B) [right of=A] 	{$q_1$};
+			\node[state]				        (C) [right of=B] 	{$q_2$};
+			\node[state]				        (D) [below of=A] 	{$q_3$};
+			\node[state, accepting]				(E) [right of=D] 	{$q_4$};
+			\node[state]				        (F) [right of=E] 	{$q_5$};
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge [bend left]  				node 		 {$1$} (B)
+			(B) edge [bend left]  				node 		 {$1$} (A)
+			(B) edge [bend left]  				node 		 {$0$} (C)
+			(C) edge [bend left]  				node 		 {$0$} (B)
+			(A) edge [bend left]  				node 		 {$0$} (D)
+			(D) edge [bend left]  				node 		 {$0$} (A)
+			(C) edge [bend left]  				node 		 {$1$} (F)
+			(F) edge [bend left]  				node 		 {$1$} (C)
+			(D) edge [bend left]  				node 		 {$1$} (E)
+			(E) edge [bend left]  				node 		 {$1$} (D)
+			(E) edge [bend left]  				node 		 {$0$} (F)
+			(F) edge [bend left]  				node 		 {$0$} (E);
+		\end{tikzpicture}
+		\caption{Grafo do AFD do Exemplo \ref{exe:LinguagemLAFN1}.}
+		\label{fig:Linguagem-AFDM-1}
+	\end{figure}
+	
+	O algoritmo gera a matriz representada na Tabela \ref{tab:AFD-Minimizacao} a seguir, em que a $i$-ésima linha (coluna) representa o estado $q_{i-1}$, onde os espaço marcados com $-$ são aqueles não considerados pelo algoritmo, as posições com $X$ representam os estados não equivalentes, e as posições $(i,j)$ em branco representam os estados equivalentes.	
+		
+	\begin{table}[h]
+		\scriptsize
+		\centering
+		\begin{tabular}{|c|c|c|c|c|c|}
+			\hline
+			- & X & X &   & X & X\\ \hline
+			- & - & X & X &   & X\\ \hline
+			- & - & - & X & X & \\ \hline
+			- & - & - & - & X & X\\ \hline
+			- & - & - & - & - & X\\ \hline
+			- & - & - & - & X & -\\ \hline
+		\end{tabular}
+		\label{tab:AFD-Minimizacao}
+		\caption{Matriz de equivalência $M$ para o AFD \ref{fig:Linguagem-AFDM-1}.}
+	\end{table}
+	
+	A partir desta Tabela \ref{tab:AFD-Minimizacao} o Algoritmo \ref{alg:AFD-Quociente} gera as seguintes classes de equivalência: $[q_0] = \{q_0, q_3\}$, $[q_1] = \{q_1, q_4\}$ e $[q_2] = \{q_2, q_5\}$, depois define as transições e o conjunto de estados finais como esboçadas pelo grafo de Transição na Figura \ref{fig:Linguagem-AFDM-2}.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]				(A)               	{$[q_0]$};
+			\node[state, accepting]				(B) [right of=A] 	{$[q_1]$};
+			\node[state]				        (C) [right of=B] 	{$[q_2]$};
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge [bend left]  				node 		 {$1$} (B)
+			(A) edge [loop above]				node		 {$0$} ( )
+			(B) edge [bend left]  				node 		 {$1$} (A)
+			(B) edge [bend left]  				node 		 {$0$} (C)
+			(C) edge [bend left]  				node 		 {$0$} (B);
+		\end{tikzpicture}
+		\caption{Grafo do AFD do Exemplo \ref{exe:LinguagemLAFN1}.}
+		\label{fig:Linguagem-AFDM-2}
+	\end{figure}
+\end{exem}
+
+Desde que $\delta^*([q], a) = [\delta(q, a)]$ é um caso particular do resultado obtido no Teorema \ref{teo:ExtensaoDeltaEstrela}, e pela condição suficiente e necessária apresentada no Teorema \ref{teo:FinalQuociente}, tem-se que a corretude do Algoritmo \ref{alg:AFD-Quociente} se resumi a demonstrar o teorema a seguir.
+
+\begin{theorem}[Corretude do Algoritmo \ref{alg:AFD-Quociente}]
+	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD. Considerando o Algoritmo \ref{alg:AFD-Quociente} e os índices $j > i$ tem-se que,  $M(i, j)$ está marcado com $X$ se, e somente se, $q_i \not\equiv q_j$.
+\end{theorem}
+
+\begin{proof}
+	A demonstração fica como exercício ao leitor.
+\end{proof}
 
 \section{Questionário}
 
@@ -1715,7 +1912,6 @@ Usando a definição anterior é definido a operação de colapso quociente sobr
 	\item Verifique se as palavras: $abccaaabacab, ccccbacabacbb, bbacabb, aaccca, aaabb, acacabb,$ $bbacac$ e $ccabbbacac$ são aceitas ou não pelo autômato.
 	\item $\lambda$ é aceito por este autômato?
 	\item Traduza o grafo de transição para a notação algébrica.
-	\item Determine a linguagem aceita pelo autômato.
 \end{enumerate}
 
 \begin{exercise}\label{exerc:LR9}
@@ -1947,3 +2143,77 @@ Usando a definição anterior é definido a operação de colapso quociente sobr
 	\item A linguagem de todas as palavras sobre o alfabeto $\{x, y\}$ tal que no mínimo uma das quatro últimas letras da palavra é um $x$.
 	\item A linguagem de todas as palavras sobre o alfabeto $\{x, y, z\}$ tal que no máximo uma das três primeiras letras da palavra é um $y$ ou as duas primeiras são $z$.
 \end{enumerate}
+
+\begin{exercise}\label{exerc:LR28}
+	Encontre o AFD quociente do AFD apresentado no exercício \ref{exerc:LR8}
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR29}
+	Encontre o AFD quociente equivalente ao AFN apresentado no exercício \ref{exerc:LR20}
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR30}
+	Encontre o AFD quociente equivalente ao AFN apresentado no exercício \ref{exerc:LR21}
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR31}
+	Encontre o AFD quociente equivalente ao AFN apresentado no exercício \ref{exerc:LR25}
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR32}
+	Encontre o AFD quociente equivalente ao AFN apresentado no exercício \ref{exerc:LR26}
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR33}
+	Encontre o AFD quociente equivalente ao $\lambda$-AFN da Figura \ref{fig:AutomaExercicioLR33} a seguir.
+\end{exercise}
+
+
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+		\node[state, initial]				(A)               	{$q_0$};
+		\node[state, accepting]				(B) [right of=A] 	{$q_1$};
+		\node[state]				        (C) [right of=B] 	{$q_2$};
+		
+		\path[->] (A) +(-1,0) edge (A)
+		
+		%Transições:
+		%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+		(A) edge [bend left]  				node {$1$}	 			 (B)
+		(B) edge [bend left]  				node {$\lambda, 0$}		 (A)
+		(B) edge [loop above]				node {$1$}				 ( )
+		(B) edge [bend left]				node {$0,1$}			 (C)
+		(C) edge [bend left]				node {$1$}				 (B)
+		(C) edge [loop above]				node {$0$}				 ( );
+	\end{tikzpicture}
+	\caption{Autômato para o exercício \ref{exerc:LR33}.}
+	\label{fig:AutomaExercicioLR33}
+\end{figure}
+
+\begin{exercise}\label{exerc:LR34}
+	Encontre o AFD quociente equivalente ao $\lambda$-AFN da Figura \ref{fig:AutomaExercicioLR34} a seguir.
+\end{exercise}
+
+
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+		\node[state, initial]				(A)               	{$q_0$};
+		\node[state, accepting]				(B) [right of=A] 	{$q_1$};
+		\node[state]				        (C) [right of=B] 	{$q_2$};
+		
+		\path[->] (A) +(-1,0) edge (A)
+		
+		%Transições:
+		%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+		(A) edge [bend left]  				node {$1,0$} 			 (B)
+		(B) edge [bend left]  				node {$\lambda$}		 (A)
+		(B) edge [loop above]				node {$1$}				 ( )
+		(B) edge [bend left]				node {$0,1$}			 (C)
+		(C) edge [bend left]				node {$1, \lambda$}		 (B)
+		(C) edge [loop above]				node {$0$}				 ( );
+	\end{tikzpicture}
+	\caption{Autômato para o exercício \ref{exerc:LR34}.}
+	\label{fig:AutomaExercicioLR34}
+\end{figure}
