@@ -616,7 +616,7 @@ Utilizando a definição acima o leitor deve ser capaz de perceber que se um AFD
 		$(\Leftarrow)$ Suponha que $w \in \mathcal{L}(A_1)$, assim pela definição do AFD $A_1$ tem-se que $\widehat{\delta}(q_0, w) = q_2$, entretanto, pela definição de $\delta$ (ver Figura \ref{fig:AFDLinguagem1}) tem-se que $q_2$ só é acessado pelas transições $\delta(q_1, b)$ e $\delta(q_4, a)$, ou seja, $w = w_1a$ ou $w = w_2b$ com $w_1, w_2 \in \Sigma^*$. Agora analisando cada possibilidade em separado tem-se que: 
 		\begin{itemize}
 			\item Para realizar o acesso via $q_1$ é necessário obviamente chegar em $q_1$ e isso só é possível a partir da transição $\delta(q_0, b)$, logo o acesso a $q_2$ via $q_1$ só é permitido para palavras com o prefixo $bb$, agora como toda palavra é prefixo de si mesmo isso já garante que $bb \in \mathcal{L}(A_1)$.
-			\item Já o acesso via $q_4$ só é permitido se antes o autômato conseguir acessar o estado $q_4$, entretanto, $q_4$ só pode ser acessado pela transição $\delta(q_2, a)$ e como visto no caso anterior $q_2$ só pode ser acessado por palavras com prefixo $bb$, note porém, que as transições $\delta(q_2, a) = q_4$ e $\delta(q_4, a) = q_2$ formam um \textit{loop} e assim pode-se concluir que o acesso a $q_2$ via $q_4$ obrigatoriamente é realizado por palavras da forma $bba^{2n}$ com $n \geq 1$.
+			\item Já o acesso via $q_4$ só é permitido pela transição $\delta(q_2, a)$ e como visto no caso anterior tem-se que o estado $q_2$ só pode ser acessado por palavras com prefixo $bb$, note porém, que as transições $\delta(q_2, a) = q_4$ e $\delta(q_4, a) = q_2$ formam um \textit{loop} e assim pode-se concluir que o acesso a $q_2$ via $q_4$ obrigatoriamente é realizado por palavras da forma $bba^{2n}$ com $n \geq 1$.
 		\end{itemize}
 		Note que a palavra $bb$ pode ser escrita como sendo $bba^0$, portanto, pelas duas análises anteriores pode-se concluir que se $\widehat{\delta}(q_0, w) = q_2$, então $w = bba^{2n}$ com $n \in \mathbb{N}$, e portanto, $w \in L$, completando assim a prova. 
 	\end{proof}
@@ -658,6 +658,8 @@ Utilizando a definição acima o leitor deve ser capaz de perceber que se um AFD
 \end{exem}
 
 Pode-se agora formalizar a primeira das classes de linguagens sendo esta a classe das linguagens regulares, tal classe foi primeiramente definida por Kleene em seu trabalho \cite{kleene1951}, entretanto, em tal ocasião tais linguagens foram chamadas de eventos regulares, como será visto é momentos futuros nesse manuscrito a classe das linguagens regulares é aquela que possui o menor nível complexidade computacional.
+
+\
 
 \begin{definition}[Linguagens Regulares]\label{def:LinguagensRegulares}
 	Uma linguagem $L$ qualquer é dita ser regular se, e somente se, existe um AFD $A$ tal que $L = \mathcal{L}(A)$. A classe de todas as linguagens regulares é denotada por $\mathcal{L}_{Reg}$.
@@ -1148,7 +1150,7 @@ Note porém que a definição da função de transição $\underline{\delta_N}$ 
 \end{definition}
 
 \begin{exem}
-	Considere o $\lambda$-AFN da Figura \ref{fig:LAFN1} tem-se para o estado $q_0$ que,
+	Considere o $\lambda$-AFN da Figura \ref{fig:LAFN1} tem-se para o estado $q_1$ que,
 	\begin{eqnarray}\label{eq:LAFNeq1}
 		\lambda\text{-fecho}^{2}(q_1) & = &  \bigcup_{q' \in \lambda\text{-fecho}^{1}(q_1)} \delta_N(q', \lambda)
 	\end{eqnarray}
@@ -1239,9 +1241,9 @@ Os aspectos relacionados a mostrar que um $\lambda$-AFN reconhece uma linguagem 
 	\begin{figure}[h]
 		\centering
 		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
-			\node[state, initial, accepting]	(A)               	{$s_0$};
-			\node[state, accepting]				(B) [right of=A] 	{$s_1$};
-			\node[state]				        (C) [right of=B] 	{$s_2$};
+			\node[state, initial]						(A)               	{$s_0$};
+			\node[state]								(B) [right of=A] 	{$s_1$};
+			\node[state, accepting]				        (C) [right of=B] 	{$s_2$};
 			\path[->] (A) +(-1,0) edge (A)
 			
 			%Transições:
@@ -1431,7 +1433,7 @@ Com respeito aos conjuntos $L_w$ o leitor mais atento pode notar que $L_\lambda 
 \end{prop}
 
 \begin{proof}
-	Suponha que $L_w = L_{w`}$, assim para todo $a \in \Sigma^*$ tem-se que:
+	Suponha que $L_w = L_{w'}$, assim para todo $a \in \Sigma^*$ tem-se que:
 	\begin{eqnarray*}
 		x \in L_{wa} &\Longleftrightarrow & wax \in L\\
 		& \Longleftrightarrow  & ax \in L_w\\
@@ -1586,7 +1588,7 @@ O resultado a seguir diz que se dois estados são equivalentes, então seus suce
 	e desde que $a \in \Sigma^*$ pela Definição \ref{def:EquivalenciaEstados} tem-se que $q \not\equiv q'$, o que conclui a prova da contrapositiva. Desde que a contrapositiva é verdadeira tem-se que afirmação original ``Se $q \equiv q'$, então $\delta(q, a) \equiv \delta(q', a)$'' é também verdadeira.
 \end{proof}
 
-Usando a definição anterior a seguir será apresentado a definição de  AFD (ou colapso) quociente sobre um determinado AFD dado.
+Usando a definição anterior, a seguir será apresentado a definição de  AFD (ou colapso) quociente sobre um determinado AFD dado.
 
 \begin{definition}[AFD quociente]\label{def:AFD-Quociente}
 	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD. O AFD (ou colapso) quociente de $A$ é o AFD $A_{/\equiv} = \langle Q_{/\equiv}, \Sigma, \delta^*, [q_0],  F_{/\equiv}\rangle$ onde $[q_0]$ é a classe de equivalência do estado $q_0$ e para todo $q \in Q$ e $a \in \Sigma$ tem-se que $\delta^*([q], a) = [\delta(q, a)]$ e  $F_{/\equiv} = \{[q] \mid q \in F\}$.
@@ -1743,7 +1745,7 @@ Em termos de ``implementação'' o Algoritmo \ref{alg:AFD-Quociente}  a seguir e
 		\label{fig:Linguagem-AFDM-1}
 	\end{figure}
 	
-	O algoritmo gera a matriz representada na Tabela \ref{tab:AFD-Minimizacao} a seguir, em que a $i$-ésima linha (coluna) representa o estado $q_{i-1}$, onde os espaço marcados com $-$ são aqueles não considerados pelo algoritmo, as posições com $X$ representam os estados não equivalentes, e as posições $(i,j)$ em branco representam os estados equivalentes.	
+	O algoritmo gera a matriz representada na Tabela \ref{tab:AFD-Minimizacao} a seguir, em que a $i$-ésima linha (coluna) representa o estado $q_{i-1}$, e os espaço marcados com $-$ são aqueles não considerados pelo algoritmo, as posições com $X$ representam os estados não equivalentes, e as posições $(i,j)$ em branco representam os estados equivalentes.	
 		
 	\begin{table}[h]
 		\scriptsize
@@ -1757,8 +1759,8 @@ Em termos de ``implementação'' o Algoritmo \ref{alg:AFD-Quociente}  a seguir e
 			- & - & - & - & - & X\\ \hline
 			- & - & - & - & X & -\\ \hline
 		\end{tabular}
-		\label{tab:AFD-Minimizacao}
 		\caption{Matriz de equivalência $M$ para o AFD \ref{fig:Linguagem-AFDM-1}.}
+		\label{tab:AFD-Minimizacao}
 	\end{table}
 	
 	A partir desta Tabela \ref{tab:AFD-Minimizacao} o Algoritmo \ref{alg:AFD-Quociente} gera as seguintes classes de equivalência: $[q_0] = \{q_0, q_3\}$, $[q_1] = \{q_1, q_4\}$ e $[q_2] = \{q_2, q_5\}$, depois define as transições e o conjunto de estados finais como esboçadas pelo grafo de Transição na Figura \ref{fig:Linguagem-AFDM-2}.
@@ -1793,6 +1795,52 @@ Desde que $\delta^*([q], a) = [\delta(q, a)]$ é um caso particular do resultado
 \begin{proof}
 	A demonstração fica como exercício ao leitor.
 \end{proof}
+
+\subsection{Tradutores Finitos}
+
+Escrever depois...
+
+\subsection{A Notação Matricial}
+
+Escrever depois...
+
+\section{Expressões Regulares}
+
+Até agora as linguagens foram vistas sobre a ótica das máquinas de computação, isto é, sobre a perspectiva dos autômatos finitos, em tal perspectiva as linguagens são vistas como sendo conjuntos de palavras sobre os quais as máquinas tinha a tarefa de reconhecer seus elementos. 
+
+Neste seção será apresentada uma nova visão de aspecto mais algébrico para as linguagens, essa nova visão foi introduzida por Kleene em seu seminal \textit{paper} ``\textit{Representation of events in nerve nets and finite automata}'' \cite{kleene1951}, tal perspectiva consiste em um sistema formal (com sintaxe e semântica) chamado de expressões  regulares, a seguir é formalizado a sintaxe das expressões regulares.
+
+\begin{definition}[Conjunto das Expressões Regulares (Sintaxe)]\label{def:ExpRegularesSintaxe}
+	Seja $\Sigma$ uma alfabeto, o conjunto de todas as expressões regulares sobre $\Sigma$, denotado por $Exp_\Sigma$, é o conjunto indutivamente gerado pelas seguintes regras.
+	\begin{itemize}
+		\item[ ]\textbf{(B)ase}: $\emptyset, \lambda$ e cada $a \in \Sigma$, são expressões regulares\footnote{As expressões regulares da base costumam ser chamadas de expressões regulares primitivas.}.
+		\item[ ]\textbf{(P)asso indutivo}:  Se $r_1, r_2 \in Exp_\Sigma$, então $r_1 + r_2, r_1 \cdot r_2, r_1^*, (r_1) \in Exp_\Sigma$.
+		\item[ ]\textbf{(F)echo}: $Exp_\Sigma$ é exatamente o conjunto dos elementos obtidos a partir \textbf{(B)} ou usando-se uma quantidade finita (podendo ser nula) de aplicações de \textbf{(P)}.
+	\end{itemize}
+\end{definition}
+
+No que diz respeito as expressões regulares é comum assumir que $+, \cdot, (, ), ^* \notin \Sigma$, assim uma expressão regular nem sempre é uma palavra sobre $\Sigma$, em geral os símbolos $+$ e $\cdot$ são lidos como soma e produto \cite{carroll1989}. Além disso, como dito em \cite{benjaLivro2010} se $r_1, r_2 \in Exp_\Sigma$, então costuma-se escrever $r_1r_2$ em vez de $r_1\cdot r_2$.
+
+\begin{exem}
+	Considerando o alfabeto $\{0,1\}$ tem-se que $(1 + 1)0, 01 \in Exp_\Sigma$. Essa afirmação pode ser verificada construindo tais palavras facilmente, basta pela regra \textbf{(B)} tem-se que  $0$ e $1$ são expressões regulares primitivas, assim usando a regra \textbf{(P)} pode-se construir as expressões $1 + 1$ e $01$, agora aplicando novamente a regra \textbf{(P)} sobre a expressão $1 + 1$ pode-se gerar a expressão $(1 + 1)$, finalmente, aplicando \textbf{(P)} novamente obtem-se a expressão $(1+1)0$ e isso mostra que de fato $(1 + 1)0, 01 \in Exp_\Sigma$.
+\end{exem}
+
+\begin{exem}
+	Considerando o alfabeto $\{a, b, c\}$ tem-se que $a(\emptyset + (bc^*)) \in Exp_\Sigma$. Essa afirmação pode ser verificada construindo tal palavra, uma vez que, $a, b$ e $c$ são expressões regulares primitivas aplicando o passo \textbf{(B)} varias vezes será obtida a expressão regular $a(\emptyset + (bc^*)$.
+\end{exem}
+
+
+\begin{definition}[Semântica das Expressão Regulares]\label{def:ExpRegularesSemantica}
+	Seja $Exp_\Sigma$ o conjunto das expressões regulares sobre $\Sigma$,  a semântica (ou interpretação) de $Exp_\Sigma$ é uma função $\mathcal{L}: Exp_\Sigma \rightarrow \Sigma^*$ definida recursivamente para todo $r, r_1, r_2  \in Exp_\Sigma$ pelas seguintes regras.
+	\begin{itemize}
+		\item[(i)] Se $r \in \Sigma \cup \{\lambda\}$, então $\mathcal{L}(r) = \{r\}$.
+		\item[(ii)] Se $r = \emptyset$, então $\mathcal{L}(r) = \emptyset$.
+		\item[(iii)] Se $r = r_1 + r_2$, então $\mathcal{L}(r) = \mathcal{L}(r_1) \cup \mathcal{L}(r_2)$.
+		\item[(iv)] Se $r = r_1 \cdot r_2$, então $\mathcal{L}(r) = \mathcal{L}(r_1)\mathcal{L}(r_2)$.
+		\item[(v)] Se $r = r_1^*$, então $\mathcal{L}(r) = (\mathcal{L}(r_1))^*$.
+		\item[(vi)] Se $r = (r_1)$, então $\mathcal{L}(r) = \mathcal{L}(r_1)$.	
+	\end{itemize}
+\end{definition}
 
 \section{Questionário}
 
@@ -1993,7 +2041,7 @@ Desde que $\delta^*([q], a) = [\delta(q, a)]$ é um caso particular do resultado
 \end{exercise}
 
 \begin{exercise}\label{exerc:LR18}
-	Dado a linguagem $L = \{0101^m \mid m \leq 1\} \cup \{010^n \mid n \in \mathbb{N}\}$ construa um AFN com 5 ou menos estados que aceite a linguagem $L$.
+	Dado a linguagem $L = \{0101^m \mid m \geq 1\} \cup \{010^n \mid n \in \mathbb{N}\}$ construa um AFN com 5 ou menos estados que aceite a linguagem $L$.
 \end{exercise}
 
 \begin{exercise}\label{exerc:LR19}
