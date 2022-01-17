@@ -1821,6 +1821,10 @@ Neste seção será apresentada uma nova visão de aspecto mais algébrico para 
 
 No que diz respeito as expressões regulares é comum assumir que $+, \cdot, (, ), ^* \notin \Sigma$, assim uma expressão regular nem sempre é uma palavra sobre $\Sigma$, em geral os símbolos $+$ e $\cdot$ são lidos como soma e produto \cite{carroll1989}. Além disso, como dito em \cite{benjaLivro2010} se $r_1, r_2 \in Exp_\Sigma$, então costuma-se escrever $r_1r_2$ em vez de $r_1\cdot r_2$.
 
+\begin{rema}
+	Também é possível encontrar referência em que o termo expressão regular seja trocado para álgebra de Kleene.
+\end{rema}
+
 \begin{exem}
 	Considerando o alfabeto $\{0,1\}$ tem-se que $(1 + 1)0, 01 \in Exp_\Sigma$. Essa afirmação pode ser verificada construindo tais palavras facilmente, basta pela regra \textbf{(B)} tem-se que  $0$ e $1$ são expressões regulares primitivas, assim usando a regra \textbf{(P)} pode-se construir as expressões $1 + 1$ e $01$, agora aplicando novamente a regra \textbf{(P)} sobre a expressão $1 + 1$ pode-se gerar a expressão $(1 + 1)$, finalmente, aplicando \textbf{(P)} novamente obtem-se a expressão $(1+1)0$ e isso mostra que de fato $(1 + 1)0, 01 \in Exp_\Sigma$.
 \end{exem}
@@ -1829,6 +1833,7 @@ No que diz respeito as expressões regulares é comum assumir que $+, \cdot, (, 
 	Considerando o alfabeto $\{a, b, c\}$ tem-se que $a(\emptyset + (bc^*)) \in Exp_\Sigma$. Essa afirmação pode ser verificada construindo tal palavra, uma vez que, $a, b$ e $c$ são expressões regulares primitivas aplicando o passo \textbf{(B)} varias vezes será obtida a expressão regular $a(\emptyset + (bc^*)$.
 \end{exem}
 
+A seguir será formalizado o conceito de semântica para as expressões regulares, sendo que tal semântica pode ser visto como uma \textbf{semântica denotacional}\footnote{Uma semântica denotacional é aquela em que as funções de valoração usadas, são funções que mapeiam palavras da linguagem para funções parciais que representam o comportamento dos programas.} \cite{scott1971}, que apresenta significado as operações de soma e multiplicação.
 
 \begin{definition}[Semântica das Expressão Regulares]\label{def:ExpRegularesSemantica}
 	Seja $Exp_\Sigma$ o conjunto das expressões regulares sobre $\Sigma$,  a semântica (ou interpretação) de $Exp_\Sigma$ é uma função $\mathcal{L}: Exp_\Sigma \rightarrow \Sigma^*$ definida recursivamente para todo $r, r_1, r_2  \in Exp_\Sigma$ pelas seguintes regras.
@@ -1838,9 +1843,72 @@ No que diz respeito as expressões regulares é comum assumir que $+, \cdot, (, 
 		\item[(iii)] Se $r = r_1 + r_2$, então $\mathcal{L}(r) = \mathcal{L}(r_1) \cup \mathcal{L}(r_2)$.
 		\item[(iv)] Se $r = r_1 \cdot r_2$, então $\mathcal{L}(r) = \mathcal{L}(r_1)\mathcal{L}(r_2)$.
 		\item[(v)] Se $r = r_1^*$, então $\mathcal{L}(r) = (\mathcal{L}(r_1))^*$.
-		\item[(vi)] Se $r = (r_1)$, então $\mathcal{L}(r) = \mathcal{L}(r_1)$.	
+		\item[(vi)] Se $r = (r_1)$, então $\mathcal{L}(r) = (\mathcal{L}(r_1))$.	
 	\end{itemize}
 \end{definition}
+
+Agora como explicado em \cite{carroll1989}, para a valoração de expressões regulares não primitivas, é necessário que seja seguido a precedência dos operadores no momento de combinar as linguagens, sendo tal precedência no sentido de maior precedência para a menor formada pela seguinte ordem: fecho de Kleene, concatenação e união.
+
+\begin{rema}
+	Vale destacar que como na aritmética convencional os parênteses mudam a precedência dos conectivos anteriores, e deve ser avaliados dos mais internos para os mais externos.
+\end{rema}
+
+\begin{rema}
+	A valoração pode vim a gerar situações como $(L)$ onde $L \subseteq \Sigma^*$, neste caso será escrito simplesmente $L$ vem vez de $(L)$.
+\end{rema}
+
+\begin{exem}\label{exe:ValoracaoExpressao1}
+	Dado o alfabeto $\{0,1\}$ e $(00)^* \in Exp_\Sigma$ tem-se que:
+	\begin{eqnarray*}
+		\mathcal{L}((00)^*) & = & (\mathcal{L}((00)))^*\\
+		& = & ((\mathcal{L}(00)))^*\\
+		& = & ((\mathcal{L}(0)\mathcal{L}(0)))^*\\
+		& = & ((\{0\}\{0\}))^*\\
+		& = & ((\{00\}))^*\\
+		& = & (\{00\})^*\\
+		& = & \{00\}^*\\
+		& = & \{\lambda, 00, 0000, 000000, 00000000, \cdots\}
+	\end{eqnarray*}
+	ou seja, a valoração da expressão regular $(00)^*$ consiste da linguagem de todas as palavras $w$ sobre o alfabeto $\{0,1\}$ sem nenhum 1 e que o tamanho seja par, isto é, $|w| = 2k$ para algum $k \in \mathbb{N}$.
+\end{exem}
+
+
+\begin{exem}\label{exe:ValoracaoExpressao2}
+	Dado o alfabeto $\{0,1\}$ e $(0 + 1^*)0 \in Exp_\Sigma$ tem-se que:
+	\begin{eqnarray*}
+		\mathcal{L}((0 + 1^*)0 ) & = & \mathcal{L}((0 + 1^*))\mathcal{L}(0)\\
+		& = & (\mathcal{L}(0 + 1^*))\{0\}\\
+		& = & (\mathcal{L}(0) \cup  \mathcal{L}(1^*))\{0\}\\
+		& = & (\mathcal{L}(0) \cup  (\mathcal{L}(1))^*)\{0\}\\
+		& = & (\{0\} \cup \{1\}^*)\{0\}\\
+		& = & (\{0\} \cup \{\lambda, 1, 11, 111, 1111, \cdots\})\{0\}\\
+		& = & \{\lambda, 0, 1, 11, 111, 1111, \cdots\}\{0\}\\
+		& = & \{0, 00, 10, 110, 1110, 11110, \cdots \}
+	\end{eqnarray*}
+	ou seja, a valoração da expressão regular $\{0,1\}$ e $(0 + 1^*)0$ é exatamente a linguagem de todas as palavras $w$ sobre o alfabeto $\{0,1\}$  sendo que $w = 0^m$ ou $w = 1^n0$ com $m,n \in \mathbb{N}$ tal que $1 \leq m \leq 2$ e $n \geq 1$.
+\end{exem}
+
+\begin{exem}
+	Dado o alfabeto $\{a,b,c\}$ e a expressão $((ab)^* + c)\emptyset \in Exp_\Sigma$ tem-se que:
+	\begin{eqnarray*}
+		\mathcal{L}(((ab)^* + c) \emptyset) & = & \mathcal{L}(((ab)^* + c))\mathcal{L}(\emptyset)\\
+		& = & (\mathcal{L}((ab)^* + c))\emptyset\\
+		& = & (\mathcal{L}((ab)^*) \cup \mathcal{L}(c))\emptyset\\
+		& = & ((\mathcal{L}((ab)))^* \cup \{c\})\emptyset\\
+		& = & (((\mathcal{L}(ab)))^* \cup \{c\})\emptyset\\
+		& = & (((\mathcal{L}(a)\mathcal{L}(b)))^* \cup \{c\})\emptyset\\
+		& = & (((\{a\}\{b\}))^* \cup \{c\})\emptyset\\
+		& = & (((\{ab\}))^* \cup \{c\})\emptyset\\
+		& = & ((\{ab\})^* \cup \{c\})\emptyset\\
+		& = & (\{ab\}^* \cup \{c\})\emptyset\\
+		& = & (\{\lambda, ab, abab, ababab, \cdots\} \cup \{c\})\emptyset\\
+		& = & (\{\lambda, c, ab, abab, ababab, \cdots\})\emptyset\\
+		& = & \{\lambda, c, ab, abab, ababab, \cdots\}\emptyset\\
+		& = & \{\lambda, c, ab, abab, ababab, \cdots\}
+	\end{eqnarray*}
+	portanto, a valoração da expressão regular $((ab)^* + c)\emptyset$ é exatamente a linguagem de todas as palavras $w$ sobre o alfabeto $\{a,b,c\}$  onde $w = c^m$ ou $w = (ab)^n$ com $m,n \in \mathbb{N}$ tal que $m \leq 1$ e $n \geq 1$.
+\end{exem}
+
 
 \section{Questionário}
 
