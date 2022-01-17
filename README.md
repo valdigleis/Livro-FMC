@@ -18,7 +18,7 @@ Atualmente os tópicos aos quais este manuscrito irá atacar são:
 - Teoria Intuitiva dos Conjuntos
 - Estruturas Algébricas
 - Lógica (clássicas e não-clássicas)
-- Combinatória Teoria dos Números
+- Combinatória e Teoria dos Números
 - Linguagem Formais e Autômatos
 - Computabildiade e Decidibilidade
 - Análise de Algoritmos e Complexidade
