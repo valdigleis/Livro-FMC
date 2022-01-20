@@ -1559,7 +1559,7 @@ Pode-se agora finalmente enunciar o Teorema Myhill-Nerode que estabelece uma car
 	Direto dos Lemas \ref{lema:LimiteInferiorEstados}, \ref{lema:LimiteSuperiorEstados} e \ref{lema:UnicadadeMinAFD}.
 \end{proof}
 
-Apesar de extremamente elegante o resultado exposto pelo Teorema Myhill-Nerode apresentado anteriormente, não fornece um procedimento (ou algoritmo) geral explícito para construir um AFD mínimo equivalente a outro AFD dado. Esse processo de obter um AFD mínimo é chamado de minimização \cite{benjaLivro2010}, e o mesmo é baseado na ideia de relação equivalência entre estados e do espaço quociente de estados em um AFD. Primeiro será apresentado a formalização matemática da construção do AFD quociente e depois o pseudo-código de tal construção
+Apesar de extremamente elegante o resultado exposto pelo Teorema Myhill-Nerode apresentado anteriormente, não fornece um procedimento (ou algoritmo) geral explícito para construir um AFD mínimo equivalente a outro AFD dado. Esse processo de obter um AFD mínimo é chamado de minimização \cite{benjaLivro2010}, e o mesmo é baseado na ideia de relação equivalência entre estados e do espaço quociente de estados em um AFD. Primeiro será apresentado a formalização matemática da construção do AFD quociente e depois o pseudo-código de tal construção.
 
 \begin{definition}[Estados Equivalentes]\label{def:EquivalenciaEstados}
 	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD. A relação de equivalência entre dois estados $q, q' \in Q$ será denotado por $q \equiv q'$ e será verdadeira quando para todo $w \in \Sigma^*$ tem-se que $\widehat{\delta}(q, w) \in F \Longleftrightarrow \widehat{\delta}(q', w) \in F$.
@@ -1909,6 +1909,420 @@ Agora como explicado em \cite{carroll1989}, para a valoração de expressões re
 	portanto, a valoração da expressão regular $((ab)^* + c)\emptyset$ é exatamente a linguagem de todas as palavras $w$ sobre o alfabeto $\{a,b,c\}$  onde $w = c^m$ ou $w = (ab)^n$ com $m,n \in \mathbb{N}$ tal que $m \leq 1$ e $n \geq 1$.
 \end{exem}
 
+\begin{definition}
+	Duas expressões regulares $r_1, r_2 \in Exp_\Sigma$ são dita equivalentes, denotado por $r_1 \equiv r_2$, sempre que $\mathcal{L}(r_1) = \mathcal{L}(r_2)$.
+\end{definition}
+
+\begin{exem}
+	Dada a expressão $00 + (1^*0)$ note que:
+	\begin{eqnarray*}
+		\mathcal{L}(00 + (1^*0)) & = &\mathcal{L}(00) \cup \mathcal{L}((1^*0))\\
+		 & = & \mathcal{L}(0)\mathcal{L}(0) \cup (\mathcal{L}(1^*0))\\
+		 & = & \mathcal{L}(0)\mathcal{L}(0) \cup (\mathcal{L}(1^*)\mathcal{L}(0))\\
+		 & = & \mathcal{L}(0)\mathcal{L}(0) \cup ((\mathcal{L}(1))^*\mathcal{L}(0))\\
+		 & = & \{0\}\{0\} \cup ((\{1\})^*\{0\})\\
+		 & = & \{0\}\{0\} \cup (\{1\}^*\{0\})\\
+		 & = & \{0\}\{0\} \cup (\{\lambda, 1, 11, 111, 1111, \cdots\}\{0\})\\
+		 & = & \{0\}\{0\} \cup (\{0, 10, 110, 1110, 11110, \cdots\})\\
+		 & = & \{0\}\{0\} \cup \{0, 10, 110, 1110, 11110, \cdots\}\\
+		 & = & \{00\} \cup \{0, 10, 110, 1110, 11110, \cdots\}\\
+		 & = & \{0, 00, 10, 110, 1110, 11110, \cdots\}
+	\end{eqnarray*}
+	logo, tal expressão é equivalente a expressão  $\equiv (0 + 1^*)0$ apresentada no Exemplo \ref{exe:ValoracaoExpressao2}. 
+\end{exem}
+
+\begin{prop}
+	Se $r_1, r_2, r_3 \in Exp_\Sigma$, então $r_1 (r_2 + r_3) \equiv r_1r_2 + r_1r_3$.
+\end{prop}
+
+\begin{proof}
+	Assuma que $r_1, r_2, r_3 \in Exp_\Sigma$, logo tem-se que;
+	\begin{eqnarray*}
+		\mathcal{L}(r_1 (r_2 + r_3)) & = & \mathcal{L}(r_1)\mathcal{L}((r_2 + r_3))\\
+		& = & \mathcal{L}(r_1)(\mathcal{L}(r_2 + r_3))\\
+		& = & \mathcal{L}(r_1)(\mathcal{L}(r_2) \cup  \mathcal{L}(r_3))\\ 
+		& = & \mathcal{L}(r_1)(\mathcal{L}(r_2) \cup  \mathcal{L}(r_3))\\ 
+		& = & \mathcal{L}(r_1)\mathcal{L}(r_2) \cup  \mathcal{L}(r_1)\mathcal{L}(r_3)\\ 
+		& = & \mathcal{L}(r_1r_2 + r_1r_3)
+	\end{eqnarray*}
+	O que conclui a prova.
+\end{proof}
+
+Agora será mostrado qual a classe (ou tipo) de linguagens definidas por expressões regulares, ou seja, agora será mostrado a que classe pertencem as linguagens fruto da valoração das expressões regulares.
+
+\begin{theorem}[Transformação de expressões regulares para AFN]\label{teo:Exp-AFN}
+	Se $L = \mathcal{L}(r)$ para alguma expressão regular $r$, então existe um $\lambda$-AFN $A$ tal que $L = \mathcal{L}(A)$.
+\end{theorem}
+
+\begin{proof}
+	Suponha que $L = \mathcal{L}(r)$ para alguma expressão regular $r$, agora por indução sobre o número de operadores em $r$ será mostrado que existe um $\lambda$-AFN $A$ tal que $L = \mathcal{L}(A)$.
+	
+	\begin{itemize}
+		\item \textbf{Base da indução}:
+		
+		Para as expressões regulares $r$ com $0$ operadores, isto é, $r = \lambda$ ou $r = \emptyset$ ou $r = a$ para $a \in \Sigma$ considere os seguintes $\lambda$-AFN.
+		
+		\begin{figure}[h]
+			\centering
+			\subfloat[$\lambda$-AFN $A_\lambda$.]{
+				\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3cm, on grid,
+					auto, state/.append style={minimum size=2em}, thick ]
+					\node[state,initial, accepting]   (A)               {$q_0$};
+					
+					
+					\path[->] (A) +(-1,0) edge (A)
+					
+					%Transições:
+					%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+					;
+				\end{tikzpicture}
+				\label{Ima:Automato-A}
+			}\quad\quad\quad
+			\subfloat[$\lambda$-AFN $A_\emptyset$.]{
+				\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3cm, on grid,
+					auto, state/.append style={minimum size=2em}, thick ]
+					\node[state,initial]   (A)               {$q_0$};
+					
+					
+					\path[->] (A) +(-1,0) edge (A)
+					
+					%Transições:
+					%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+					;
+				\end{tikzpicture}
+				\label{Ima:Automato-B}
+			}\quad\quad\quad
+			\subfloat[$\lambda$-AFN $A_a$.]{
+				\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid,
+					auto, state/.append style={minimum size=2em}, thick ]
+					\node[state,initial]    (A)               {$q_0$};
+					\node[state, accepting] (B)[right of=A]   {$q_1$};
+					
+					
+					\path[->] (A) +(-1,0) edge (A)
+					
+					%Transições:
+					%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+					(A) edge 				            node {$a$}           (B);
+				\end{tikzpicture}
+				\label{Ima:Automato-C}
+			}%
+			\caption{Os três $\lambda$-AFN básicos para as expressões regulares primitivas.}
+			\label{fig:AFD-basicos}
+		\end{figure}
+		
+		Claramente tem-se que $\mathcal{L}(\lambda) = \mathcal{L}(A_\lambda), \mathcal{L}(\emptyset) = \mathcal{L}(A_\emptyset)$ e $\mathcal{L}(a) = \mathcal{L}(A_a)$ para todo $a \in \Sigma$.
+		
+		
+		\item \textbf{Hipótese indutiva (HI)}:
+		
+		Suponha que para toda $r \in Exp_\Sigma$ com $n$ operadores tal que $n \geq 0$ existe um $\lambda$-AFN $A = \langle Q_r, \Sigma, \delta_N^r, q_0^r, \{q_f^r\}\rangle$ tal que $\mathcal{L}(r) = \mathcal{L}(A^r)$. Para fins de representação considere que tal $\lambda$-AFN $A^r$ tem a forma a seguir.
+		
+		\begin{figure}[h]
+			\centering
+			\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid,
+				auto, state/.append style={minimum size=2em}, thick ]
+				\node[state,initial]   (A)               {$q_0^r$};
+				\node				   (B)[right of=A]   {$\cdots$};
+				\node[state, accepting](C)[right of=B]   {$q_f^r$};
+				
+				
+				\path[->] (A) +(-1,0) edge (A)
+				
+				%Transições:
+				%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+				(A) edge 				            node { }         (B)
+				(B) edge 				            node { }         (C);
+			\end{tikzpicture}
+			\caption{$\lambda$-AFN $A^r$ para uma expressão $r$ genérica com $n$ operadores.}
+			\label{Ima:Automato-D}
+		\end{figure}
+		
+		\item \textbf{Passo indutivo}:
+		
+		
+		Agora dado uma expressão regular $r$ com $n + 1$ operadores tal que $n \geq 0$, existe três (e apenas três) casos possíveis para a forma de $r$. 
+		
+		\begin{itemize}
+			\item[\textbf{1º}] \textbf{Caso}: $r = r_1 + r_2$, assim respectivamente $r_1$ e $r_2$ possuem $k_1$ e $k_2$ operadores tais que $k_1 + k_2 = n$, obviamente $k_1, k_2 \geq 0$ e, portanto, por \textbf{(HI)} tem-se que existem $A^{r_1} = \langle Q_{r_1}, \Sigma, \underline{\delta_N}^{r_1}, q_0^{r_1}, \{q_f^{r_1}\}\rangle$ e $A^{r_2} = \langle Q_{r_2}, \Sigma, \underline{\delta_N}^{r_2}, q_0^{r_2}, \{q_f^{r_2}\}\rangle$  tal que $\mathcal{L}(r_1) = \mathcal{L}(A^{r_1})$ e $\mathcal{L}(r_2) = \mathcal{L}(A^{r_2})$, agora pode-se criar um novo $\lambda$-AFN $A^r = \langle Q_{r_1} \cup Q_{r_2} \cup \{q_0\}, \Sigma, \underline{\delta_N}^r, q_0, \{q_f^{r_1}, q_f^{r_2}\}\rangle$ onde,
+			\begin{eqnarray*}
+				\underline{\delta_N}^r(q, a) & = & 
+				\left\{\begin{array}{ll}	
+					\underline{\delta_N}^{r_1}(q, a), & \hbox{se } q \in Q_{r_1}\\	
+					\underline{\delta_N}^{r_2}(q, a), & \hbox{se } q \in Q_{r_2}\\
+					\{q_0^{r_1}, q_0^{r_2}\}, & \hbox{se } q = q_0, a = \lambda\\
+					\emptyset, & \hbox{qualquer outro caso}
+				\end{array}\right.
+			\end{eqnarray*}
+			Para fins de representação considere que tal $\lambda$-AFN $A^r$ tem a forma a seguir.
+			
+			\begin{figure}[h]
+				\centering
+				\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.0cm, on grid,
+					auto, state/.append style={minimum size=2.5em}, thick ]
+					\node[state,initial]   (A)               {$q_0$};
+					\node				   (B)[right of=A]   {};
+					\node[state]		   (C)[above of=B]   {$q_0^{r_1}$};
+					\node				   (C1)[right of=C]	 {$\cdots$};
+					\node[state, accepting](C2)[right of=C1] {$q_f^{r_1}$};
+					\node[state]		   (D)[below of=B]   {$q_0^{r_2}$};
+					\node				   (D1)[right of=D]	 {$\cdots$};
+					\node[state, accepting](D2)[right of=D1] {$q_f^{r_2}$};
+					
+					
+					\path[->] (A) +(-1,0) edge (A)
+					
+					%Transições:
+					%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+					(A) edge 				            node {$\lambda$}         (C)
+					(A) edge 				            node {$\lambda$}         (D)
+					(C) edge 				            node {}			         (C1)
+					(C1) edge 				            node {}			         (C2)
+					(D) edge 				            node {}			         (D1)
+					(D1) edge 				            node {}			         (D2);
+				\end{tikzpicture}
+				\caption{$\lambda$-AFN $A^r$ para uma expressão $r_1 + r_2$.}
+				\label{Ima:Automato-E}
+			\end{figure}
+			
+			Agora note que para todo $w \in \Sigma^*$ tem-se que,
+			\begin{eqnarray*}
+				w \in \mathcal{L}(r) & \Longleftrightarrow & w \in \mathcal{L}(r_1 + r_2)\\
+				& \Longleftrightarrow & w \in \mathcal{L}(r_1) \cup  \mathcal{L}(r_2)\\
+				& \Longleftrightarrow & w \in \mathcal{L}(r_1) \text{ ou } w \in \mathcal{L}(r_2)\\
+				& \Longleftrightarrow & \widehat{\underline{\delta_N}^{r_1}}(q_0^{r_1}, w) \cap \{q_f^{r_1}\} \neq \emptyset \text{ ou } \widehat{\underline{\delta_N}^{r_2}}(q_0^{r_2}, w) \cap \{q_f^{r_2}\} \neq \emptyset\\
+				& \Longleftrightarrow & \widehat{\underline{\delta_N}}(q_0, w) \cap \{q_f^{r_1}\} \neq \emptyset \text{ ou } \widehat{\underline{\delta_N}}(q_0, w) \cap \{q_f^{r_2}\} \neq \emptyset\\
+				& \Longleftrightarrow & \widehat{\underline{\delta_N}}(q_0, w) \cap \{q_f^{r_1}, q_f^{r_2}\} \neq \emptyset\\
+				& \Longleftrightarrow & w \in \mathcal{L}(A^r)
+			\end{eqnarray*}
+			
+			\item[\textbf{2º}] \textbf{Caso}: $r = r_1r_2$, assim novamente $r_1$ e $r_2$ possuem $k_1$ e $k_2$ operadores tais que $k_1 + k_2 = n$, obviamente $k_1, k_2 \geq 0$ e, portanto, por \textbf{(HI)} tem-se que existem $A^{r_1} = \langle Q_{r_1}, \Sigma, \underline{\delta_N}^{r_1}, q_0^{r_1}, \{q_f^{r_1}\}\rangle$ e $A^{r_2} = \langle Q_{r_2}, \Sigma, \underline{\delta_N}^{r_2}, q_0^{r_2}, \{q_f^{r_2}\}\rangle$  tal que $\mathcal{L}(r_1) = \mathcal{L}(A^{r_1})$ e $\mathcal{L}(r_2) = \mathcal{L}(A^{r_2})$, agora pode-se criar um novo $\lambda$-AFN $A^r = \langle Q_{r_1} \cup Q_{r_2}, \Sigma, \underline{\delta_N}^r, q_0^{r_1}, \{q_f^{r_2}\}\rangle$ onde,
+			\begin{eqnarray*}
+				\underline{\delta_N}^r(q, a) & = & 
+				\left\{\begin{array}{ll}	
+					\underline{\delta_N}^{r_1}(q, a), & \hbox{se } q \in Q_{r_1} - \{q^{r_1}_f\}, a \in \Sigma \cup \{\lambda\}\\
+					\underline{\delta_N}^{r_1}(q, a), & \hbox{se } q = q^{r_1}_f, a \in \Sigma\\
+					\underline{\delta_N}^{r_1}(q, a) \cup \{q^{r_1}_0\}, & \hbox{se } q = q^{r_1}_f, a = \lambda\\
+					\underline{\delta_N}^{r_2}(q, a), & \hbox{se } q \in Q_{r_2} - \{q^{r_2}_f\}, a \in \Sigma \cup \{\lambda\}\\
+					\underline{\delta_N}^{r_2}(q, a), & \hbox{se } q = q^{r_2}_f, a \in \Sigma\\
+					\underline{\delta_N}^{r_2}(q, a) \cup \{q^{r_2}_0\}, & \hbox{se } q = q^{r_2}_f, a = \lambda\\
+					\emptyset, & \hbox{qualquer outro caso}
+				\end{array}\right.
+			\end{eqnarray*}
+			E para fins de representação tal $\lambda$-AFN $A^r$ possui a forma a seguir.
+			
+			\begin{figure}[h]
+				\centering
+				\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.0cm, on grid,
+					auto, state/.append style={minimum size=2em}, thick ]
+					\node[state,initial]   (A)               {$q_0^{r_1}$};
+					\node				   (B)[right of=A]   {$\cdots$};
+					\node[state]           (C)[right of=B]   {$q_f^{r_1}$};
+					\node[state]   		   (D)[right of=C]   {$q_0^{r_2}$};
+					\node				   (E)[right of=D]   {$\cdots$};
+					\node[state, accepting](F)[right of=E]   {$q_f^{r_2}$};
+					
+					
+					\path[->] (A) +(-1,0) edge (A)
+					
+					%Transições:
+					%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+					(A) edge 				            node { }         (B)
+					(B) edge 				            node { }         (C)
+					(C) edge 				            node {$\lambda$} (D)
+					(D) edge 				            node { }         (E)
+					(E) edge 				            node { }         (F);
+				\end{tikzpicture}
+				\caption{$\lambda$-AFN $A^r$ para uma expressão $r_1r_2$.}
+				\label{Ima:Automato-F}
+			\end{figure}
+			
+			Agora note que para todo $w \in \Sigma^*$ tal que $w = xy$ com $x, y \in \Sigma^*$ tem-se que,
+			\begin{eqnarray*}
+				w \in \mathcal{L}(r)  & \Longleftrightarrow & w \in \mathcal{L}(r_1r_2)\\
+				& \Longleftrightarrow & xy \in \mathcal{L}(r_1r_2)\\
+				& \Longleftrightarrow & xy \in \mathcal{L}(r_1)\mathcal{L}(r_2)\\
+				& \Longleftrightarrow & x \in \mathcal{L}(r_1) \text{ e } y \in \mathcal{L}(r_2)\\
+				& \Longleftrightarrow & \widehat{\underline{\delta_N}^{r_1}}(q_0^{r_1}, x) \cap \{q_f^{r_1}\} \neq \emptyset \text{ e } \widehat{\underline{\delta_N}^{r_2}}(q_0^{r_2}, y) \cap \{q_f^{r_2}\} \neq \emptyset\\
+				& \Longleftrightarrow & \widehat{\underline{\delta_N}}(q_0^{r_1}, x) \cap \{q_f^{r_1}\} \neq \emptyset \text{ e } \widehat{\underline{\delta_N}}(q_0^{r_2}, y) \cap \{q_f^{r_2}\} \neq \emptyset\\
+				& \Longleftrightarrow & \widehat{\underline{\delta_N}}(\widehat{\underline{\delta_N}}(q_0^{r_1}, x), y) \cap \{q_f^{r_2}\} \neq \emptyset\\
+				& \Longleftrightarrow & \widehat{\underline{\delta_N}}(q_0^{r_1}, xy) \cap \{q_f^{r_2}\} \neq \emptyset\\
+				& \Longleftrightarrow & w \in \mathcal{L}(A^r)
+			\end{eqnarray*}
+			
+			\item[\textbf{3º}] \textbf{Caso}: $r = r_1^*$, onde $r_1$ tem exatamente $n$ operadores sendo que $n \geq 0$, assim por \textbf{(HI)} tem-se que existem $A^{r_1} = \langle Q_{r_1}, \Sigma, \underline{\delta_N}^{r_1}, q_0^{r_1}, \{q_f^{r_1}\}\rangle$ tal que $\mathcal{L}(r_1) = \mathcal{L}(A^{r_1})$, agora pode-se criar um novo $\lambda$-AFN $A^r = \langle Q_{r_1} \cup \{q_0, q_{f}\}, \Sigma, \underline{\delta_N}^r, q_0^{r_1}, \{q_{f}\}\rangle$ onde,
+			\begin{eqnarray*}
+				\underline{\delta_N}^r(q, a) & = & \left\{
+				\begin{array}{ll}	
+					\underline{\delta_N}^{r_1}(q, a), & \hbox{se } q \in Q_{r_1} - \{q^{r_1}_f\}\\
+					\underline{\delta_N}^{r_1}(q, a), & \hbox{se } q  = q^{r_1}_f, a \in \Sigma \\
+					\underline{\delta_N}^{r_1}(q, a) \cup \{q_f\}, & \hbox{se } q  = q^{r_1}_f, a = \lambda \\
+					\{q_0^{r_1}, q_f\}, & \hbox{se } q = q_0, a = \lambda\\
+					\{q_0^{r_1}\}, & \hbox{se } q = q_f, a = \lambda\\
+					\emptyset, & \hbox{qualquer outro caso}
+				\end{array}\right.
+			\end{eqnarray*}
+			E para fins de representação tal $\lambda$-AFN $A^r$ tem sua forma como descrita pela figura a seguir.
+			
+			\begin{figure}[h]
+				\centering
+				\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid,
+					auto, state/.append style={minimum size=3em}, thick ]
+					\node[state,initial]   (A)               {$q_0$};
+					\node[state] 		   (B)[right of=A]   {$q_0^{r_1}$};
+					\node		           (C)[right of=B]   {$\cdots$};
+					\node[state]   		   (D)[right of=C]   {$q_f^{r_1}$};
+					\node[state, accepting](E)[right of=D]   {$q_f$};
+					
+					
+					\path[->] (A) +(-1,0) edge (A)
+					
+					%Transições:
+					%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+					(A) edge 				            node {$\lambda$} (B)
+					(A) edge [bend left]				node {$\lambda$} (E)
+					(B) edge 				            node { }         (C)
+					(C) edge 				            node {} 		 (D)
+					(D) edge 				            node {$\lambda$} (E)
+					(E) edge [bend left]				node {$\lambda$} (B);
+				\end{tikzpicture}
+				\caption{$\lambda$-AFN $A^r$ para uma expressão $r_1^*$.}
+				\label{Ima:Automato-G}
+			\end{figure}
+			
+			A prova de que $\mathcal{L}(r) = \mathcal{L}(A^r)$ ficará de exercício ao leitor. Agora os três caso anteriores permite afirma que sempre existe um $\lambda$-AFN $A$ tal que $L = \mathcal{L}(A)$.
+		\end{itemize}
+	\end{itemize}
+\end{proof}
+
+Uma consequência imediata deste teorema é apresentada a seguir.
+
+\begin{corollary}
+	A linguagem (ou valoração) de qualquer $r \in Exp_\Sigma$ é uma linguagem regular.
+\end{corollary}
+
+\begin{proof}
+	Direto do Teorema \ref{teo:Exp-AFN} e o Corolário \ref{col:RegularLAFN}.
+\end{proof}
+
+\begin{exem}\label{exe:Expressao-AFN}
+	Dado o alfabeto $\{a,b\}$ e $(ab)^* \in Exp_\Sigma$  pelo Teorema \ref{teo:Exp-AFN} tem-se que,
+	
+	\begin{figure}[h]
+		\centering
+		\subfloat[$\lambda$-AFN para $\mathcal{L}(a)$.]{
+			\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3cm, on grid,
+				auto, state/.append style={minimum size=2.5em}, thick ]
+				\node[state,initial]    (A)               {$q^a_0$};
+				\node[state, accepting] (B)[right of=A]   {$q^a_1$};
+				
+				
+				\path[->] (A) +(-1,0) edge (A)
+				
+				%Transições:
+				%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+				(A) edge 				            node {$a$}           (B);
+			\end{tikzpicture}
+			\label{Ima:Exp-LAFN1}
+		}\hfill
+		\subfloat[$\lambda$-AFN para $\mathcal{L}(b)$.]{
+			\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3cm, on grid,
+				auto, state/.append style={minimum size=2.5em}, thick ]
+				\node[state,initial]    (A)               {$q^b_0$};
+				\node[state, accepting] (B)[right of=A]   {$q^b_1$};
+				
+				
+				\path[->] (A) +(-1,0) edge (A)
+				
+				%Transições:
+				%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+				(A) edge 				            node {$b$}           (B);
+			\end{tikzpicture}
+			\label{Ima:Exp-LAFN2}
+		}%
+		\caption{Os $\lambda$-AFN básicos para as expressões regulares primitivas $a$ e $b$.}
+		\label{fig:LAFD-basicos1}
+	\end{figure}
+
+	Pode-se então gerar o $\lambda$-AFN par a concatenação $ab$ como se segue,
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3cm, on grid,
+			auto, state/.append style={minimum size=2.5em}, thick ]
+			\node[state,initial]    (A)               {$q^a_0$};
+			\node[state] 			(B)[right of=A]   {$q^a_1$};
+			\node[state] 			(C)[right of=B]   {$q^b_0$};
+			\node[state, accepting] (D)[right of=C]   {$q^b_1$};
+			
+			
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge 				            node {$a$}           (B)
+			(B) edge 				            node {$\lambda$}     (C)
+			(C) edge 				            node {$b$}           (D);
+		\end{tikzpicture}
+		\caption{$\lambda$-AFN para as expressões regular $ab$.}
+		\label{fig:LAFD-basicos2}
+	\end{figure}
+
+	E finalmente o $\lambda$-AFN a seguir aceita (ou computa) a expressão completa.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid,
+			auto, state/.append style={minimum size=2.0em}, thick ]
+			\node[state,initial]    (A)               {$q_0$};
+			\node[state]		    (B)[right of=A]   {$q^a_0$};
+			\node[state] 			(C)[right of=B]   {$q^a_1$};
+			\node[state] 			(D)[right of=C]   {$q^b_0$};
+			\node[state]			(E)[right of=D]   {$q^b_1$};
+			\node[state, accepting] (F)[right of=E]   {$q_f$};
+			
+			
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge 				            node {$\lambda$}     (B)
+			(B) edge 				            node {$a$}           (C)
+			(C) edge 				            node {$\lambda$}     (D)
+			(D) edge 				            node {$b$}           (E)
+			(E) edge 				            node {$\lambda$}     (F)
+			(A) edge [bend left]	            node {$\lambda$}     (F)
+			(F) edge [bend left]	            node {$\lambda$}     (B);
+		\end{tikzpicture}
+		\caption{$\lambda$-AFN para as expressões regular $(ab)^*$.}
+		\label{fig:LAFD-basicos3}
+	\end{figure} 
+\end{exem}
+
+\begin{rema}
+	Apenas na demonstração a seguir considere que o símbolo $\Sigma$ representa o somatório enumerável, com respeito a soma $(+)$ das expressões regulares, além disso, para fins de representação durante tal prova leta $X$ irá representar um alfabeto genérico qualquer.
+\end{rema}
+
+\begin{theorem}
+	Se $L$ é uma linguagem regular, então existe uma expressão regular $r$ tal que $L = \mathcal{L}(r)$.
+\end{theorem}
+
+\begin{proof}
+	Sem perda de generalidade suponha que $L = \mathcal{L}(A)$ para algum AFD $A = \langle \{q_1, \cdots, q_n\}, X, \delta, q_1, F$ em que $n \geq 1$. Agora será construído para todo $k \leq n$ a expressão regular $r^k_{i,j}$ é definida recursivamente como sendo:
+	\begin{eqnarray*}
+		r^0_{i,j} & = &  \left\{
+		\begin{array}{ll}	
+			\displaystyle\sum_{\delta(q_i, a, q_j)} a, & \hbox{se } i \neq j\\
+			\displaystyle\lambda + \sum_{\delta(q_i, a, q_j)} a, & \hbox{se } i = j\\
+		\end{array}\right.\\
+		r^{k}_{i,j} & = & (r^{k-1}_{i,k}(r^{k-1}_{k,k})^* r^{k-1}_{k,j}) + r^{k-1}_{i,j}
+	\end{eqnarray*}
+	note que $r^{k}_{i,j}$ é a expressão regular cuja valoração é o conjunto de todas as palavras $w \in X^*$ tal que $\widehat{\delta}(q_i, w) = q_j$ de forma que nenhum estado intermediário $q_p$ com $p > k$ seja usado na computação (para detalhes deste fato consulte \cite{benjaLivro2010}). Agora uma vez que $A$ pode ter vários estados $q_f \in F$ tem-se então que cada $w \in X^*$ tal que $\widehat{\delta}(q_1, w) = q_f$ é uma palavra aceita por $A$, ou seja, $w \in \mathcal{L}(A)$ e, portanto, para $n = \# Q$ a valoração da expressão regular $r$ definida por, 
+	\begin{eqnarray*}
+		r = \sum_{q_f \in F} r^n_{1, f}
+	\end{eqnarray*}
+	é exatamente o conjunto de todas as palavras aceitas por $A$, ou seja, $\mathcal{L}(A) = \mathcal{L}(r)$. 
+\end{proof}
 
 \section{Questionário}
 
