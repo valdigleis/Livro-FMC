@@ -2308,7 +2308,7 @@ Uma consequência imediata deste teorema é apresentada a seguir.
 \end{theorem}
 
 \begin{proof}
-	Sem perda de generalidade suponha que $L = \mathcal{L}(A)$ para algum AFD $A = \langle \{q_1, \cdots, q_n\}, X, \delta, q_1, F$ em que $n \geq 1$. Agora será construído para todo $k \leq n$ a expressão regular $r^k_{i,j}$ é definida recursivamente como sendo:
+	Sem perda de generalidade suponha que $L = \mathcal{L}(A)$ para algum $\lambda$-AFN $A = \langle \{q_1, \cdots, q_n\}, X, \delta, q_1, F \rangle$ em que $n \geq 1$. Agora será construído para todo $k \leq n$ a expressão regular $r^k_{i,j}$ é definida recursivamente como sendo:
 	\begin{eqnarray*}
 		r^0_{i,j} & = &  \left\{
 		\begin{array}{ll}	
@@ -2317,12 +2317,250 @@ Uma consequência imediata deste teorema é apresentada a seguir.
 		\end{array}\right.\\
 		r^{k}_{i,j} & = & (r^{k-1}_{i,k}(r^{k-1}_{k,k})^* r^{k-1}_{k,j}) + r^{k-1}_{i,j}
 	\end{eqnarray*}
-	note que $r^{k}_{i,j}$ é a expressão regular cuja valoração é o conjunto de todas as palavras $w \in X^*$ tal que $\widehat{\delta}(q_i, w) = q_j$ de forma que nenhum estado intermediário $q_p$ com $p > k$ seja usado na computação (para detalhes deste fato consulte \cite{benjaLivro2010}). Agora uma vez que $A$ pode ter vários estados $q_f \in F$ tem-se então que cada $w \in X^*$ tal que $\widehat{\delta}(q_1, w) = q_f$ é uma palavra aceita por $A$, ou seja, $w \in \mathcal{L}(A)$ e, portanto, para $n = \# Q$ a valoração da expressão regular $r$ definida por, 
+	note que $r^{k}_{i,j}$ é a expressão regular cuja valoração é o conjunto de todas as palavras $w \in X^*$ tal que $\widehat{\delta}(q_i, w) = q_j$ de forma que nenhum estado intermediário $q_p$ com $p > k$ seja usado na computação (para detalhes deste fato consulte \cite{benjaLivro2010, hopcroft2008}). Agora uma vez que $A$ pode ter vários estados $q_f \in F$ tem-se então que cada $w \in X^*$ tal que $\widehat{\delta}(q_1, w) = q_f$ é uma palavra aceita por $A$, ou seja, $w \in \mathcal{L}(A)$ e, portanto, para $n = \# Q$ a valoração da expressão regular $r$ definida por, 
 	\begin{eqnarray*}
 		r = \sum_{q_f \in F} r^n_{1, f}
 	\end{eqnarray*}
 	é exatamente o conjunto de todas as palavras aceitas por $A$, ou seja, $\mathcal{L}(A) = \mathcal{L}(r)$. 
 \end{proof}
+
+\begin{exem}
+	Considere o AFD esboçado pela Figura \ref{fig:AFD-Expressao}, 
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.5cm, on grid,
+			auto, state/.append style={minimum size=3.0em}, thick ]
+			\node[state,initial]    (A)               {$q_1$};
+			\node[state, accepting] (B)[right of=A]   {$q_2$};
+			
+			
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge [loop above]				node {$b$}     ( )
+			(B) edge [loop above]				node {$b$}     ( )
+			(A) edge [bend left]	            node {$a$}     (B)
+			(B) edge [bend left]	            node {$a$}     (A);
+		\end{tikzpicture}
+		\caption{Um AFD que computa sobre o alfabeto $\{a, b\}$.}
+		\label{fig:AFD-Expressao}
+	\end{figure} 
+
+	Como $n = \# Q$ tem-se que $n = 2$, e portanto, a expressão regular cuja valoração corresponde a linguagem do AFD será dada por, 
+	\begin{eqnarray}\label{eq:AFD-EXP0}
+		r^2_{1, 2} & = & (r^{1}_{1, 2}(r^{1}_{2, 2})^*r^{1}_{2, 2}) + r^{1}_{1, 2}
+	\end{eqnarray}
+	Note porém que, 
+	\begin{eqnarray}\label{eq:AFD-EXP1}
+		r^{1}_{1, 2}  & = & (r^{0}_{1, 1}(r^0_{1,1})^* r^0_{1,2}) + r^0_{1,2} \nonumber \\
+		& \equiv & ((\lambda + b)(\lambda + b)^* a) + a\\
+		& \equiv & b^*a \nonumber
+	\end{eqnarray}
+	e
+	\begin{eqnarray}\label{eq:AFD-EXP2}
+		r^{1}_{2, 2}  & = & (r^{0}_{2, 1}(r^0_{1,1})^* r^0_{1,2}) + r^0_{2,2} \nonumber \\
+		& \equiv & (a(\lambda + b)^* a) + (\lambda + b)\\
+		& \equiv & ab^* a + \lambda + b \nonumber
+	\end{eqnarray}
+	substituindo as Equações (\ref{eq:AFD-EXP1}) e (\ref{eq:AFD-EXP2}) na Equação (\ref{eq:AFD-EXP0}) tem-se que,
+	\begin{eqnarray*}
+		r^2_{1, 2} & = & (b^*a(ab^* a + \lambda + b)^* ab^* a + \lambda + b) + (b^*a)\\
+		& \equiv & b^*a(ab^*a + b)^*(ab^* a + \lambda) + b^*a\\
+		& \equiv & b^*a(ab^*a + b)^*+ b^*a\\
+		& \equiv & b^*a(ab^*a + b)^*
+	\end{eqnarray*}
+\end{exem}
+
+\section{Gramática Regulares}
+
+Nas seções anteriores foram apresentados dois formalismos para as linguagens regulares, a saber, formalismo operacional (os autômatos) e o formalismo denotacional (as expressões regulares). Nesta seção será apresentado um terceiro formalismo para as linguagens regulares, sendo este um formalismo gerador (ou axiomático) \cite{menezes1998LFA}. 
+
+Este novo formalismo é baseado em gramática formais e está intimamente ligado a ideia de teoria (ou sistemas) de reescrita \cite{ayala2014}, dito isto pode-se então introduzir as gramática formais.
+
+\begin{definition}[Gramática formal]\label{def:GramaticaFormal}
+	Uma gramática formal é uma estrutura da forma $G = \langle V, \Sigma, S, P \rangle$ onde $V$ é um conjunto não vazio de símbolos chamados variáveis tal que $V \cap \Sigma = \emptyset$, $\Sigma$ é um alfabeto, $S \in V$ é uma variável destacada chamada de \textbf{variável inicial} e $P$ é um conjunto de regras de reescrita\footnote{Tamém é comum encontrar na literatura a nomenclatura regras de produção \cite{benjaLivro2010, linz2006}.} da forma $w \rhd w'$ onde $w \in (V \cup \Sigma)^+$ e $w' \in (V \cup \Sigma)^*$.
+\end{definition}
+
+\begin{exem}\label{exe:GramaticaFormal1}
+	A estrutura $G = \langle \{A, B\}, \{a\}, A, P \rangle$ em que $P$ é formado pelas regras $A \rhd aABa, A \rhd B$ e $B \rhd \lambda$ é uma gramática formal.
+\end{exem}
+
+Qualquer gramática então pode ser visto com um sistema para a geração de palavras através de um mecanismo chamado derivação descrito a seguir.
+
+\begin{definition}[Derivação de palavras]
+	Dado uma gramática $G$ uma palavra $Xw'Y$ é dita derivada a partir de $XwY$ na gramática $G$, denotado por $XwY \ggg_G Xw'Y$, sempre que existe uma regra forma $w \rhd w' \in P$.
+\end{definition}
+
+\begin{exem}
+	Dado a gramática do Exemplo \ref{exe:GramaticaFormal1} tem-se que $aABa \ggg_G aaABaBa$, pois existe em $P$ a regra $A \rhd aABa$.
+\end{exem}
+
+Rigorosamente $\ggg_G$ na verdade é uma relação entre $(V \cup \Sigma)^+$ e $(V \cup \Sigma)^*$, e assim $\ggg_G^*$ denota o fecho transitivo e reflexivo de  $\ggg_G$, além disso, sempre que não causar ambiguidade é comum eliminar a escrita do rótulo da gramática, ou seja, são escritos respectivamente $\ggg^*$ e $\ggg$ em vez de $\ggg_G^*$ e $\ggg_G$. 
+
+
+\begin{definition}[Linguagem de uma gramática]
+	Dado uma gramática $G = \langle V, \Sigma, S, P \rangle$ a linguagem gerada por $G$, denotada por $\mathcal{L}(G)$, corresponde ao conjunto formado por todas as palavras sobre $\Sigma$ que são deriváveis a partir do variável inicial da gramática, ou seja, $\mathcal{L}(G) = \{w \in \Sigma^* \mid S \ggg^* w\}$.
+\end{definition}
+
+\begin{exem}
+	Não é difícil verificar que a gramática do Exemplo \ref{exe:GramaticaFormal1} gera a linguagem $\{w \in \{a\}^* \mid |w| = 2k, k \in \mathbb{N}\}$.
+\end{exem}
+
+\begin{definition}[Gramática Linear]\label{def:GramaticaLinear}
+	Uma gramática $G = \langle V, \Sigma, S, P \rangle$ e dita Linear à direta, ou simplesmente GLD, se todas as suas produções são da forma, 
+	$$A \rhd wB$$
+	e é dita linear á esquerda, ou simplesmente GLE, se todas as suas produções são da forma, 
+	$$A \rhd Bw$$
+	onde $A \in V, B \in V \cup \{\lambda\}$ e $w \in \Sigma^*$.
+\end{definition}
+
+\begin{exem}
+	A gramática $G_1 = \langle \{B, S , A\}, \{a, b\}, S, P \rangle$ onde $P$ é formado pelas regras:
+	\begin{eqnarray*}
+		S & \rhd & aaB\\
+		B & \rhd & bb
+	\end{eqnarray*}
+	é uma GLD.
+\end{exem}
+
+\begin{exem}\label{exe:GLE1}
+	A gramática $G_1 = \langle \{X, S , Y\}, \{0, 1\}, S, P \rangle$ onde $P$ é formado pelas regras:
+	\begin{eqnarray*}
+		S & \rhd & X001\\
+		S & \rhd & Y011\\
+		X & \rhd & S01\\
+		Y & \rhd & \lambda
+	\end{eqnarray*}
+	é uma GLE.
+\end{exem}
+
+Em uma gramática formal $G$ quando para uma palavra $w$ existem $w_1, \cdots, w_n$ tal que há as seguintes regras $w \rhd w_1, \cdots, w \rhd w_n \in P$, é comum para simplificar a escrita do conjunto de regras usar a notação $w \rhd w_1 \mid \cdots \mid w_n$. 
+
+\begin{exem}\label{exe:GLE}
+	Considere a GLE apresentada no Exemplo \ref{exe:GLE1} o conjunto $P$ da mesma poderia ser escrito como:
+	\begin{eqnarray*}
+		S & \rhd & X001 \mid Y011\\
+		X & \rhd & S01\\
+		Y & \rhd & \lambda
+	\end{eqnarray*}
+\end{exem}
+
+\begin{definition}[Gramática Regular]
+	Uma gramática $G$ é dita regular sempre que ela for linear à esquerda ou à direita.
+\end{definition}
+
+Um tipo mais rigoroso de gramática regular como comentado em \cite{benjaLivro2010, linz2006},  são as chamadas gramática regulares unitárias definidas a seguir.
+
+\begin{definition}[Gramáticas Regulares Unitárias]
+	Uma gramática regular $G$ é dita unitária á esquerda (à direita) se ela é linear à esquerda (à direita) e toda produção é da forma $A \rhd Bw$ $(A \rhd wB)$ com $A \in V, B \in V \cup \{\lambda\}$ e $w \in \Sigma \cup \{\lambda\}$.
+\end{definition}
+
+\begin{exem}
+	A gramática $G$ do Exemplo \ref{exe:GLE} é uma gramática regular pois é uma GLD, porém não é uma gramática regular unitária.
+\end{exem}
+
+\begin{rema}
+	De forma natural como o leitor deve estar pensando agora,  duas gramática $G_1$ e $G_2$ serão ditas equivalentes sempre que elas gerarem a mesma linguagens.
+\end{rema}
+
+O próximo resultado estabelece que gramática regulares e gramática regulares unitárias tem o mesmo poder de geração de linguagens.
+
+\begin{theorem}\label{teo:SimplificacaoRegular}
+	$L = \mathcal{L}(G)$ para alguma gramática regular $G$ se, e somente se, existe uma gramática regular unitária $G'$ na mesma direção (esquerda ou direita) tal que $L = \mathcal{L}(G')$.
+\end{theorem}
+
+\begin{proof}
+	$(\Rightarrow)$ Suponha que $L = \mathcal{L}(G)$ para alguma gramática regular $G = \langle V, \Sigma, S, P \rangle$ tal que $G$ seja linear à esquerda (a prova é similar para o caso à direita). Agora construa uma nova gramática $G' = \langle V', \Sigma, S, P' \rangle$ tal que $P'$ é definido usando as seguintes regras: 
+		
+	\begin{itemize}
+		\item[R1:] Se $A \rhd Bw \in P$ onde $B \in V \cup \{\lambda\},  |w| \leq 1$, então $A \rhd Bw \in P'$.
+		\item[R2:] Se $A \rhd Ca_1\cdots a_n \in P$ onde $B \in V$ e $a_i \in \Sigma$ sendo $1 \leq i \leq n$ e $n > 1$, então tem-se que $A \rhd B_na_n, B_n \rhd B_{n-1}a_{n-1}, \cdots, B_2 \rhd Ca_1 \in P'$.
+		\item[R3:] Se $A \rhd a_1\cdots a_n \in P$ onde $a_i \in \Sigma$ sendo $1 \leq i \leq n$ e $n \geq 2$, então tem-se que $A \rhd B_na_n, B_n \rhd B_{n-1}a_{n-1}, \cdots, B_2 \rhd B_1a_1, B_1 \rhd \lambda \in P'$.
+	\end{itemize}
+
+	Para as regras R2 e R3 todo $B_i$ é uma nova variável existente em $V'$ que não existe originalmente em $V$. Claramente a gramática $G'$ é regular unitária à esquerda. Também não é difícil mostra por indução sobre o tamanho das derivações que para todo $w \in \Sigma^*$ tem-se que $S \ggg_G$ se, e somente se, $S \ggg_{G'} w$, portanto, $\mathcal{L}(G) = \mathcal{L}(G')$.
+	
+	$(\Leftarrow)$ Trivial uma vez que toda gramática regular unitária à esquerda (à direita) é um caso particular de gramática regular à esquerda (à direita).
+\end{proof}
+
+\begin{exem}\label{exe:GRU}
+	Considerando a gramática regular do Exemplo \ref{exe:GLE} usando o Teorema \ref{teo:SimplificacaoRegular} é gerado a gramática regular unitária $G' = \langle \{S, B_3, B_2, C_3, C_2, X, D_2, Y\}, \{0, 1\}, S, P'\rangle$ onde $P'$ é formado pelas regras:
+	\begin{eqnarray*}
+		S & \rhd & B_31 \mid C_31\\
+		B_3 & \rhd & B_20\\
+		B_2 & \rhd & X0\\
+		C_3 & \rhd & C_21\\
+		C_2 & \rhd & Y0\\
+		X & \rhd & D_21\\
+		D_2 & \rhd& S0\\
+		Y & \rhd & \lambda
+	\end{eqnarray*}
+\end{exem}
+
+\begin{rema}
+	Obviamente a gramática do Exemplo \ref{exe:GRU} poderia ser otimizada para usar menos variáveis, porém otimização não é o foco de interesse no Teorema \ref{teo:SimplificacaoRegular}.
+\end{rema} 
+
+O próximo resultado estabelece o poder de geração das gramáticas regulares à direta.
+
+\begin{theorem}\label{teo:GRD-AFD}
+	$L = \mathcal{L}(G)$ para alguma gramática regular à direta $G$ se, e somente se, $L$ é uma linguagem regular.
+\end{theorem}
+
+\begin{proof}
+	$(\Rightarrow)$ Suponha que $L = \mathcal{L}(G)$ para alguma gramática regular à direta $G$, assim pelo Teorema \ref{teo:SimplificacaoRegular} existe uma gramática regular unitária à direita $G' = \langle V, \Sigma, S, P \rangle$ tal que $L = \mathcal{L}(G')$, sem perda de generalidade\footnote{Basta gerar uma nova gramática onde toda regra da forma $A \rhd a$ com $a \in \Sigma$ foi substituída pelas regras $A \rhd aC$ e $C \rhd \lambda$ onde $C$ é uma variável nova criada, obviamente a nova gramática continua equivalentes a antiga.} pode-se assumir que toda regra em $P$ é da forma $A \rhd aB$ ou $A \rhd \lambda$ com $A, B \in V$ e $a \in \Sigma \cup \{\lambda\}$, dito isto, pode-se agora construir um $\lambda$-AFN $M = \langle V \cup \{q_f\}, \Sigma, \underline{\delta_N}, S, \{q_f\} \rangle$ tal que:
+	\begin{eqnarray*}
+		B \in \underline{\delta_N}(A, a) & \Longleftrightarrow & A \rhd aB \in P\\
+		q_f \in \underline{\delta_N}(A, \lambda)& \Longleftrightarrow & A \rhd \lambda \in P
+	\end{eqnarray*}
+	Agora será mostrado por indução sobre o tamanho das derivações em $G'$ que se $w$ é derivada por $G'$ e $w \in \Sigma^*$, então é aceita por $M$.
+	\begin{itemize}
+		\item \textbf{Base da indução}:
+		
+		Quando $w$ é derivada em $G'$ com uma única derivação tem-se então duas situações possíveis:
+		\begin{itemize}
+			\item[(1)] Quando $w = \lambda$, obrigatoriamente existe uma regra da forma $S \rhd \lambda$, e pela construção de $M$ tem-se que $q_f \in \underline{\delta_N}(S, \lambda)$, logo $\widehat{\underline{\delta_N}}(S, \lambda) \cap \{q_f\} \neq \emptyset$ e, portanto, $\lambda \in L(M)$. 
+			\item[(2)] Quando $w = aB$, existe em $P$ uma regra da forma $S \rhd aB$ com $a \in \Sigma \cup \{\lambda\}$ e $B \in V$, assim pela construção de $M$ tem-se que $B \in \underline{\delta_N}(A, a)$. Como $aB \notin \Sigma^*$ não há mais nada a fazer nesse caso.
+		\end{itemize}
+		
+		
+		\item \textbf{Hipótese indutiva (HI)}:
+		
+		Suponha que $S \ggg_{G'} w$ em $n$ derivação com $n \geq 1$ tal que:
+		\begin{itemize}
+			\item[(1)] Se $w \in \Sigma^*$, então $w \in \mathcal{L}(M)$.
+			\item[(2)] Se $w = a_1\cdots a_{n-1}B$ com $a_i \in \Sigma \cup \{\lambda\}$ para todo $1 \leq i \leq n-1$ e $B \in V$, então $B \in \widehat{\underline{\delta_N}}(S, a_1\cdots a_{n-1})$.
+		\end{itemize}
+		
+		\item \textbf{Passo indutivo}:
+		
+		Agora dado que $S \ggg_{G'} w'$ em $n+1$ derivações, tem-se obrigatoriamente que acontece o caso (2) de \textbf{(HI)} e nesse caso duas situações são possíveis:
+		\begin{itemize}
+			\item[(1)] Se $w' \in \Sigma^*$, então $w = a_1\cdots a_{n-1}B$ com $a_i \in \Sigma \cup \{\lambda\}$ para todo $1 \leq i \leq n-1$ e existe em $P$ uma produção $B \rightarrow \lambda$, e assim, $w' = a_1\cdots a_{n-1}$, nesta situação pelo caso (2) de \textbf{(HI)} tem-se que $B \in \widehat{\underline{\delta_N}}(S, a_1\cdots a_{n-1})$ e como $B \rightarrow \lambda$ pelo construção de $M$ tem-se que $q_f \in \underline{\delta_N}(B, \lambda)$, consequentemente, $\widehat{\underline{\delta_N}}(S, a_1\cdots a_{n-1}) \cap \{q_f\} \neq \emptyset$ e, portanto, $w' \in \mathcal{L}(M)$.
+			\item[(2)] Se $w' = a_1\cdots a_{n-1}B$ com $a_i \in \Sigma \cup \{\lambda\}$ para todo $1 \leq i \leq n-1$ e $B \in V$, então pela construção de $M$ tem-se que $B \in \widehat{\underline{\delta_N}}(S, w)$ como $w' \notin \Sigma^*$ não há mais nada a fazer nesse caso.
+		\end{itemize}
+	\end{itemize}
+	Portanto, o raciocínio indutivo anterior garante que sempre que  $w$ é derivada por $G'$ e $w \in \Sigma^*$ tem-se que $w \in \mathcal{L}(M)$ e assim pode-se afirmar pelo Corolário \ref{col:RegularLAFN} que $L$ é regular. $(\Leftarrow)$ Suponha que $L$ é uma linguagem regular assim por definição existe um AFD $M = \langle Q, \Sigma, \delta, q_0, F \rangle$ tal que $L = \mathcal{L}(M)$, assim construa uma gramática regular unitária à direita $G = \langle Q, \Sigma, q_0, P \rangle$ onde o conjunto $P$ é definido usando as regras a seguir, 
+	\begin{itemize}
+		\item[(a)] Se $\delta(q_i, a) = q_j$, então $q_i \rhd aq_j \in P$.
+		\item[(b)] Se $q_i \in F$, então $q_i \rhd \lambda \in P$.
+	\end{itemize} 
+	Agora note que para todo $w \in \Sigma^*$ com $w = a_1 \cdots a_n$ tem-se que, 
+	\begin{eqnarray*}
+		w \in \mathcal{L}(M) & \Longleftrightarrow & \widehat{\delta}(q_0, w) \in F\\
+		& \Longleftrightarrow & \widehat{\delta}(q_0, a_1 \cdots a_n) \in F\\
+		& \Longleftrightarrow & (\exists q_f \in F)[\widehat{\delta}(q_0, w) = q_f]\\
+		& \Longleftrightarrow & (\exists q_1, \cdots, q_{n-1} \in Q,  q_f \in F)[\delta(q_0, a_1) = q_1 \land \cdots \land \delta(q_{n-1}, a_n) = q_f]\\
+		& \Longleftrightarrow & (\exists q_1, \cdots, q_{n-1} \in Q,  q_f \in F)[q_0 \rhd a_1q_1, \cdots, q_{n-1} \rhd a_nq_f, q_f \rhd \lambda \in P]\\
+		& \Longleftrightarrow & q_0 \ggg^* a_1 \cdots a_n\\
+		& \Longleftrightarrow & q_0 \ggg^* w\\
+		& \Longleftrightarrow & w \in \mathcal{L}(G)
+	\end{eqnarray*} 
+	portanto, $\mathcal{L}(M) = \mathcal{L}(G)$ o que conclui a prova.
+\end{proof}
+
 
 \section{Questionário}
 
