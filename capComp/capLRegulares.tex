@@ -2458,7 +2458,7 @@ Um tipo mais rigoroso de gramática regular como comentado em \cite{benjaLivro20
 \end{definition}
 
 \begin{exem}
-	A gramática $G$ do Exemplo \ref{exe:GLE} é uma gramática regular pois é uma GLD, porém não é uma gramática regular unitária.
+	A gramática $G$ do Exemplo \ref{exe:GLE} é uma gramática regular pois é uma GLE, porém não é uma gramática regular unitária.
 \end{exem}
 
 \begin{rema}
@@ -2560,6 +2560,70 @@ O próximo resultado estabelece o poder de geração das gramáticas regulares �
 	\end{eqnarray*} 
 	portanto, $\mathcal{L}(M) = \mathcal{L}(G)$ o que conclui a prova.
 \end{proof}
+
+
+\begin{lema}\label{lema:GRD-Reversa}
+	Se $L$ é gerada por uma gramática à direita, então $L^r$ é gerada por uma gramática regular à direita.
+\end{lema}
+
+\begin{proof}
+	Suponha que $L$ é gerada por uma gramática à direita $G$, ou seja, $L = \mathcal{L}(G)$, assim pelo Teorema \ref{teo:GRD-AFD} tem-se que $L$ é regular, logo existe um AFD $M = \langle Q, \Sigma, \delta, q_0, F\rangle$ tal que $L = \mathcal{L}(M)$, agora construa um $\lambda$-AFN $M_1 = \langle Q \cup \{q_f\}, \Sigma, \underline{\delta_N}, q_0, \{q_f\}\rangle$ tal que,
+	\begin{eqnarray*}
+		\underline{\delta_N}(q, a) & = & \left\{\begin{array}{ll}	
+			\{\delta(q, a)\}, & \hbox{se } q \in Q, a \in \Sigma\\
+			\{q_f\}, & \hbox{se } q \in F, a = \lambda \\
+			\emptyset, & \hbox{qualquer outro caso}
+		\end{array}\right.
+	\end{eqnarray*}
+	claramente $L = \mathcal{L}(M_1)$, agora construa um novo $\lambda$-AFN $M_2 = \langle Q \cup \{q_f\}, \Sigma, \underline{\delta'_N}, q_f, \{q_0\}\rangle$ onde para todo $q \in Q \cup \{q_f\}$ e $a \in \Sigma \cup \{\lambda\}$ tem-se que,
+	\begin{eqnarray*}
+		q_i \in \underline{\delta'_N}(q_j, a) & \Longleftrightarrow & q_j \in \underline{\delta_N}(q_i, a)
+	\end{eqnarray*}
+	pela construção de $M_2$ é claro que  $w \in \mathcal{L}(M_1) \Longleftrightarrow w^r \in \mathcal{L}(M_2)$ e, portanto, $L^r = \mathcal{L}(M_2)$. Desde que $M_2$ é um $\lambda$-AFN pelo Corolário \ref{col:RegularLAFN} tem-se que $L^r$ é uma linguagem regular, consequentemente, pelo Teorema \ref{teo:GRD-AFD} existe uma gramática regular à direita $G'$ tal que $L = \mathcal{L}(G')$, o que conclui a prova.
+\end{proof}
+
+O próximo resultado mostra que gramática regulares à esquerda e à direita são equivalentes.
+
+\begin{theorem}[Mudança de direção regular]\label{teo:MudacaDeLadoGramatica}
+	$L$ é gerada por uma gramática à esquerda se, e somente se, $L$ é gerada por uma gramática regular à direita.
+\end{theorem}
+
+\begin{proof}
+	$(\Rightarrow)$ Suponha que $L$ é gerada por uma gramática à esquerda $G = \langle V, \Sigma, S, P \rangle$, pelo Teorema \ref{teo:SimplificacaoRegular} pode-se assumir que $G$ é uma gramática regular unitária também a esquerda, assim todas as regras em $P$ são da forma $A \rhd Ba$ com $A \in V, B \in V \cup \{\lambda\}$ e $a \in \Sigma \cup \{\lambda\}$. Sem perda de generalidade\footnote{Basta gerar uma nova gramática onde toda regra da forma $A \rhd a$ com $a \in \Sigma$ foi substituída pelas regras $A \rhd Ca$ e $C \rhd \lambda$ onde $C$ é uma variável nova criada.} pode-se construir uma nova gramática regular unitária à esquerda $G' = \langle V', \Sigma, S, P'\rangle$ onde toda regra em $P'$ é da forma $A \rhd Ba$ ou $A \rhd \lambda$ com $A, B \in V'$ e $a \in \Sigma \cup \{\lambda\}$ claramente pela construção de $G'$ tem-se que $\mathcal{L}(G) = \mathcal{L}(G')$, agora construa um $\lambda$-AFN $M = \langle V' \cup \{q_f\}, \Sigma, \underline{\delta_N}, S, \{q_f\} \rangle$ onde, 
+	\begin{eqnarray*}
+		B \in \underline{\delta_N}(A, a) & \Longleftrightarrow & A \rhd Ba \in P\\
+		q_f \in \underline{\delta_N}(A, \lambda)& \Longleftrightarrow & A \rhd \lambda \in P
+	\end{eqnarray*} 
+	Agora note que para todo $w = a_1\cdots a_n \in \Sigma^*$ tem-se que,
+	\begin{eqnarray*}
+		w \in \mathcal{L}(G') & \Longleftrightarrow &  a_1\cdots a_n \in \mathcal{L}(G')\\
+		& \Longleftrightarrow & S \ggg_{G'}^* a_1\cdots a_n\\
+		& \Longleftrightarrow & (\exists A_1 \cdots A_n, S \in V)\\
+		& & [S \rhd A_na_n, A_n \rhd A_{n-1}a_{n-1}, \cdots, A_{2} \rhd A_1a_1, A_1 \rhd \lambda \in P']\\
+		& \Longleftrightarrow & (\exists A_1 \cdots A_n, S \in V)\\
+		& & [A_n \in \underline{\delta_N}(S, a_n), A_{n-1} \in \underline{\delta_N}(A_n, a_{n-1}), \cdots,  A_{1} \in \underline{\delta_N}(A_2, a_{1}), \\
+		& &  q_f \in \underline{\delta_N}(A_1, \lambda)]\\
+		& \Longleftrightarrow & a_n\cdots a_1 \in \mathcal{L}(M)\\
+		& \Longleftrightarrow & w^r \in \mathcal{L}(M)
+	\end{eqnarray*}
+	Logo $\mathcal{L}(M) = \mathcal{L}(G')^r$, desde que $M$ é um $\lambda$-AFN tem-se pelo Corolário \ref{col:RegularLAFN} que $\mathcal{L}(G')^r$ é regular, assim pelo Teorema \ref{teo:GRD-AFD} existe uma gramática regular à direita $\hat{G_1}$ que a gera, ou seja, $\mathcal{L}(\hat{G_1}) = \mathcal{L}(G')^r$, mas pelo Lema \ref{lema:GRD-Reversa} irá existir outra gramática regular à direita $\hat{G_2}$ tal que $\mathcal{L}(\hat{G_2}) = \mathcal{L}(\hat{G_1})^r$, mas $ \mathcal{L}(\hat{G_1})^r = (\mathcal{L}(G')^r)^r = (\mathcal{L}(G)^r)^r = (L^r)^r = L$, portanto, $L$ é gerada por uma gramática regular à direita. $(\Leftarrow)$ Suponha que que $L$ é gerada por uma gramática regular à direita, ou seja, que existe uma gramática regular a direita $G$ tal que $L = \mathcal{L}(G)$, assim pelo Lema \ref{lema:GRD-Reversa} irá existir outra gramática regular à direita $G_1 = \langle V, \Sigma, S, P \rangle$ tal que $L^r = \mathcal{L}(G_1)$, sem perda de generalidade pelo Teorema \ref{teo:SimplificacaoRegular} pode-se assumir que $G_1$ é regular unitária à direita, logo todas as suas produções são da forma $A \rhd aB$ com $A \in V, B \in V \cup \{\lambda\}$ e $a \in \Sigma \cup \{\lambda\}$. Dito isso construa uma nova gramática $G_2 = \langle V, \Sigma, S, P'\rangle$ onde $P' = \{A \rhd Ba \mid A \rhd Ba \in P\}$, claramente $G_2$ é unitária à esquerda. Mas pela construção de $G_2$ fica claro que $S \ggg_{G_1}^* w \Longleftrightarrow S \ggg_{G_2}^* w^r$, logo $\mathcal{L}(G_1)^r = \mathcal{L}(G_2)$, mas desde que, $\mathcal{L}(G_1)^r = (L^r)^r = L$, tem-se então que $L$ é gerada por uma gramática linear à esquerda, o que completa  a prova.
+\end{proof}
+
+\begin{exem}
+	Dado a gramática regular à direita $G_1 = \langle \{A, B, C\}, \{a, b\}, A, P_1 \rangle$ com $P_1$ é formado pelas seguintes regras,
+	\begin{eqnarray*}
+		A & \rhd & aC \mid B \\
+		B & \rhd & bB \mid \lambda\\
+		C & \rhd & aA
+	\end{eqnarray*}
+	 claramente $\mathcal{L}(G_1) = \{w \in \{a, b\}^* \mid w = a^{2m}b^n \hbox{ com } m,n \in \mathbb{N}\}$,  agora usando a construção exposta pelo Teorema \ref{teo:MudacaDeLadoGramatica}, é possível construir a gramática regular à esquerda $G_2 = \langle \{A, B, C\}, \{a, b\}, B, P_2 \rangle$ onde $P_2$ é formado pelas seguintes regras,
+	 \begin{eqnarray*}
+	 	B & \rhd & Bb \mid Ab \mid A\\
+	 	A & \rhd & Ca \mid \lambda\\
+	 	C & \rhd & Aa 
+	 \end{eqnarray*}
+	 e obviamente $\mathcal{L}(G_2) = \{w \in \{a, b\}^* \mid w = a^{2m}b^n \hbox{ com } m,n \in \mathbb{N}\}$.
+\end{exem}
 
 
 \section{Questionário}
@@ -2985,3 +3049,161 @@ O próximo resultado estabelece o poder de geração das gramáticas regulares �
 	\caption{Autômato para o exercício \ref{exerc:LR34}.}
 	\label{fig:AutomaExercicioLR34}
 \end{figure}
+
+\begin{exercise}\label{exerc:LR35}
+	Mostre uma expressão regular cuja valoração é exatamente a linguagem $\{aabb, aaabbb, aaba, \lambda\}$. 
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR36}
+	Construa uma expressão regular para cada uma das linguagens descrita no Exercício \ref{exerc:LR10}.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR37}
+	Construa uma expressão regular para cada uma das linguagens descrita no Exercício \ref{exerc:LR27}.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR38}
+	Para cada um dos AFD $A$, que foram criados por você para responder o exercício \ref{exerc:LR9}, determine uma expressão regular $r$ tal que $\mathcal{L}(r) = \mathcal{L}(A)$.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR39}
+	Para cada expressão regular a seguir construa um autômato que aceita a linguagem da expressão regular.
+\end{exercise}
+
+\begin{enumerate}
+	\item $a^*b + a$.
+	\item $(ab + cd)^*$.
+	\item $(a^*ab)^* + bc$.
+	\item $(aa)^* (b + \lambda) + \emptyset$.
+	\item $(a^*) + b(aa)^*$.
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR40}
+	Dado o alfabeto $\{a, b\}$ demonstre as asserções a seguir.
+\end{exercise}
+
+\begin{enumerate}
+	\item $(a + b)^* \equiv (a^*b^*)^*$.
+	\item $a^* + b^* \not\equiv (a + b)^*$.
+	\item $a^*b^* \not\equiv (ab)^*$.
+	\item $(b + ab)^* (a + \lambda) \equiv (a + \lambda)(ba + b)^*$.
+	\item $a^*a \equiv aa^*$.
+	\item $\emptyset + (a + b)^* \equiv (a + b)^* + \emptyset$.
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR41}
+	Para quais quer $r_1, r_2, r_3 \in Exp_\Sigma$ demonstre as asserções a seguir.
+\end{exercise}
+
+\begin{enumerate}
+	\item $(r_1^*)^* \equiv r_1^*$.
+	\item $(r_1 + r_2) \equiv r_2 + r_1$.
+	\item $r_1 + (r_2 + r_3) \equiv (r_1 + r_2) + r_3$.
+	\item $r_1 + r_1 \equiv r_1$.
+	\item $(r_1 + r_2)^* \equiv (r_1^* r_2^*)^*$.
+	\item $r_1r_1 \equiv r_1$.
+	\item $(r_1r_2)^*r_1 \equiv r_1(r_2r_1)^*$.
+	\item $r_1 + \emptyset \equiv r_1$.
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR42}
+	Construa um autômato que aceite cada valoração a seguir.
+\end{exercise}
+
+\begin{enumerate}
+	\item $\mathcal{L}(aa^*(b + a))$.
+	\item $\mathcal{L}((aa + abb)^*(aa + \lambda + ba))$.
+	\item $\mathcal{L}((ab + b)^*(a + \lambda))$.
+	\item $\mathcal{L}(aa^* + aba^*b^*)$.
+	\item $\mathcal{L}((\lambda + \emptyset)^*)$.
+	\item $\mathcal{L}(aa^*bb^*aa^*)$.
+	\item $\mathcal{L}(ab + (\emptyset + a)^*b)$.
+	\item $\mathcal{L}((a^*(b(bb)^*aa)^*)a)$.
+	\item $\mathcal{L}(((aa)^*)^*)$.
+	\item $\mathcal{L}((b + a)(\lambda^*)^*)$.
+	\item $\mathcal{L}(a^*(ba + ab))$.
+	\item $\mathcal{L}((bb + bab)^*(a + \lambda aa^* + ba))$.
+	\item $\mathcal{L}((b^* + b)^*(a^* + \lambda))$.
+	\item $\mathcal{L}(a^* + ba)$.
+	\item $\mathcal{L}(((\lambda)^* + \emptyset)^*)$.
+	\item $\mathcal{L}(a^*ba^*ba^*)$.
+	\item $\mathcal{L}(bab + (ab + a)b)$.
+	\item $\mathcal{L}(a(b)^*b^*)$.
+	\item $\mathcal{L}((b + a)(b + a)$.
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR43}
+	Construa uma expressão regular cuja valoração seja exatamente a linguagem aceita pelo AFD da Figura \ref{fig:AutomaExercicioLR8}. 
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR44}
+	Construa uma gramática regular à esquerda para cada uma das linguagens descrita no Exercício \ref{exerc:LR10}.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR45}
+	Construa uma gramática regular à direita para cada uma das linguagens descrita no Exercício \ref{exerc:LR10}.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR46}
+	Construa uma gramática regular à esquerda para cada uma das linguagens descrita no Exercício \ref{exerc:LR27}.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR47}
+	Construa uma gramática regular à esquerda para cada uma das linguagens descrita no Exercício \ref{exerc:LR27}.
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR48}
+	Construa uma gramática regular que gera exatamente cada valoração a seguir.
+\end{exercise}
+
+\begin{enumerate}
+	\item $\mathcal{L}(a^*b + a)$.
+	\item $\mathcal{L}((ab + cd)^*)$.
+	\item $\mathcal{L}((a^*ab)^* + bc)$.
+	\item $\mathcal{L}((aa)^* (b + \lambda))$.
+	\item $\mathcal{L}((a^*) + b(aa)^*)$.
+\end{enumerate}
+
+\begin{exercise}\label{exerc:LR49}
+	Construa uma gramática regular que gera exatamente a linguagem aceita pelo AFD da Figura \ref{fig:AutomaExercicioLR8}. 
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR50}
+	Para as gramáticas descrita a seguir construa um AFN que aceita as linguagens geradas por tais gramáticas. 
+\end{exercise}
+
+\begin{enumerate}
+	\item $G_1 = \langle \{S, A, B\},\{a, b\}, S, P \rangle$ onde $P$ é definido por, 
+	\begin{eqnarray*}
+		S & \rhd & aA \mid bB \mid aaS \mid bbS\\
+		A & \rhd & aA \mid \lambda \\
+		B & \rhd & bB \mid b
+	\end{eqnarray*}
+	
+	\item $G_2 = \langle \{S, A, B\},\{a, b\}, S, P \rangle$ onde $P$ é definido por, 
+	\begin{eqnarray*}
+		S & \rhd & abA\\
+		A & \rhd & bab\\
+		B & \rhd & aA \mid bb
+	\end{eqnarray*}
+
+	\item $G_3 = \langle \{S, A, B\},\{a, b\}, S, P \rangle$ onde $P$ é definido por, 
+	\begin{eqnarray*}
+		S & \rhd & aA \mid bS \mid \lambda\\
+		A & \rhd & aB \mid bS \mid \lambda \\
+		B & \rhd & aaS \mid bS \mid \lambda 
+	\end{eqnarray*}
+
+	\item $G_4 = \langle \{S, A\},\{a, b\}, S, P \rangle$ onde $P$ é definido por,
+	\begin{eqnarray*}
+		S & \rhd & aaB \mid b\\
+		A & \rhd & bbS 
+	\end{eqnarray*}
+	
+	\item $G_5 = \langle \{S, A, B\},\{a, b\}, S, P \rangle$ onde $P$ é definido por, 
+	\begin{eqnarray*}
+		S & \rhd & aaaA \mid bbB\\
+		A & \rhd & abaA \mid S\\
+		B & \rhd & bbS \mid aA \mid bb\\ 
+	\end{eqnarray*}
+\end{enumerate}
