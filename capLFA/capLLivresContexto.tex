@@ -1,0 +1,166 @@
+% Seta a imagem do capítulo
+\chapterimage{chapter_head_2.pdf}
+% O título e rótulo do cabiluto
+\chapter{Linguagens Livres do Contexto}\label{cap:LLivresContexto}
+
+
+\epigraph{``Em matemática você não entende as coisas. Você se acostuma a elas. ''}{John von Neumann.}
+
+
+No capítulo passado foram apresentadas três diferentes formalismos para a classe das linguagens regulares, a saber, o formalismo operacional (os autômatos), o formalismo denotacional (as expressões regulares) e por fim o formalismo gerador ou axiomático (as gramáticas regulares). Agora este manuscrito irá continuar o estudo das linguagens formais apresentando a classe das linguagens livres do contexto, como antes serão apresentados diferentes formalismo para tal classe de linguagens.
+
+\section{Gramática Livres do Contexto}\label{sec:GLC}
+
+O estudo das Linguagens Livres do Contexto será iniciado aqui pela apresentação de seu formalismo gerador, ou seja, será primeiro apresentado a noção de Gramática Livre do Contexto.
+
+\begin{definition}[Gramática Livre do Contexto]\label{def:GLC}
+\cite{benjaLivro2010} Uma Gramática Livre do Contexto, ou simplesmente GLC, é uma gramática formal $G = \langle V, \Sigma, S, P\rangle$ onde todo $\alpha \rhd \beta \in P$ é tal que $\alpha \in V$ e $\beta \in (V \cup \Sigma)^*$.
+\end{definition}
+
+\begin{exem}\label{exe:GLC-1}
+	A estrutura $G = \langle \{A, B, C\}, \{0,1\}, A, P\rangle$ onde $P$ é definido pela regras:
+	\begin{eqnarray*}
+		A & \rhd & A0110BC \mid 0110C \mid AAB0110CC \mid \lambda\\
+		B & \rhd & 01B10 \mid 0110\\
+		C & \rhd & 01C \mid \lambda
+	\end{eqnarray*}
+	é uma GLC.
+\end{exem}
+
+Obviamente o leitor atento pode notar que a Definição \ref{def:GLC} garante que toda Gramática Regular é um caso particular de GLC, porém o inverso não é verdadeiro, basta notar que a gramática apresentada no Exemplo \ref{exe:GLC-1}, fere a definição de gramática regular apresentada na Seção \ref{sec:GramaticaRegular} do capítulo passado. Agora utilizando a Definição \ref{def:LinaugemGramatica} pode-se formalizar o conceito de Linguagem Livre do Contexto.
+
+\begin{definition}[Linguagem Livre do Contexto]\label{def:LLC}
+	A linguagem $L$ gerada por uma GLC $G$, ou seja, $L = \mathcal{L}(G)$, será chamada de Linguagem Livre do Contexto, ou simplesmente LLC.
+\end{definition}
+
+Como para os casos das linguagens reconhecidas por AFD, para provar que uma determinada GLC $G$ gera uma linguagem $L$ é necessário demonstrar o seguinte resultado $w \in L \Longleftrightarrow w \in \mathcal{L}(G)$.
+
+\begin{exem}\label{exe:LinguagemGLC}
+	A linguagem $L = \{a^ib^i \mid i  > 0\}$ é gerado pela GLC $G = \langle \{S\}, \{a,b,c\}, S, P\rangle$ onde $P$ é formado pelas regras,
+	\begin{eqnarray*}
+		S & \rhd & aSb \mid ab
+	\end{eqnarray*}
+	\begin{proof}
+		$(\Rightarrow)$ Suponha que $w \in L$ assim $w = a^ib^i$ para $i  > 0$, agora por indução sobre a quantidade $n$ de derivações em $G$ será mostrado que toda forma sentencial gerada por $G$ é da forma $a^nS^jb^n$ com $j \in \{0, 1\}$. 
+		\begin{itemize}
+			\item[ ] \textbf{Base da indução}: Com $n = 1$, é trivial pelas regras em $P$. 
+			\item[ ] \textbf{Hipótese indutiva (HI)}: Assuma que com $n$ derivações tal que $n \geq 0$ a forma sentencial $a^nS^jb^n$ é gerada pela GLC $G$, ou seja, $S \gg^n a^nS^jb^n$ com $j \in \{0, 1\}$. 
+			\item[ ] \textbf{Passo indutivo}: Agora dado $S \gg^{n+1} w'$, ou seja, $w'$ é derivada de $S$ com $n+1$ derivações, assim por definição tem-se que existe $w''$ tal que $S \gg^n w'' \gg w'$, mas por \textbf{(HI)} tem-se que $w'' =  a^nS^jb^n$ com $n \geq 0$ e $j \in \{0, 1\}$,  desde que, $w'$ é gerada de $w''$ é claro que $j = 1$, ou seja, $w'' = a^nSb^n$, consequentemente, $w' = a^{n+1}Sb^{n+1}$ ou $w' = a^{n+1}b^{n+1}$ e, portanto, $w'$ é da forma $a^{n+1}S^jb^{n+1}$ com $j \in \{0, 1\}$. 
+		\end{itemize}
+		Agora por hipótese tinha-se que $w = a^ib^i$ para $i  > 0$, ou seja, $w = a^iS^0b^i$, dessa forma pela indução acima $w$ é uma forma sentencial gerada por $G$, e como $w \in \Sigma^*$ tem-se por definição que $w \in \mathcal{L}(G)$. $(\Rightarrow)$ Suponha que $w \in \mathcal{L}(G)$, agora será mostrado por indução sobre a quantidade $n$ de derivações que todo $w$ gerado por $G$ estará em $L$.
+		\begin{itemize}
+			\item[ ] \textbf{Base da indução:} Com $n=1$, ou seja, como uma única derivação, pelo fato de que $w \in \Sigma^*$ e pelas regras em $P$ tem-se obrigatoriamente que $w = ab$ e, portanto, $w = a^1b^1$ , consequentemente, $w \in L$.
+			\item[ ] \textbf{Hipótese indutiva (HI)}: Assuma que para todo $S \gg^n w$ tal que $n \geq 1$, tem-se que $w \in L$.
+			\item[ ] \textbf{Passo indutivo}: Agora dado $S \gg^{n+1} w$, ou seja, $w$ é derivado em $G$ com $n + 1$ derivações de forma que $n \geq 1$. Desde que $n  \geq 1$ tem-se que $n + 1  > 1$, assim a palavra $ab$ não pode ser $w$ uma vez que são usadas pelo menos duas derivações para gerar $w$. Assim a derivação de $w$ deverá ter sido iniciado usando a regra $S \rhd aSb$ e, portanto, $w = aw'b$ em que $S \gg^n w'$, mas pela hipótese indutiva $w' \in L$, logo $w' = a^ib^i$ com $i > 0$, consequentemente $w = aa^ib^ib = a^{i+1}b^{i+1}$, logo $w \in L$.
+		\end{itemize}
+	\end{proof}
+\end{exem}
+
+Note que para a prova mostrada no Exemplo \ref{exe:LinguagemGLC} foi-se usada indução sobre o tamanho das derivações, isto não é a única forma de se proceder para provar que uma gramática gera uma determinada linguagem, de  fato como apresentado em \cite{hopcroft2008} pode-se usar a ideia de indução sobre as árvores de derivações (apresentadas mais a frente), neste manuscrito não será apresentado tal estratégia, porém fica a referência para interessados no tema. 
+
+Nas GLC que não são lineares, ou seja, as gramática em que as regras em $P$ podem conter duas ou mais variáveis do lado direto do símbolo $\rhd$, é permitido a escolha sobre qual variável ser derivada primeiramente, para ilustrar isso considere uma forma sentencial $0A10BC$ e as regras $A \rhd 00, B \rhd \lambda$ e $C \rhd 1$, note que dependendo de qual variável é escolhida para ser reescrita a próxima forma sentencial pode assumir três formas diferentes. Apresentado esta ideia pode-se agora formalizar o conceito de reescrita \textbf{mais à esquerda} e \textbf{mais à direita}.
+
+\begin{definition}[Tipos de Derivação]\label{def:TiposLateraisReescrita}
+	Dado uma GLC $G = \langle V, \Sigma, S, P\rangle$ e seja $w_1A_1w_2\cdots w_nA_nw_{n+1}$ uma forma sentencial derivável em $G$ tal que $w_i \in \Sigma^*$ e $A_j \in V$ para todo $1 \leq i \leq n+1$ e $1 \leq j \leq n$. Uma derivação é dita mais à esquerda (à direita) se ela é da forma $w_1A_1w_2\cdots w_nA_nw_{n+1} \gg w_1w'w_2\cdots w_nA_nw_{n+1}$ ($w_1A_1w_2\cdots w_nA_nw_{n+1} \gg w_1A_1w_2\cdots w_nw'w_{n+1}$)  com  $w' \in (V \cup \Sigma)^*$.
+\end{definition}
+
+\begin{exem}\label{exe:ReescritasLaterais}
+	Considere a GLC $G = \langle \{S, A, B\}, \{0, 1\}, S, P\rangle$ em que $P$ é formado pelas regras,
+	\begin{eqnarray*}
+		S & \rhd & 0AB\\
+		A & \rhd & 11B1 \\
+		B & \rhd & A \mid \lambda 
+	\end{eqnarray*}
+	claramente a palavra $011B1A$ é um forma sentencial derivável em $G$, agora note que:
+	\begin{eqnarray*}
+		011B1A & \gg & 011A1A\\
+		011B1A & \gg & 0111A
+	\end{eqnarray*}
+	são ambas derivações mais à esquerda, e 
+	\begin{eqnarray*}
+		011B1A & \gg & 011B111B1
+	\end{eqnarray*}
+	é uma derivação mais à direita.
+\end{exem}
+
+\begin{definition}[Tipo de Geração]\label{def:TipoGeracao}
+	Dado uma GLC $G = \langle V, \Sigma, S, P\rangle$,  uma derivação $S \gg^* w$ é dita ser uma geração mais à esquerda (à direita) sempre que $w \in \Sigma^*$ e toda derivação realizada for mais à esquerda (à direita).
+\end{definition}
+
+\begin{exem}\label{exe:TipoGeracao}
+	Considere a gramática do Exemplo \ref{exe:ReescritasLaterais} a derivação, 
+	$$S \gg 0AB \gg 011B1B \gg 0111B \gg 0111$$
+	é claramente uma geração mais à esquerda, já a derivação
+	$$S \gg 0AB \gg 0A \gg 011B1 \gg 0111$$
+	é notavelmente uma geração mais à direita.
+\end{exem}
+
+Além da noção de geração, para visualizar o passo a passo da ``construção'' de uma palavra $w \in \Sigma^*$ em uma GLC $G$ é comum usar a ideia de árvore de derivação\footnote{Na literatura como no livro \cite{benjaLivro2010} também é comum encontrar a nomenclatura árvore ordenada.}. Uma árvore de derivação nada mais é do que uma forma visual estruturada em uma árvore que representar a construção de uma palavra, em que cada nível da árvore representa é gerada pela aplicação de uma ou mais regras de reescrita, neste sentido as folhos da árvore contém os símbolos da palavra $w$.
+
+\begin{definition}[Árvore de Derivação]\label{def:ArvoreGLC}
+	Seja $G = \langle V, \Sigma, S, P\rangle$ uma GLC e dado $w \in \mathcal{L}(G)$, uma árvore de derivação para $w$ é construída seguindo as seguintes regras:
+	\begin{enumerate}
+		\item O símbolo $S$ é a raiz da árvore.
+		\item Todo símbolo $a \in \Sigma \cup \{\lambda\}$ é o rótulo de uma folha.
+		\item Todo símbolo $A \in V$ é o rótulo de uma raiz de uma sub-árvore\footnote{Aqui sub-árvore e no mesmo sentido que o leitor já deve ter visto em estrutura de dados.}.
+		\item Se $A$ é uma raiz e seus ``filhos'' são  $x_1, \cdots, x_n$ com $x_i \in V \cup \Sigma \cup \{\lambda\}$ para $1 \leq i \leq n$, então existe em $P$ uma regra da forma $A \rhd x_1\cdots x_n$.
+		\item Todo folha rotulada por $\lambda$ de uma raiz $A$ será filho único, ou seja, em $P$ existe uma regra da forma $A \rhd \lambda$.
+	\end{enumerate}
+\end{definition}
+
+\begin{exem}\label{exe:ArvoreGLC1}
+	Tem-se que a derivação $S \gg 0AB \gg 011B1B \gg 0111B \gg 0111$ apresentada no Exemplo \ref{exe:TipoGeracao} é representada pela árvore esboçada na Figura \ref{fig:ArvoreGLC1} a seguir.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[sibling distance=.5cm, empty/.style={draw=none}, tlabel/.style={font=\footnotesize\color{red!70!black}}]
+			\Tree   [.$S$  
+						[.$0$ ]
+						%\edge node[tlabel,auto=left] {1}; 
+						[.$A$  
+							[.$1$ ]
+							[.$1$ ]
+							[.$B$ 
+								{$\lambda$}
+							] 
+							[.$1$ ]
+						] 
+						[.B   
+							%\edge[empty]; {} \edge node[tlabel,auto=left] {5}; {b}   
+							{$\lambda$}
+						]
+			]
+		\end{tikzpicture}
+		\caption{Árvore para a derivação $S \gg 0AB \gg 011B1B \gg 0111B \gg 0111$.}
+		\label{fig:ArvoreGLC1}
+	\end{figure}
+\end{exem}
+
+\begin{exem}\label{exe:ArvoreGLC2}
+	Tem-se que a derivação $S \gg 0AB \gg 0A \gg 011B1 \gg 0111$ apresentada no Exemplo \ref{exe:TipoGeracao} é representada pela árvore esboçada na Figura \ref{fig:ArvoreGLC2} a seguir.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[sibling distance=.5cm, empty/.style={draw=none}, tlabel/.style={font=\footnotesize\color{red!70!black}}]
+			\Tree 
+			[.$S$  
+				[.$0$ ]
+				[.$A$
+					[.$1$ ] 
+					[.$1$ ] 
+					[.$B$ 
+						{$\lambda$}
+					] 
+					[.$1$ ] 
+				]
+				[.$B$
+					{$\lambda$} 
+				]
+			]
+		\end{tikzpicture}
+		\caption{Árvore para a derivação $S \gg 0AB \gg 0A \gg 011B1 \gg 0111$.}
+		\label{fig:ArvoreGLC2}
+	\end{figure}
+\end{exem}
+
+Note que os Exemplos \ref{exe:ArvoreGLC1} e \ref{exe:ArvoreGLC2} mostram que que diferentes derivações podem ser representadas pela mesma árvore, isso acontece devido ao fato de que a árvore de derivação apenas esboça o processo de formação total (ou final), e não o comportamento (ou momento) parcial das derivação.

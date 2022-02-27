@@ -1,376 +1,11 @@
 % Seta a imagem do capítulo
 \chapterimage{chapter_head_2.pdf}
 % O título e rótulo do cabiluto
-\chapter{Computabilidade: Linguagens Regulares}\label{cap:LRegulares}
+\chapter{Linguagens Regulares}\label{cap:LRegulares}
 
 \epigraph{``Eu acredito que às vezes são as pessoas que ninguém espera nada que fazem as coisas que ninguém consegue imaginar. ''}{Alan M. Turing.}
- 
-\section{Noções Fundamentais}
- 
-Neste primeiro momento para o estudo dos autômatos finitos serão apresentados alguns conceitos fundamentais de extrema importância para o desenvolvimento das próximas seções e capítulos.
 
-\begin{definition}[Alfabetos e Palavras]\label{def:AlfabetoPalavra}
-	\cite{valdi2016master} Qualquer conjunto finito e não vazio $\Sigma$ será chamado de alfabeto. Qualquer sequência finita de símbolos na forma $a_1\cdots a_n$ com $a_i \in \Sigma$ para todo $1 \leq i \leq n$ será chamada de palavra sobre o alfabeto $\Sigma$.
-\end{definition}
 
-
-\begin{exem}
-	Os conjuntos $\{0, 1, 2, 3\}, \{a, b, c\}, \{\heartsuit,\spadesuit, \Diamond, \clubsuit\}$ e $\{n \in \mathbb{N} \mid n \leq 25\}$ são todos alfabetos, os conjuntos $\mathbb{N}$ e $\mathbb{R}$ não são alfabetos.
-\end{exem}
-
-\begin{exem}
-	Dado o alfabeto $\Sigma = \{0, 1, 2, 3\}$ tem-se que as sequências 0123, 102345, 1 e 0000 são todas palavras sobre $\Sigma$.
-\end{exem}
-
-\begin{definition}[Comprimento das palavras]\label{def:ComprimentoPalavra}
-	Seja $w$ uma palavra qualquer sobre um certo alfabeto $\Sigma$, o comprimento\footnote{Por conta desta notação em alguns texto é usado o termo módulo em vez de comprimento.} de $w$, denotado por $|w|$, corresponde ao número de símbolos existentes em $w$.
-\end{definition}
-
-\begin{exem}
-	Dado o alfabeto $\Sigma = \{a, b, c, d\}$ e as palavras $abcd, aacbd, c$ e $ddaacc$ tem-se que: $|abcd| = 4, |aa| = 2, |c| = 1$ e $|ddaacc| = 6$
-\end{exem}
-
-\begin{rema}
-	Em especial quando $|w| = 1$, é dito que $w$ é uma palavra unitária, isto é, a mesma contém apenas um único símbolo do alfabeto.
-\end{rema}
-
-Como muito bem explicado em \cite{benjaLivro2010, hopcroft2008, linz2006}, pode-se definir uma série de operações sobre palavras, sendo a primeira delas  a noção de concatenação.
-
-\begin{definition}[Concatenação de palavras]\label{def:Concatenacao}
-	Sejam $w_1 = a_1\cdots a_m$ e $w_2 = b_1\cdots b_n$ duas palavras quaisquer, tem-se que a concatenação de $w_1$ e $w_2$, denotado por $w_1w_2$, corresponde a uma sequência iniciada com os símbolos que forma $w_1$ imediatamente seguido dos símbolos que forma $w_2$, ou seja, $w_1w_2 = a_1\cdots a_mb_1\cdots b_n$.
-\end{definition}
-
-\begin{rema}
-	O leitor deve ficar atento ao fato de que a concatenação apenas combina duas palavras em uma nova palavra, sendo que, não a qualquer tipo de exigência sobre os alfabeto sobre os quais as palavras usadas na concatenação estão definidas.
-\end{rema}
-
-\begin{exem}\label{exe:Concatenacao}
-	Dado duas palavras $w_1 = abra$ e $w_2 = cadabra$ tem-se que $w_1w_2 = abracadabra$ e $w_2w_1 = cadabraabra$.
-\end{exem}
-
-Note que o Exemplo \ref{exe:Concatenacao} estabelece que a operação de concatenação entre duas palavras não é comutativa, isto é, a ordem com que as palavras aparecem na concatenação é responsável pela forma da palavra resultante da concatenação.
-
-\begin{theorem}[Associativade da Concatenação]\label{teo:AssociatividaeConcatenacao}
-	Para quaisquer $w_1, w_2$ e $w_3$ tem-se que $(w_1w_2)w_3 = w_1(w_2w_3)$.
-\end{theorem}
-
-\begin{proof}
-	Dado três palavras quaisquer $w_1 = a_1\cdots a_i, w_2 = b_1\cdots b_j$ e $w_3 = c_1\cdots c_k$ tem-se que,
-	\begin{eqnarray*}
-		(w_1w_2)w_3 & = & (a_1\cdots a_ib_1\cdots b_j)c_1\cdots c_k\\
-		& = & a_1\cdots a_ib_1\cdots b_jc_1\cdots c_k\\
-		& = & a_1\cdots a_i(b_1\cdots b_jc_1\cdots c_k)\\
-		& = & w_1(w_2w_3)
-	\end{eqnarray*}
-	o que conclui a prova.
-\end{proof}
-
-Sobre qualquer alfabeto $\Sigma$ sempre é definida uma palavra especial chamada \textbf{palavra vazia} \cite{hopcroft2008, linz2006}, esta palavra especial não possui nenhum símbolo, e em geral é usado o símbolo $\lambda$ para denotar a palavra vazia \cite{benjaLivro2010, valdi2016master}. Como mencionado em \cite{benjaLivro2010, valdi2020phd} sobre a palavra vazia é importante destacar que:
-
-\begin{eqnarray}
-	w\lambda & = & \lambda w = w\\
-	|\lambda| & = &  0
-\end{eqnarray}
-
-Isto é, a palavra vazia é neutra para a operação de concatenação, além disso, a mesma apresenta comprimento nulo.
-
-\begin{definition}[Potência das palavras]\label{def:PotenciaPalavras}
-	Seja $w$ uma palavra sobre um alfabeto $\Sigma$ a potência de $w$ é definida recursivamente para todo $n \in \mathbb{N}$ como sendo:
-	\begin{eqnarray}
-		w^0 & = & \lambda\\
-		w^{n+1} & = & ww^{n}
-	\end{eqnarray}
-\end{definition}
-
-\begin{exem}
-	Sejam $w_1 = ab, w_2 = bac$ e $w_3 = cbb$ palavras sobre $\Sigma = \{a, b, c\}$ tem-se que:
-	\begin{itemize}
-		\item[(a)] $w_1^3 = w_1w_1^2 = w_1w_1w_1^1 = w_1w_1w_1w_1^0 = w_1w_1w_1\lambda = ababab$.
-		\item[(b)] $w_2^2 = w_2w_2^1 = w_2w_2w_2^0 = w_2w_2\lambda = w_2w_2 = bacbac$.
-	\end{itemize} 
-\end{exem}
-
-\begin{exem}
-	Seja $u = 01$ e $v = 231$ tem-se que: 
-	$$uv^3 = uvv^2 = uvvv^1 = uvvv\lambda = uvvv = 01231231231$$
-	e também 
-	$$u^2v = uu^1v = uu\lambda v = uuv = 0101231$$
-\end{exem}
-
-\begin{prop}
-	Para toda palavra $w$ e todo $m,n \in \mathbb{N}$ tem-se que:
-	\begin{itemize}
-		\item[(i)] $(w^m)^n = w^{mn}$.
-		\item[(ii)] $w^mw^n = w^{m+n}$.
-	\end{itemize}
-\end{prop}
-
-\begin{proof}
-	Direto das Definições \ref{def:Concatenacao} e \ref{def:PotenciaPalavras}, e portanto, ficará como exercício ao leitor.
-\end{proof}
-
-Outro importante conceito existente sobre a ideia de palavra é a noção de palavra inversa (ou reversa) formalmente definida como se segue.
-
-\begin{definition}[Palavra Inversa]\label{def:PalavraInversa}
-	\cite{valdi2016master} Seja $w = a_1\cdots a_n$ uma palavra qualquer, a palavra inversa de $w$ denotada por $w^r$, é tal que $w^r = a_n\cdots a_1$. 
-\end{definition}
-
-\begin{exem}
-	Dado as palavras $u = aba, v = 011101$ e $w = 3021$ tem-se que $u^r = aba, v^r = 101110$ e $w^r = 1203$.
-\end{exem}
-
-\begin{rema}
-	Com respeito a noção de palavra inversa tem-se em particular que vale a seguinte igualdade $\lambda^r = \lambda$.
-\end{rema}
-
-Além das palavras, pode-se também formalizar uma série de operações sobre a própria noção de alfabeto. Em primeiro lugar, uma vez que,  alfabetos são conjuntos, obviamente todas operações usuais de união, interseção, complemento, diferença e diferença simétrica (ver Capítulo \ref{cap:Conjuntos}) também são válidas sobre alfabetos. Além dessas operações, também esta definida a operação de potência e os fechos positivo e de Kleene sobre alfabetos.
-
-\begin{definition}[Potência de um alfabeto]\label{def:PotenciaAlfabeto}
-	\cite{benjaLivro2010} Seja $\Sigma$ um alfabeto a potência de $\Sigma$ é definida recursivamente para todo $n \in \mathbb{N}$ como:
-	\begin{eqnarray}
-		\Sigma^0 & = & \{\lambda\}\\
-		\Sigma^{n+1} & = & \{aw \mid a \in \Sigma, w \in \Sigma^{n}\}
-	\end{eqnarray}
-\end{definition} 
-
-\begin{exem}
-	Dado $\Sigma = \{a, b\}$ tem-se que $\Sigma^3 = \{aaa, aab, aba, baa, abb, bab, bba, bbb\}$ e $\Sigma^1 = \{a, b\}$
-\end{exem}
-
-\begin{exem}
-	Seja $\Sigma = \{0, 1, 2\}$ tem-se que $\Sigma^2 = \{00, 01, 02, 10, 11, 12, 20, 21, 22\}$ e $\Sigma^{0} = \{\lambda\}$.
-\end{exem}
-
-O leitor mais atencioso e maduro matematicamente pode notar que para qualquer que seja $n \in \mathbb{N}$ o conjunto potência tem a propriedade de que todo $w \in \Sigma^n$ é tal que $|w| = n$, além disso, é claro que todo $\Sigma^n$ é sempre finito\footnote{Essa afirmação é facilmente verificável, uma vez que, a mesma nada mais é do que um exemplo de arranjo com repetição.}.
-
-\begin{definition}[Fechos]\label{def:FechoPositivoKleene}
-	Seja $\Sigma$ um alfabeto o fecho positivo e o fecho de Kleene de $\Sigma$, denotados respectivamente por $\Sigma^+$ e $\Sigma^*$, correspondem aos conjuntos:
-	\begin{eqnarray}
-		\Sigma^+ & = & \bigcup_{i = 1}^\infty \Sigma^i
-	\end{eqnarray}
-	e
-	\begin{eqnarray}
-		\Sigma^* & = & \bigcup_{i = 0}^\infty \Sigma^i
-	\end{eqnarray}
-\end{definition}
-
-Obviamente como dito em \cite{benjaLivro2010}, o fecho de positivo pode ser reescrito em função do fecho de Kleene usando a operação de diferença de conjunto, isto é, o fecho positivo corresponde a seguinte identidade, $\Sigma^+ = \Sigma^* - \{\lambda\}$. Sobre o fecho de Kleene com destacado em \cite{valdi2020phd} o mesmo corresponde ao monoide livremente\footnote{Relembre que uma álgebra é livremente gerada quando todo elemento possui fatoração única (a menos de isomorfismo).} gerado pelo conjunto $\Sigma$ munida da operação de concatenação.
-
-\begin{definition}[Prefixos e Sufixos]\label{def:PrefixoSufixo}
-	Uma palavra $u \in \Sigma^*$ é um prefixo de outra palavra $w \in \Sigma^*$, denotado por $u \preceq_p w$, sempre que $w = uv$, com $v \in \Sigma^*$. Por outro lado, uma palavra $u$ é um sufixo de outra palavra $w$, denotado por $u \preceq_s w$, sempre que $w = vu$.
-\end{definition}
-
-\begin{exem}
-	Seja $w = abracadabra$ tem-se qu~e as palavras $ab$ e $abrac$ são prefixos de $w$, por outro, lado $cadabra$ e $bra$ são sufixos de $w$, e a palavra $abra$ é prefixo e também sufixo. Já a palavra $cada$ não é prefixo e nem sufixo de $w$.
-\end{exem}
-
-
-\begin{definition}[Conjunto dos Prefixos e Sufixos]\label{def:ConjuntoPrefixoSufixo}
-	Seja $w \in \Sigma^*$ o conjunto de todos os prefixos de $w$ corresponde ao conjunto:
-	\begin{eqnarray}
-		PRE(w) = \{w' \in \Sigma^* \mid w' \preceq_p w\}
-	\end{eqnarray}
-	e o conjunto de todos os sufixos de $w$ corresponde ao conjunto:
-	\begin{eqnarray}
-		SUF(w) = \{w' \in \Sigma^* \mid w' \preceq_s w\}
-	\end{eqnarray}
-\end{definition}
-
-\begin{exem}
-	Seja $w = univasf$ tem-se que:
-	\begin{eqnarray*}
-		PRE(w) = \{\lambda, u, un, uni, univ, univa, univas, univasf\}
-	\end{eqnarray*}
-	e
-	\begin{eqnarray*}
-		SUF(w) = \{\lambda, f, sf, asf, vasf, ivasf, nivasf, univasf \}
-	\end{eqnarray*}
-\end{exem}
-
-\begin{exem}
-	A seguir é apresentado alguns exemplos de palavras e seus conjuntos de prefixos e sufixos.
-	\begin{itemize}
-		\item[(a)] Se $w = ab$, então $PRE(w) = \{\lambda, a, ab\}$ e  $SUF(w) = \{\lambda, b, ab\}$.
-		\item[(b)] Se $w = 001$, então $PRE(w) = \{\lambda, 0, 00, 001\}$ e  $SUF(w) = \{\lambda, 1, 01, 001\}$.
-		\item[(c)] Se $w = \lambda$, então $PRE(w) = \{\lambda\}$ e  $SUF(w) = \{\lambda\}$
-		\item[(d)] Se $w = a$, então $PRE(w) = \{\lambda, a\}$ e $SUF(w) = \{\lambda, a\}$.
-	\end{itemize}
-\end{exem}
-
-Com respeito a cardinalidade dos conjuntos de prefixos e sufixos, os mesmo apresentam as propriedades descritas pelo teorema a seguir.
-
-\begin{theorem}\label{teo:CardinalidadePrefixoSufixo}
-	Para qualquer que seja $w \in \Sigma^*$ as seguintes asserções são verdadeiras.
-	\begin{itemize}
-		\item[(i)] $\# PRE(w) = |w| + 1$.
-		\item[(ii)] $\#PRE(w) = \#SUF(w)$.
-		\item[(iii)] $\#(PRE(w) \cap SUF(w)) \geq 1$.
-	\end{itemize}
-\end{theorem}
-
-\begin{proof}
-	Dado uma palavra $w$ tem-se que:
-	\item[(i)] Sem perda de generalidade assumindo que $w = a_1\cdots a_n$ logo $w \in \Sigma^n$ (o caso quando $w = \lambda$ é trivial e não será demonstrado aqui) logo $|w| = n$ para algum $n \in \mathbb{N}$, assim existem exatamente $n$ palavras da forma $a_1 \cdots a_i$ com $1 \leq i \leq n$ tal que $a_1 \cdots a_i \preceq_p w$, portanto, para todo $1 \leq i \leq n$ tem-se que $a_1 \cdots a_i \in PRE(w)$, além disso, é claro que $w = \lambda w$, e portanto, $\lambda \in PRE(w)$, consequentemente, $\#PRE(w) = n + 1 = |w| + 1$.
-	\item[(ii)] É suficiente mostrar que $\# SUF(w) = |w| + 1$, para isso como antes sem perda de generalidade assuma que $w = a_1\cdots a_n$ e assim tem-se que $w \in \Sigma^n$ logo $|w| = n$ com $n \in \mathbb{N}$, dessa forma existem exatamente $n$ palavras da forma $a_i \cdots a_n$ com $1 \leq i \leq n$ tal que $a_i \cdots a_n \preceq_s w$, portanto, para todo $1 \leq i \leq n$ tem-se que $a_i \cdots a_n \in SUF(w)$, além disso, é claro que $w = w\lambda$, logo $\lambda \in SUF(w)$, consequentemente, $\#SUF(w) = n + 1 = |w| + 1$, e portanto, $\#PRE(w) = \#SUF(w)$. O caso $w = \lambda$ é trivial e não será demonstrado aqui.
-	\item[(iii)] Trivial, pois basta notar que $\lambda \in (PRE(w) \cap SUF(w))$, e portanto, tem-se claramente que $\#(PRE(w) \cap SUF(w)) \geq 1$.
-\end{proof}
-
-\begin{corollary}
-	Toda palavra tem pelo menos um prefixo e um sufixo.
-\end{corollary}
-
-\begin{proof}
-	Direto do item $(iii)$ do Teorema \ref{teo:CardinalidadePrefixoSufixo}.
-\end{proof}
-
-Seguindo com o texto deste manuscrito pode-se finalmente formalizar o pilar fundamental (a ideia de linguagem) necessário para desenvolver o estuda da computabilidade neste e nos próximo capítulos.
-
-\begin{definition}[Linguagem]\label{def:Linguagem}
-	Dado um alfabeto $\Sigma$, qualquer subconjunto $L \subseteq \Sigma^*$ será chamado de linguagem.
-\end{definition}
-
-\begin{exem}
-	Seja $\Sigma = \{0, 1\}$ tem-se que os conjuntos a seguir são todos linguagens sobre $\Sigma$.
-	\begin{itemize}
-		\item[(a)] $\Sigma^*$.
-		\item[(b)] $\{0^nb^n \mid n \in \mathbb{N}\}$.
-		\item[(c)] $\{\lambda, 0, 1\}$.
-		\item[(d)] $\Sigma^{22}$.
-		\item[(e)] $\emptyset$.
-	\end{itemize}
-\end{exem}
-
-Similarmente ao que ocorre com os alfabetos, as linguagens por serem conjuntos ``herdam'' as operações básicas da teoria dos conjuntos \cite{lipschutz1978-TC, lipschutz2013-MD, abe1991-TC}, isto é, estão definidas sobre as linguagens as operações de união, interseção, completo, diferença e diferença simétrica. E como par aos alfabetos novas operações são definidas.
-
-\begin{definition}[Concatenação de Linguagens]\label{def:ConcatenacaoLinguagem}
-	Sejam $L_1$ e $L_2$ duas linguagens, a concatenação de $L_1$ com $L_2$, denotado por $L_1L_2$, corresponde a seguinte linguagem:
-	\begin{eqnarray}
-		L_1L_2 = \{xy \in (\Sigma_1 \cup \Sigma_2)^* \mid x \in L_1, y \in L_2\}
-	\end{eqnarray}
-\end{definition}
-
-\begin{exem}\label{exe:ConcatenacaoLinguagem}
-	Dado as três linguagens $L_1 = \{\lambda, ab, bba\}, L_2 =\{0^{2n}1 \mid n \in \mathbb{N}\}$ e $L_3 = \{a^p \mid p \text{ é um número primo}\}$ tem-se que:
-	\begin{itemize}
-		\item[(a)] $L_1L_2 = \{w \mid w = 0^{2n}1 \text{ ou } w = ab0^{2n}1 \text{ ou } w = bba0^{2n}1 \text{ com } n \in \mathbb{N}\}$.
-		\item[(b)] $L_3L1 = \{w \mid w = a^p \text{ ou } w = a^{p+1}b \text{ ou } a^pbba \text{ onde } p \text{ é um número primo}\}$.
-		\item[(c)] $L_2L_3 = \{0^{2n}1a^p \mid n \in \mathbb{N}, p \text{ é um número primo}\}$.
-	\end{itemize}
-\end{exem}
-
-\begin{definition}[Linguagem Reversa]\label{def:LinguagemReversa}
-	Seja $L$ uma linguagem, a linguagem inversa de $L$, denotada por $L^r$, corresponde ao conjunto $\{w^r \mid w \in L\}$.
-\end{definition}
-
-\begin{exem}
-	Considerando as linguagens $L_1, L_2$ e $L_3$ do Exemplo \ref{exe:ConcatenacaoLinguagem} tem-se que:
-	\begin{itemize}
-		\item[(a)] $L_1^r = \{\lambda, ba, abb\}$.
-		\item[(b)] $L_2^r = \{10^{2n} \mid n \in \mathbb{N}\}$.
-		\item[(c)] $L_3^r = \{a^p \mid n \in \mathbb{N}, p \text{ é um número primo}\}$.
-	\end{itemize}
-\end{exem}
-
-O leitor mais atento pode perceber que a propriedade involutiva da operação reversa sobre palavras é ``herdada'' para a reversão sobre linguagens, isto é, para qualquer linguagem $L$ tem-se que $(L^r)^r = L$. 
-
-\begin{definition}[Linguagem Potência]
-	Seja $L$ uma linguagem, a linguagem potência de $L$, denotada por $L^n$, é definida recursivamente para todo $n \in \mathbb{N}$ como:
-	\begin{eqnarray}
-		L^0 & = &\{\lambda\}\\
-		L^{n+1} & = &  LL^{n}
-	\end{eqnarray}
-\end{definition}
-
-Utilizando o conceito de linguagem potência a seguir é apresentado a formalização para os fechos positivo e de Kleene sobre linguagens.
-
-\begin{definition}[Fecho positivo e Fecho de Kleene de Linguagens]\label{def:FechoPositivoKleeneLinguagem}
-	Seja $L$ uma linguagem, o fecho positivo $(L^+)$ e o fecho de Kleene $(L^*)$ de $L$ são dados pelas equações a seguir.
-	\begin{eqnarray}
-		L^+ & = & \bigcup_{i = 1}^\infty L^i\\
-		L^* & = & \bigcup_{i = 0}^\infty L^i
-	\end{eqnarray}
-\end{definition}
-
-Por fim, esta seção irá apresentar a noção de linguagem dos prefixos e sufixos.
-
-\begin{definition}[Linguagem de Prefixos e Sufixos]\label{def:LinguagemPrefixosSufixos}
-	Seja $L$ uma linguagem, a linguagem dos prefixos e dos sufixos de $L$, respectivamente $PRE(L)$ e $SUF(L)$, são exatamente os seguintes conjuntos:
-	\begin{eqnarray*}
-		PRE(L) & = & \{w' \in \Sigma^* \mid w' \preceq_p w, w \in L\}\\
-		SUF(L) & = & \{w' \in \Sigma^* \mid w' \preceq_s w, w \in L\}
-	\end{eqnarray*}
-\end{definition}
-
-Neste e nos dois próximos capítulos este manuscrito irá apresentar a formalização da ideia de computação na visão ``mecânica'' de Turing \cite{turing1937}, entretanto, em vez de apresentar de forma direta os conceitos ligados as máquinas de Turing e as computações por elas realizadas, este manuscrito opta por fazer um estudo seguindo a ideia dos cursos de linguagens formais \cite{benjaLivro2010, linz2006, menezes1998LFA}, assim sendo, este capítulo irá tratar das linguagens regulares e seus modelos de computação (os autômatos finitos) e também de seus mecanismo geradores (expressões e gramáticas regulares). 
-
-Na próxima seção será iniciado este estudo das linguagens regulares com a apresentação dos autômatos finitos em sua representação algébrica equacional e  algébrica matricial, serão discutidos aspectos semânticos de tais modelos de computação e suas limitações ou enfraquecimentos quando comparados as máquinas de Turing.
-
-\section{Autômatos Finitos}
-
-Como foi feito em \cite{valdi2016master, valdi2020phd} para facilitar o entendimento do leitor sobre o conceito formal de autômato finito será apresentado antes uma definição informal que é como dito em \cite{valdi2016master} mais frouxa, apresentada em diversos livros sobre linguagens formais, tais como \cite{benjaLivro2010, hopcroft2008, linz2006}. Nesta visão informal como explicado em \cite{benjaLivro2010}, os autômatos finitos podem ser vistos como sendo máquinas que funcionam em tempo discreto, assim sendo, em qualquer momento  no tempo $t$, a \textbf{unidade de controle} do autômato estará em algum \textbf{estado} interno possível e o \textbf{dispositivo de leitura}\footnote{Também é usado a nomenclatura cabeçote \cite{valdi2020phd, valdi2016master}.}  estará sobre alguma das \textbf{cédulas} possível da \textbf{memória}\footnote{Na literatura também é usado o termo fita \cite{valdi2020phd, menezes1998LFA}.} do autômato. 
-
-\begin{figure}[ht]
-	\centering
-	\begin{tikzpicture}
-		\tikzstyle{every path}=[very thick]
-		
-		\edef\sizetape{0.7cm}
-		\tikzstyle{tmtape}=[draw,minimum size=\sizetape]
-		\tikzstyle{tmhead}=[arrow box,draw,minimum size=.5cm,arrow box
-		arrows={east:.25cm, west:0.25cm}]
-		
-		%% Fita
-		\begin{scope}[start chain=1 going right,node distance=-0.15mm]
-			\node [on chain=1,tmtape] (input) {$y_1$};
-			\node [on chain=1,tmtape] (raiz1) {$\ldots$};
-			\node [on chain=1,tmtape] (alvo)  {$y_i$};
-			\node [on chain=1,tmtape] (raiz2) {$\ldots$};
-			\node [on chain=1,tmtape] (output){$y_n$};
-			\node [on chain=1,xshift=0.3cm]        (descr) {\textbf{Fita do autômato}};
-		\end{scope}
-		
-		%% Unidade de Controle
-		\begin{scope}
-			[shift={(1.5cm,-3.7cm)},start chain=circle placed {at=(-\tikzchaincount*30:1.5)}]
-			%\foreach \i in {q_0,p_1,q_2,q_3, q_4,\ddots,q_n}
-			\foreach \i in {q_0,q_1, q_2,q_3, q_4,q_5, q_6,q_7, \cdots,\ddots, q_{n-1},q_n}
-			\node [on chain] {$\i$};
-			
-			% Seta para estado corrente
-			\node (center) {};
-			\draw[->] (center) -- (circle-2);
-			
-			\node[rounded corners,draw=black,thick,fit=(circle-1) (circle-2) (circle-3) 
-			(circle-4) (circle-5) (circle-6) (circle-7) (circle-8) 
-			(circle-9) (circle-10) (circle-11) (circle-12),
-			label=right:\textbf{Unidade de Controle}] (fsbox)
-			{};
-		\end{scope}
-		
-		%% Draw TM head below (input) tape cell
-		\node [draw=white, thick, yshift=-.3cm] at (alvo.south)   (head3) {};
-		
-		%% Link da unidade de controle para os cabeçotes
-		\draw[-latex]  (fsbox.north) -- node[right] 
-		(headlinetext)
-		{} 
-		(head3.south);
-		
-		% Texto no Link da unidade de controle para os cabeçotes
-		\node[xshift=5.2cm] at (headlinetext)  
-		{\begin{tabular}{c} 
-				\textbf{Dispositivo de leitura}
-		\end{tabular}};
-	\end{tikzpicture}
-	\caption{Uma representação informal do conceito de autômato finito retirado de \cite{valdi2020phd}.}
-	\label{fig:AF-Informal}
-\end{figure}
-
-Com respeito a evolução do autômato para o próximo momento $t+1$ no tempo, tal evolução é dada unicamente determinado pelo \textbf{estado} atual no momento $t$ e do \textbf{símbolo} na \textbf{cédula} em que o \textbf{dispositivo de leitura} se encontrava no momento $t$. 
-
-Formalmente pode-se dizer como apontado em \cite{valdi2020phd}, que a teoria dos autômatos finitos, ou simplesmente teoria dos autômatos, teve seu desenvolvimento inicial entre os anos de 1940 e 1960 sendo este início os trabalhos de McCulloch e Pitts \cite{mcculloch1943}, Kleene \cite{kleene1951}, Mealy \cite{mealy1955}, Moore \cite{moore1956}, Rabin e Scott \cite{rabin1963, rabin1959}. De forma geral os autômatos finitos são os mais simples modelos abstratos de máquinas de computação \cite{farias2017}, sendo eles máquinas de Turing limitadas. 
-
-De forma mais precisa, os autômatos finitos são máquinas de Turing \cite{turing1937} em que o dispositivo de leitura é capaz apenas de se mover em um único sentido da esquerda pra direta, sendo tal movimento limitado a apenas uma única cédula por vez, alé disso, não é possível modificar os objetos (ou dados) na memória.
 
 Como explicado em diversas obras tais como \cite{benjaLivro2010, hopcroft2008, linz2006, menezes1998LFA}, os autômatos finitos podem ser separados em dois tipos bem definidos, a saber Autômato Finito Determinístico (AFD) e Autômato Finito Não-determinístico (AFN).
 
@@ -453,6 +88,8 @@ Uma representação comum para os AFD é baseada no uso de grafos de transição
 		\label{fig:AFD2}
 	\end{figure}
 \end{exem}
+
+Pode-se agora então estender a função de transição, para que o autômato possa vir a processar palavras, em vez de apenas símbolos individuais. 
 
 \begin{definition}[Função de Transição Estendida]\label{def:DeltaEstendido}
 	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD a função $\delta$ é estendida para uma função $\widehat{\delta}: Q \times \Sigma^* \rightarrow Q$ usando recursividade como se segue.
@@ -683,7 +320,7 @@ Como explicado por Peter Linz em \cite{linz2006}, um autômato finito não-deter
 			 \backslashbox{$Q$}{$\Sigma$}	& $a$ & $b$\\ \hline
 			 $q_0$  & $\{q_1\}$ & $\{q_0\}$\\
 			 $q_1$  & $\{q_2\}$ & $\{q_0, q_2\}$\\
-			 $q_2$  & $\{q_2\}$ & $\{q_1\}$\\
+			 $q_2$  & $\{q_2\}$ & $\{q_1\}$\\ \hline
 		\end{tabular}
 		\caption{Tabela de transição para a função $\delta_N$ do AFN no Exemplo \ref{exe:AFN1}.}
 		\label{tab:DeltaAFN1}
@@ -964,7 +601,7 @@ De forma ingênua o leitor pode vim a imaginar que a possibilidade da unidade de
 	A prova é trivial, uma vez que, todo AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ pode ser convertido em um AFN $A' = \langle Q, \Sigma, \delta_N, q_0, F\rangle$ apenas realizando as transformações das transições $\delta(q_i, a) = q_j$ nas transições não-determinísticas $\delta_N(q_i, a) = \{q_j\}$ e mantendo todo o resto da estrutura igual.
 \end{proof}
 
-O próximo resultado estabelece a contraparte do Teorema \ref{teo:AFD-Para-AFN}, isto é, tal resultado mostrará que sempre é possível obter um AFD que pode ``simular''\footnote{Um termo simular aqui, diz respeito a ideia de que cada aplicação de um função de transição não-determinística pode ser representada de forma precisa por uma aplicação de uma função de transição determinística, para detalhes consulte \cite{hopcroft2008, menezes1998LFA}.} um AFN.
+O próximo resultado estabelece a contraparte do Teorema \ref{teo:AFD-Para-AFN}, isto é, tal resultado mostrará que sempre é possível obter um AFD que pode ``simular''\footnote{O termo simular aqui, diz respeito a ideia de que cada aplicação de um função de transição não-determinística pode ser representada de forma precisa por uma aplicação de uma função de transição determinística, para detalhes consulte \cite{hopcroft2008, menezes1998LFA}.} um AFN.
 
 \begin{theorem}[Transformação AFN - AFD]\label{teo:AFN-Para-AFD}
 	Se $L = \mathcal{L}(A)$ para algum AFN $A$, então existe um AFD $A'$ tal que $L = \mathcal{L}(A')$.
@@ -1012,7 +649,9 @@ Observe que o método de construção usado na prova do Teorema \ref{teo:AFN-Par
 
 \
 
-É importante destacar que o método de construção do AFD usado na prova do Teorema \ref{teo:AFN-Para-AFD}, conhecido como método de construção das partes introduzido por Rabin e Scott em \cite{rabin1959}, tem a característica de poder vim a produzir durante sua execução alguns estados inacessíveis\footnote{Um estado $q$ em um AFD é dito inacessível se não existe um $w \in \Sigma^*$ tal que $\widehat{\delta}(q_0, w) = q$. Vale também ressaltar como destaco em \cite{benjaLivro2010, hopcroft2008} que estados inacessíveis não aumentam o poder de computação nos AFD.} no AFD resultante, além disso,  o método de construção das partes em alguns cenários pode ser tornar impraticável, pois se o AFN de entrada possuir $n$ estados, o AFD resultante do método terá $2^n$ estados, ou seja, o crescimento no número de estados do AFD resultante do método cresce proposicional a uma potência de 2, o que rapidamente gera um número exponencialmente grande de estados. 
+É importante destacar que o método de construção do AFD usado na prova do Teorema \ref{teo:AFN-Para-AFD}, conhecido como método de construção das partes introduzido por Rabin e Scott em \cite{rabin1959}, tem a característica de poder vim a produzir durante sua execução alguns estados inacessíveis\footnote{Um estado $q$ em um AFD é dito inacessível se não existe um $w \in \Sigma^*$ tal que $\widehat{\delta}(q_0, w) = q$. Vale também ressaltar como destaco em \cite{benjaLivro2010, hopcroft2008} que estados inacessíveis não aumentam o poder de computação nos AFD.} no AFD resultante. 
+
+Outro ponto sobre o método de construção das partes é que em alguns cenários pode ser tornar impraticável, pois se o AFN de entrada possuir $n$ estados, o AFD resultante do método terá $2^n$ estados, ou seja, o crescimento no número de estados do AFD resultante do método cresce proposicional a uma potência de 2, o que rapidamente gera um número exponencialmente grande de estados. 
 
 A seguir o leitor será apresentado a uma melhoria no algoritmo de construção das partes, no sentido de que, a execução de tal algoritmo não produz estados inacessíveis no AFD de saída, o algoritmo a seguir é um pseudo-código baseado na versão textual apresentada no livro de Bedregal \textit{et al.} \cite{benjaLivro2010}. A melhoria no Algoritmo \ref{alg:AFN-AFD} consiste do fato dele não considerar simplesmente o conjunto $\wp(Q)$ no AFD de saída, em vez disso, ele constrói interativamente um conjunto de estados $Q' \subseteq \wp(Q)$, que no pior caso\footnote{A expressão ``no pior caso'' é típica da análise de algoritmos, em momentos futuros essa ideia de pior caso será melhor desenvolvida neste manuscrito.} $Q' = \wp(Q)$.
 
@@ -1049,41 +688,16 @@ A seguir o leitor será apresentado a uma melhoria no algoritmo de construção 
 \end{algorithm}
 
 \begin{exem}\label{exe:ConvertendoAFN-AFD}
-	Usando o Algoritmo \ref{alg:AFN-AFD}  no AFN representado pelo grafo de transição da Figura \ref{fig:AFN2} é obtido o AFD representado no grafo de transição da Figura \ref{fig:AFN-AFD1} exposta a seguir.
+	Usando o Algoritmo \ref{alg:AFN-AFD}  tendo o AFN representado pelo grafo de transição da Figura \ref{fig:AFN2} como entrada será obtido o AFD $M = \langle \{s_0, s_1, s_2, s_3, s_4, \emptyset\}, \{a,b\}, \delta, s_0, F'\rangle$ onde tem-se os estados equivalem aos seguintes conjuntos $s_0 = \{q_0\}, s_1 = \{q_0, q_1\}, s_2 = \{q_2\},$ $s_3 = \{q_2, q_3\}, s_4 = \{q_1, q_3\}$ tem-se que $F' = \{s_1, s_4\}$ e a função de transição $\delta$ é como se segue. 
+	\begin{eqnarray*}
+		\delta(s_0, a) = s_1, \delta(s_1, a) = s_1, \delta(s_2, a) = \emptyset, \delta(s_3, a) = s_4, \delta(s_4, a) = s_4,  \delta(\emptyset, a) = \emptyset \\
+		\delta(s_0, b) = \emptyset, \delta(s_1, b) = s_2, \delta(s_2, b) = s_3, \delta(s_3, b) = s_3, \delta(s_4, b) = s_2, \delta(\emptyset, b) = \emptyset
+	\end{eqnarray*}
 \end{exem}
-
-\begin{figure}[h]
-	\centering
-	\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
-		\node[state, initial]				(A)               	{$\{q_0\}$};
-		\node[state, accepting]				(B) [right of=A] 	{$\{q_0, q_1\}$};
-		\node[state]				        (C) [right of=B] 	{$\{q_2\}$};
-		\node[state]				        (D) [right of=C] 	{$\{q_2, q_3\}$};
-		\node[state, accepting]				(E) [below of=D] 	{$\{q_1, q_3\}$};
-		\node[state]				        (F) [below of=B] 	{$\emptyset$};
-		\path[->] (A) +(-1,0) edge (A)
-		
-		%Transições:
-		%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
-		(A) edge 			 				node		 {$a$}		 (B)
-		(A) edge 			 				node  		 {$b$}		 (F)
-		(B) edge [loop below] 				node 		 {$a$}		 ( )
-		(B) edge 			 				node  		 {$b$}		 (C)
-		(C) edge 			 				node  		 {$a$}		 (F)
-		(C) edge 			 				node  		 {$b$}		 (D)
-		(D) edge 			 				node  		 {$a$}		 (E)
-		(D) edge [loop right] 				node  		 {$b$}		 ( )
-		(E) edge [loop right] 				node  		 {$a$}	 	 ( )
-		(E) edge 			 				node  		 {$b$}		 (C)
-		(F) edge [loop left] 				node  		 {$a,b$}	 ( );
-	\end{tikzpicture}
-	\caption{Grafo de transição de um AFD equivalente ao AFN da Figura \ref{fig:AFN2}.}
-	\label{fig:AFN-AFD1}
-\end{figure}
 
 \subsection{$\lambda$-Autômatos Finitos Não-determinísticos}\label{subsec:LAFN}
 
-Os $\lambda$-Autômatos Finitos Não-determinísticos, ou simplesmente, $\lambda$-AFN são como dito em \cite{menezes1998LFA}, uma generalização do modelo de AFN  introduzido na seção anterior e que são permitidas transições entre estados diferentes usando (ou consumindo) a palavra vazia, tais transições recebem o nome de $\lambda$-transições, a seguir tais autômatos serão apresentados formalmente.
+Os $\lambda$-Autômatos Finitos Não-determinísticos, ou simplesmente, $\lambda$-AFN são como dito em \cite{menezes1998LFA}, uma generalização do modelo de AFN que foi introduzido na seção anterior e que são permitidas transições entre estados diferentes usando (ou consumindo) a palavra vazia, tais transições recebem o nome de $\lambda$-transições, a seguir tais autômatos serão apresentados formalmente.
 
 \begin{definition}[$\lambda$-Autômatos Finitos Não-determinísticos]\label{def:LAFN}
 	Um $\lambda$-AFN é uma estrutura $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, F\rangle$ onde: $Q, \Sigma, q_0$ e $F$ são da mesma forma que na Definição \ref{def:AFD}, já $\underline{\delta_N} : Q \times (\Sigma \cup \{\lambda\}) \rightarrow \wp(Q)$ é uma função total (chamada $\lambda$-função de transição não determinística).
@@ -1100,7 +714,7 @@ A representação usando grafos de transição dos $\lambda$-AFN e similar a rep
 			\backslashbox{$Q$}{$\Sigma \cup \{\lambda\}$}	& $0$ & $1$ & $\lambda$\\ \hline
 			$q_0$  & $\emptyset$ & $\emptyset$ & $\{q_1\}$\\
 			$q_1$  & $\{q_1\}$ & $\{q_2\}$ & $\{q_2\}$\\
-			$q_2$  & $\{q_2\}$ & $\{q_2\}$ & $\{q_0, q_2\}$ \\
+			$q_2$  & $\{q_2\}$ & $\{q_2\}$ & $\{q_0, q_2\}$ \\ \hline
 		\end{tabular}
 		\caption{Tabela de transição para a função $\delta_N$ do AFN no Exemplo \ref{exe:LAFN1}.}
 		\label{tab:DeltaLAFN1}
@@ -1135,7 +749,7 @@ A representação usando grafos de transição dos $\lambda$-AFN e similar a rep
 	\end{figure}
 \end{exem}
 
-Note porém que a definição da função de transição $\underline{\delta_N}$ garante que as transições em um $\lambda$-AFN acontece apenas em duas situações, a primeira em relação símbolos individuais do alfabeto $\Sigma$ e a segunda com relação a palavra vazia, assim não existe uma forma de computar uma palavra $w$ de forma que $|w| > 1$. A saída para contorna esse fato é estender a função de transição do autômato, similarmente ao que é feito para os AFD e AFN, para isso entretanto, é necessária algumas definições adicionais.
+Note porém que a definição da função de transição $\underline{\delta_N}$ garante que as transições em um $\lambda$-AFN acontecem apenas em duas situações, a primeira em relação símbolos individuais do alfabeto $\Sigma$ e a segunda com relação a palavra vazia, assim não existe uma forma de computar uma palavra $w$ de forma que $|w| > 1$. A saída para contorna esse fato é estender a função de transição do autômato, similarmente ao que é feito para os AFD e AFN, para isso entretanto, é necessária algumas definições adicionais.
 
 \begin{definition}[Função $\delta_\lambda$]\label{def:L-fecho}
 	Seja $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, F\rangle$ um $\lambda$-AFN, então a função $\delta_\lambda: Q \rightarrow \wp(Q)$ é definida como,
@@ -1356,6 +970,19 @@ Os aspectos relacionados a mostrar que um $\lambda$-AFN reconhece uma linguagem 
 
 Assim como para o caso da transformação de AFN em AFD, o processo de usar a construção do conjunto das partes no Teorema \ref{teo:LAFN-AFD} possui a desvantagem de gera estados inacessíveis. Mas como discutido em \cite{benja-2011, benja-2015, hopcroft2008, linz2006}, algumas simples modificações no Algoritmo \ref{alg:AFN-AFD} fazem com que o novo algoritmo gerado seja capaz de remover as $\lambda$-transições e não sejam produzidos estados inacessíveis a seguir é apresentado este novo algoritmo.
 
+\begin{exem}
+	Aplicando o Algoritmo \ref{alg:LAFN-AFD} ao $\lambda$-AFN do Exemplo \ref{exe:LinguagemLAFN2} é obtido como saída o AFD $D = \langle \{A_0, A_1, A_2, A_3, A_4, A_5, A_6, A_7, \emptyset\}, \{a,b\}, \delta, \{s_0, s_1, s_2\}, F' \rangle$ onde tem-se $A_0 = \{s_0, s_1, s_2\}, A_1 = \{s_4, s_6\}, A_2 = \{s_3\},$ $A_3 = \{s_1, s_5\}, A_4 = \{s_2, s_4\}, A_5 = \{s_1, s_6\},$ $A_6 = \{s_4, s_5\}$ e $A_7 = \{s_1, s_2\}$ com $F' = \{A_2\}$ e $\delta$ é descrito a seguir. 
+	
+	\begin{eqnarray*}
+		\delta(A_0, a) = A_1, \delta(A_0, b) = A_2, \delta(A_1, a) = A_3,\\
+		\delta(A_1, b) = \emptyset, \delta(A_2, a) = A_2, \delta(A_2, b) = A_2,\\
+		\delta(A_3, a) = A_4, \delta(A_3, b) = A_2, \delta(A_4, a) = A_5, \\
+		\delta(A_4, b) = A_2, \delta(A_5, a) = A_6, \delta(A_5, b) = A_2,\\
+		\delta(A_6, a) = A_7, \delta(A_6, b) = \emptyset, \delta(A_7, a) = A_1,\\ 
+		\delta(A_7, b) = A_2, \delta(\emptyset, a) = A_7, \delta(\emptyset, b) = \emptyset
+	\end{eqnarray*}
+\end{exem}
+
 \begin{algorithm}[h]
 	\Entrada{Um $\lambda$-AFN $A = \langle Q, \Sigma, \underline{\delta_N}, q_0, F\rangle$}
 	\Saida{Um AFD $A' = \langle Q', \Sigma, \delta, \delta_\lambda(q_0), F' \rangle$}
@@ -1392,27 +1019,9 @@ Assim como para o caso da transformação de AFN em AFD, o processo de usar a co
 	Argumentações sobre a corretude e a completude do Algoritmo \ref{alg:LAFN-AFD} podem ser consultadas em \cite{hopcroft2008}.
 \end{rema}
 
-\begin{exem}
-	Aplicando o Algoritmo \ref{alg:LAFN-AFD} ao $\lambda$-AFN do Exemplo \ref{exe:LinguagemLAFN2} é obtido como saída o AFD $A = \langle Q', \Sigma, \delta, \{s_0, s_1, s_2\}, F' \rangle$ onde $F' = \{\{s_3\}\}$ e $\delta$ é descrito pela Tabela \ref{tab:DeltaAFD} a seguir. 
-	
-	\begin{table}[h]
-		\centering
-		\begin{tabular}{c|cc}
-			\backslashbox{$Q'$}{$\Sigma$}	& $a$ & $b$\\ \hline
-			$\{s_0, s_1, s_2\}$  & $\{s_4, s_6\}$ & $\{s_3\}$\\
-			$\{s_4, s_6\}$  & $\{s_1, s_5\}$ & $\emptyset$\\
-			$\{s_3\}$ & $\{s_3\}$ & $\{s_3\}$\\
-			$\{s_1, s_5\}$ & $\{s_2, s_4\}$ & $\{s_3\}$\\
-			$\{s_2, s_4\}$ & $\{s_1, s_6\}$ & $\{s_3\}$\\
-			$\{s_1, s_6\}$ & $\{s_4, s_5\}$ & $\{s_3\}$\\
-			$\{s_4, s_5\}$ & $\{s_1, s_2\}$ & $\emptyset$\\
-			$\{s_1, s_2\}$ & $\{s_4, s_6\}$ & $\{s_3\}$\\ 
-			$\emptyset$ & $\emptyset$ & $\emptyset$
-		\end{tabular}
-		\caption{Tabela da função $\delta$ do AFD obtido aplicando o  Algoritmo \ref{alg:LAFN-AFD} no $\lambda$-AFN da Figura \ref{exe:LinguagemLAFN2}.}
-		\label{tab:DeltaAFD}
-	\end{table}
-\end{exem}
+\begin{rema}
+	Nestas últimas seções foram usados os símbolos $\delta, \delta_N$ e $\underline{\delta_N}$ para denotar as funções de transições dos AFD, AFN e $\lambda$-AFN respectivamente, entretanto, isso foi feito apenas para tornar o texto mais didático e ajudar na conversão entre os tipos de autômatos, mas é comum encontrar na literatura (ver \cite{benjaLivro2010, hopcroft2008, linz2006}) que independente do tipo de autômato sua função de transição é denotada apenas por $\delta$.
+\end{rema}
 
 \subsection{Teorema Myhill-Nerode e a  minimização de AFD}
 
@@ -1469,7 +1078,7 @@ O lema a seguir mostra que $\# \mathcal{H}_L$ é na verdade um limite inferior p
 		& \stackrel{Hip.}{\Longleftrightarrow} & \widehat{\delta}(q, x) \in F\\
 		& \Longleftrightarrow & x \in \mathcal{L}(A_q)
 	\end{eqnarray*}
-	Dessa forma tem-se que $\mathcal{L}(A_q) = L_w$, e obviamente $\mathcal{L}(A_{q_0}) = L$. Logo com $A$ fixo, tem-se que $L_w$ depende apenas do estado obtido quando a computação $w$ começa em $q_0$, e assim o número de $L_w$ distintos, ou seja, os elementos de $\mathcal{H}_L$ não pode ser maior que o número de estados em $A$, portanto, $\#\mathcal{H}_L \leq |Q|$.
+	Dessa forma tem-se que $\mathcal{L}(A_q) = L_w$, e obviamente $\mathcal{L}(A_{q_0}) = L$. Desde que  $A$ é fixo, tem-se que $L_w$ depende apenas do estado obtido quando a computação $w$ começa em $q_0$, e assim o número de $L_w$ distintos, ou seja, os elementos de $\mathcal{H}_L$ não pode ser maior que o número de estados em $A$, portanto, $\#\mathcal{H}_L \leq |Q|$.
 \end{proof}
 
 O próximo lema estabelece que para alguma linguagem $L$ no caso $\mathcal{H}_L$ ser finito, então sua cardinalidade será o limite superior no número de estados em um AFD capaz de reconhecer $L$.
@@ -1591,7 +1200,7 @@ O resultado a seguir diz que se dois estados são equivalentes, então seus suce
 Usando a definição anterior, a seguir será apresentado a definição de  AFD (ou colapso) quociente sobre um determinado AFD dado.
 
 \begin{definition}[AFD quociente]\label{def:AFD-Quociente}
-	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD. O AFD (ou colapso) quociente de $A$ é o AFD $A_{/\equiv} = \langle Q_{/\equiv}, \Sigma, \delta^*, [q_0],  F_{/\equiv}\rangle$ onde $[q_0]$ é a classe de equivalência do estado $q_0$ e para todo $q \in Q$ e $a \in \Sigma$ tem-se que $\delta^*([q], a) = [\delta(q, a)]$ e  $F_{/\equiv} = \{[q] \mid q \in F\}$.
+	Seja $A = \langle Q, \Sigma, \delta, q_0, F\rangle$ um AFD. O AFD (ou colapso) quociente de $A$ é o AFD $A_{/\equiv} = \langle Q_{/\equiv}, \Sigma, \delta^*, [q_0],  F_{/\equiv}\rangle$ e para todo $q \in Q$ e $a \in \Sigma$ tem-se que $\delta^*([q], a) = [\delta(q, a)]$ e  $F_{/\equiv} = \{[q] \mid q \in F\}$.
 \end{definition}
 
 \begin{theorem}\label{teo:ExtensaoDeltaEstrela}
@@ -1655,14 +1264,6 @@ O próximo resultado mostra que o colapso de um AFD para seu AFD quociente prese
 	Um fato importante sobre o AFD quociente é que ele é mínimo a menos de isomorfismo \cite{martin2003}, isto é, a construção do quociente é equivalente ao Teorema Myhill-Nerode.
 \end{rema}
 
-Agora obviamente a construção do AFD quociente pode ser visa como um algoritmo, nesse sentido o algoritmo consiste em realizar três tarefas básicas, a primeira é de encontrar os estados do autômato que são equivalentes, depois a partir o algoritmo deve construir as classes de equivalência dos estados em reunir todas as classes no conjunto (ou espaço) quociente $Q_{/\equiv}$, depois disso o algoritmo deve definir as transições entre  os estados são agora representados pelas classes de equivalência, isto é, o algoritmo deve construir a função $\delta^*$, e por fim, definir um conjunto de estados finais, onde novamente os estados são classes de equivalência, ou seja, o último passo do algoritmo é construir o conjunto $F_{/\equiv}$.
-
-Em termos de ``implementação'' o Algoritmo \ref{alg:AFD-Quociente}  a seguir esboça o pseudo-código para a construção do AFD quociente, a ideia do mesmo é, primeiro usar os elementos em uma matriz de relação para marcar estados equivalentes, depois a partir desta matriz construir as classes de equivalência. Obviamente este texto não está preocupado com desempenho, assim possivelmente o pseudo-código a seguir pode não ser o mais eficiente, em termos da análise de algoritmo.
-
-\begin{rema}
-	Um ponto a ressaltar é que o Algoritmo \ref{alg:AFD-Quociente} não utilizar a matriz inteira para representar a relação de equivalência, isso acontece por que toda relação de equivalência é reflexiva e simétrica, assim basta se preocupar com as posições acima da diagonal principal da matriz, pois como explicado em \cite{benjaLivro2010}, os elementos abaixo da diagonal principal são na verdade a contraparte simétrica da relação de equivalência e os elementos na diagonal são as informações da parte reflexiva da relação.
-\end{rema}
-
 \begin{algorithm}[!h]
 	\Entrada{Um AFD $A = \langle Q, \Sigma, \delta, q_0, F\rangle$}
 	\Saida{O AFD quociente $A_{/\equiv} = \langle Q_{/\equiv}, \Sigma, \delta^*, [q_0],  F_{/\equiv}\rangle$}
@@ -1712,12 +1313,20 @@ Em termos de ``implementação'' o Algoritmo \ref{alg:AFD-Quociente}  a seguir e
 	\label{alg:AFD-Quociente}
 \end{algorithm}
 
+Agora obviamente a construção do AFD quociente pode ser visa como um algoritmo, nesse sentido o algoritmo consiste em realizar três tarefas básicas, a primeira é de encontrar os estados do autômato que são equivalentes, depois o algoritmo deve construir as classes de equivalência dos estados em reunir todas as classes no conjunto (ou espaço) quociente $Q_{/\equiv}$, depois disso o algoritmo deve definir as transições entre  os estados são agora representados pelas classes de equivalência, isto é, o algoritmo deve construir a função $\delta^*$, e por fim, definir um conjunto de estados finais, onde novamente os estados são classes de equivalência, ou seja, o último passo do algoritmo é construir o conjunto $F_{/\equiv}$.
+
+Em termos de ``implementação'' o Algoritmo \ref{alg:AFD-Quociente}  a seguir esboça o pseudo-código para a construção do AFD quociente, a ideia do mesmo é, primeiro usar os elementos em uma matriz de relação para marcar estados equivalentes, depois a partir desta matriz construir as classes de equivalência. Obviamente este texto não está preocupado com desempenho, assim possivelmente o pseudo-código a seguir pode não ser o mais eficiente, em termos da análise de algoritmo.
+
+\begin{rema}
+	Um ponto a ressaltar é que o Algoritmo \ref{alg:AFD-Quociente} não utilizar a matriz inteira para representar a relação de equivalência, isso acontece por que toda relação de equivalência é reflexiva e simétrica, assim basta se preocupar com as posições acima da diagonal principal da matriz, pois como explicado em \cite{benjaLivro2010}, os elementos abaixo da diagonal principal são na verdade a contraparte simétrica da relação de equivalência e os elementos na diagonal são as informações da parte reflexiva da relação.
+\end{rema}
+
 \begin{exem}\label{exe:AFDMinimizacao}
 	Inicialmente considere que o Algoritmo \ref{alg:AFD-Quociente} recebe como entrada o  AFD representado pelo grafo de transições esboçado pela Figura \ref{fig:Linguagem-AFDM-1} a seguir.
 	
 	\begin{figure}[h]
 		\centering
-		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=2.0cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
 			\node[state, initial]				(A)               	{$q_0$};
 			\node[state, accepting]				(B) [right of=A] 	{$q_1$};
 			\node[state]				        (C) [right of=B] 	{$q_2$};
@@ -1796,9 +1405,216 @@ Desde que $\delta^*([q], a) = [\delta(q, a)]$ é um caso particular do resultado
 	A demonstração fica como exercício ao leitor.
 \end{proof}
 
-\subsection{Tradutores Finitos}
+\subsection{Máquinas de Mealy e Moore como Tradutores Finitos}
 
-Escrever depois...
+Os trabalhos iniciais de Mealy \cite{mealy1955} e Moore \cite{moore1956}, além de serem alicerces fundamentais da teoria dos autômatos finitos, também são os trabalhos responsáveis por formalizar o conceito de tradutores finitos ou autômato finito com saída. Diferente dos autômatos sem saída vistos nas seções \ref{subsec:AFD}, \ref{subsec:AFN} e \ref{subsec:LAFN} as máquinas de Mealy e Moore são capazes de apresentar saídas mais complexas que as típicas saídas booleanas (aceita/rejeita) dos AFD, AFN e $\lambda$-AFN. As máquinas de Mealy, por exemplo,  são um modelo matemático simples para definir máquinas de cifras (criptografia), ou seja, máquinas que a partir de um texto de entrada geram um texto cifrado (criptografado) como saída \cite{menezes1998LFA}.
+
+Em termos informais uma autômato com saída pode ser descrito como um máquina que possui duas memórias (somente de leitura), a primeira memória guarda a palavra de entrada usada no funcionamento da máquina, já segunda memória (apenas de escrita) é responsável por armazenar a palavra de saída, sendo essa gerada durante o funcionamento do autômato.
+
+\begin{definition}[Máquina de Mealy]\label{def:MealyMachine}
+	Uma máquina de Mealy é uma estrutura $A = \langle Q, \Sigma, \Lambda, \delta, \psi, q_0, \rangle$ onde $Q, \Sigma, \delta$ e $q_0$ são da mesma forma que na Definição \ref{def:AFD}. $\Lambda$ é um alfabeto chamado \textbf{alfabeto de saída} e $\psi: Q \times \Sigma \rightarrow \Lambda^+$ é a função de tradução da máquina de Mealy.
+\end{definition}
+
+\begin{exem}\label{exe:Mealy1}
+	A estrutura $M = \langle \{q_0, q_1\}, \{a, b\}, \{0, 1, 2\}, \delta, \psi, q_0 \rangle$ onde a função de transição é representada pela Tabela \ref{tab:TransicaoMealyEx1} e a função de tradução é representada pela Tabela \ref{tab:TraducaoMealyEx1} a seguir é uma máquina de Mealy.
+	
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{c|cc}
+			\backslashbox{$Q$}{$\Sigma$} & $a$ & $b$\\ \hline
+			$q_0$ & $q_1$ & $q_1$ \\
+			$q_1$ & $q_0$ & $q_1$
+		\end{tabular}
+		\caption{Tabela da Função de transição da Máquina de Mealy do Exemplo \ref{exe:Mealy1}.}
+		\label{tab:TransicaoMealyEx1}
+	\end{table}
+
+	\begin{table*}[h]
+		\centering
+		\begin{tabular}{c|cc}
+			\backslashbox{$Q$}{$\Sigma$} & $a$ & $b$\\ \hline
+			$q_0$ & $11$ & $20$ \\
+			$q_1$ & $12$ & $02$ 
+		\end{tabular}
+		\caption{Tabela da Função de tradução da Máquina de Mealy do Exemplo \ref{exe:Mealy1}.}
+		\label{tab:TraducaoMealyEx1}
+	\end{table*}
+\end{exem}
+
+Pode-se utilizar a ideia de grafo de transição para representar visualmente as máquinas de Mealy a única diferença que esta representação terá em relação aos grafos que representam os AFD, é que as arestas que ligam dois vértices $q_i$ e $q_j$ serão rotuladas com pares $(a, x) \in \Sigma \times \Lambda$ representando assim simultaneamente as funções $\delta(q_i, a) = q_j$ e $\psi(q_i, a) = x$.
+
+\begin{exem}\label{exe:MaquinaMealyGrafo1}
+	A representação do grafo de transição da máquina de Mealy do Exemplo \ref{exe:Mealy1} é como se segue.
+	
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.5cm, on grid, auto, state/.append style={minimum size=3em}, thick ]
+			\node[state, initial]							(A)               	{$q_0$};
+			\node[state]									(B) [right of=A] 	{$q_1$};
+			\path[->] (A) +(-1,0) edge (A)
+			
+			%Transições:
+			%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+			(A) edge [bend left]  				node [align=center]   {$(a, 11)$\\$(b, 20)$} (B)
+			(B) edge [bend left]  				node    			  {$(a, 12)$} (A)
+			(B) edge [loop above]				node    			  {$(b, 02)$} ( );
+		\end{tikzpicture}
+		\caption{Representação da máquina de Mealy do Exemplo \ref{exe:Mealy1}.}
+		\label{fig:MaquinaMealy1}
+	\end{figure}
+\end{exem}
+
+Note que a máquina de Mealy traduz (ou associa) cada transição da máquina a um símbolo do alfabeto de saída, ou seja, cada movimento no processo de computação da máquina é traduzido na saída da mesma. Obviamente $\widehat{\delta}$ é definido da mesma forma que para os AFD, sendo assim basta agora estender a função $\psi$ para que a máquina de Mealy possa de fato ser vista como um tradutor finito, e isto será feito a seguir.
+
+\begin{definition}[Extensão da função $\psi$]
+	Seja $A = \langle Q, \Sigma, \Lambda, \delta, \psi, q_0\rangle$ uma máquina de Mealy a função $\psi$ é estendida para a função $\widehat{\psi} : Q \times \Sigma^* \rightarrow \Lambda^*$ usando recursividade como se segue.
+	
+	\begin{eqnarray}\label{eq:ExtensaoDaFuncaoDetraducaoMealy}
+		\widehat{\psi}(q, \lambda)& = & \lambda \\
+		\widehat{\psi}(q, wa)& = & \widehat{\psi}(q, w)\psi(\widehat{\delta}(q, w), a)
+	\end{eqnarray}
+\end{definition} 
+
+\begin{exem}
+	Considerando a máquina de Mealy do Exemplo \ref{exe:Mealy1} a tradução da palavra $bab$ a partir do estado $q_1$ é dada seguinte forma,
+	\begin{eqnarray*}
+		\widehat{\psi}(q_1, bab) & = & \widehat{\psi}(q_1, ba)\psi(\widehat{\delta}(q_1, ba), b)\\
+		& = & \widehat{\psi}(q_1, b)\psi(\widehat{\delta}(q_1, b), a)\psi(\widehat{\delta}(q_1, ba), b)\\
+		& = & \widehat{\psi}(q_1, \lambda)\psi(\widehat{\delta}(q_1, \lambda), b)\psi(\widehat{\delta}(q_1, b), a)\psi(\widehat{\delta}(q_1, ba), b)\\
+		& = & \lambda 021220\\
+		& = & 021220
+	\end{eqnarray*}
+\end{exem}
+
+\begin{rema}
+	Pode-se interpretar que as funções $\psi$ e $\widehat{\psi}$ escrevem na fita de saída da máquina, isto é, na memória adicional de escrita que tais máquinas possuem.
+\end{rema}
+
+Diferentemente dos AFD, AFN e $\lambda$-AFN o conjunto saída de qualquer máquina de Mealy não visto como uma linguagem aceita pela máquina, em vez disso, ela é vista como a linguagem traduzida pela máquina.
+
+\begin{definition}[Linguagem Traduzia - Máquina de Mealy]
+	Dado uma máquina de Mealy $A = \langle Q, \Sigma, \Lambda, \delta, \psi, q_0\rangle$ a linguagem traduzida de $A$, denotado por $TRAD(A)$, é o conjunto de todas as traduções das palavras $w \in \Sigma^*$ realizadas a partir do estado inicial $q_0$, ou seja, tem-se que:
+	\begin{equation}
+		TRAD(A) = \{\widehat{\psi}(q_0, w)  \mid w \in \Sigma^*\}
+	\end{equation}
+\end{definition}
+
+Em contrapartida as máquinas de Mealy, que como já dito, traduzem cada transição da máquina em um fragmento da palavra de saída, existem as máquina de Moore, nomeadas em homenagem a Edward F. Moore (1925-2003) que as propôs em seu seminal artigo \cite{moore1956}, tais máquinas não traduzem as transições em prefixos da palavras de saída, em vez disso, cada estado da máquina é mapeado em um símbolo do alfabeto de saída.
+
+\begin{definition}[Máquina de Moore]\label{def:MooreMachine}
+	Uma máquina de Moore é uma estrutura $A = \langle Q, \Sigma, \Lambda, \delta, \Phi, q_0\rangle$ onde $Q, \Sigma, \delta$ e $q_0$ são da mesma forma que na Definição \ref{def:AFD}. $\Lambda$ é um alfabeto chamado \textbf{alfabeto de saída} e $\Phi: Q \rightarrow \Lambda^+$ é a função de escrita dos estado da máquina de Moore.
+\end{definition}
+
+\begin{exem}\label{exe:Moore1}
+	A estrutura $M = \langle \{q_0, q_1, q_3\}, \{a, b\}, \{x, y, z\}, \delta, \Phi, q_0 \rangle$ onde a função de transição é esboçada pela Tabela \ref{tab:TransicaoMoore1} a seguir, sendo a função de escrita dos estados é definida como: $\Phi(q_0) = xy, \Phi(q_1) = yz$ e $\Phi(q_2) = zx$. É uma máquina de Moore.
+	
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{c|cc}
+			\backslashbox{$Q$}{$\Sigma$} & a & b\\ \hline
+			$q_0$ & $q_1$ & $q_2$ \\
+			$q_1$ & $q_1$ & $q_2$ \\
+			$q_2$ & $q_0$ & $q_2$ 
+		\end{tabular}
+		\caption{Tabela de transição para a máquina de Moore do Exemplo \ref{exe:Moore1}.}
+		\label{tab:TransicaoMoore1}
+	\end{table}
+\end{exem}
+
+Similar aos AFD pode-se utilizar a ideia de grafo de transição para representar visualmente as máquinas de Moore a única diferença que esta representação terá em relação aos grafos que representam os AFD, é que os vértices serão rotulados por pares $(q, w) \in Q \times \Lambda$ e $q_j$ em que $\Phi(q) = w$.
+
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[>=stealth, shorten >=1pt, node distance=3.0cm, on grid, auto, state/.append style={minimum size=1em}, thick ]
+		\node[state, initial]							(A)               	{$(q_0, xy)$};
+		\node[state, accepting]							(B) [right of=A] 	{$(q_1, yz)$};
+		\node[state]									(C) [below of=B] 	{$(q_2, zx)$};
+		\path[->] (A) +(-1,0) edge (A)
+		
+		%Transições:
+		%(Partida) edge [tipo da seta] node {simbolo lido} (Destino)
+		(A)	edge			  				node   				  {$a$} (B)
+		(A) edge [bend left]  				node [below]		  {$b$} (C)
+		(B) edge [loop right]				node				  {$a$} ( )
+		(B)	edge			  				node   				  {$b$} (C)
+		(C) edge [bend left]  				node   				  {$a$} (A)
+		(C) edge [loop right]				node				  {$b$} ( );
+	\end{tikzpicture}
+	\caption{Representação da máquina de Moore do Exemplo \ref{exe:Mealy1}.}
+	\label{fig:MaquinaMoore1}
+\end{figure}
+
+\begin{exem}\label{exe:MaquinaMooreGrafo1}
+	A representação do grafo de transição da máquina de Mealy do Exemplo \ref{exe:Moore1} pode ser observada na Figura \ref{fig:MaquinaMoore1}.
+\end{exem}
+
+\begin{rema}
+	Note que para qualquer $w \in \Sigma^*$ tem-se que $\Phi(\widehat{\delta}(q_0,w))$ expressa a saída da máquina de Moore para a palavra $w$.
+\end{rema}
+
+Para que as máquinas de Moore possam ser vistas como tradutores é necessário apresentar uma função de tradução para tais máquinas, sendo esta apresentada a seguir.
+
+\begin{definition}[Função de tradução das máquinas de Moore]
+	Dado uma máquina de Moore $A = \langle Q, \Sigma, \Lambda, \delta, \Phi, q_0\rangle$ a função de tradução $\widehat{\Phi} : Q \times \Sigma^* \rightarrow \Lambda^*$ é definida por recursão como se segue.
+	
+	\begin{eqnarray}\label{eq:ExtensaoDaFuncaoDetraducaoMoore}
+		\widehat{\Phi}(q, \lambda)& = & \lambda \\
+		\widehat{\Phi}(q, wa)& = & \widehat{\Phi}(\widehat{\delta}(q, w))\Phi(\widehat{\delta}(q, wa))
+	\end{eqnarray}
+\end{definition}
+
+\begin{rema}
+	Pode-se assim como para o caso das máquinas de Mealy considerar que a função de tradução das máquinas de Moore, isto é, a função $\widehat{\Phi}$ escreve a memória de escrita da máquina.
+\end{rema}
+
+\begin{definition}[Linguagem Traduzia - Máquina de Moore]
+	Dado uma máquina de Moore $A = \langle Q, \Sigma, \Lambda, \delta, \Phi, q_0\rangle$ a linguagem traduzida de $A$, denotado por $TRAD(A)$, é o conjunto de todas as traduções das palavras $w \in \Sigma^*$ realizadas a partir do estado inicial $q_0$, ou seja, tem-se que:
+	\begin{equation}
+		TRAD(A) = \{\widehat{\Phi}(q_0, w) \mid  w \in \Sigma^*\}
+	\end{equation}
+\end{definition}
+
+O leitor atento deve ter notado pelas definições que as traduções feitas pelas máquinas de Mealy e Moore, apresentam a propriedade de involução sobre a palavra vazia. Os próximos resultados apresentam uma forte relação entre as máquinas de Mealy e Moore.
+
+\begin{theorem}[Transformação Moore-Mealy]\label{teo:Moore-Mealy}
+	Dado uma linguagem $L \subseteq \Lambda^*$. Se $L = TRAD(N)$ para alguma máquina de Moore $N$,  então existe uma máquina de Mealy $M$ tal que $L = TRAD(M)$.
+\end{theorem}
+
+\begin{proof}
+	Suponha que $L = TRAD(N)$ para alguma máquina de Moore $N = \langle Q, \Sigma, \Lambda, \delta, \Phi, q_0\rangle$, agora defina uma máquina de Mealy $M = \langle Q, \Sigma, \Lambda, \delta, \psi, q_0\rangle$, onde para todo $(q, a) \in Q \times \Sigma$ é definido que:
+	\begin{eqnarray}\label{eq:ConversaoMoore-Mealy}
+		\psi(q, a) & = & \Phi(\delta(q, a))
+	\end{eqnarray}
+	Agora será mostrado por indução sobre o tamanho das palavras que para todo $w \in \Sigma^+$ que que as traduções de $M$ e $N$ são iguais, ou seja, será mostrado que $\widehat{\Phi}(q_0, w) = \widehat{\psi}(q_0, w)$.
+	\begin{itemize}
+		\item \textbf{Base da indução:} Quando $|w| = 0$ é trivial da própria definição de $\widehat{\Phi}$ e $\widehat{\psi}$.
+		\item \textbf{Hipótese indutiva (HI)}: Suponha que para todo $|w| = n$ com $n \geq 0$ tem-se que $\Phi(q_0, w) = \psi(q_0, w)$.
+		\item \textbf{Passo indutivo}: Dado $|w| = ua$ com $u \in \Sigma^*$ tal que $|u| \geq 0$ e $a \in \Sigma$ tem-se que,
+		
+		\begin{eqnarray*}
+			\widehat{\Phi}(q_0, w) & = & \widehat{\Phi}(q_0, ua)\\
+			& = & \widehat{\Phi}(q_0, u)\Phi(\widehat{\delta}(q_0, ua))\\
+			& \stackrel{\textbf{(HI)}}{=} & \widehat{\psi}(q_0, u)\Phi(\widehat{\delta}(q_0, ua))\\
+			& = & \widehat{\psi}(q_0, u)\Phi(\delta(\widehat{\delta}(q_0, u), a))\\
+			& \stackrel{Eq. \ \ref{eq:ConversaoMoore-Mealy}}{=} & \widehat{\psi}(q_0, u)\psi(\widehat{\delta}(q_0, u), a)\\
+			& = & \widehat{\psi}(q_0, ua)\\ 
+			& = & \widehat{\psi}(q_0, w)
+		\end{eqnarray*}
+	\end{itemize}
+	Consequentemente, $TRAD(N) = TRAD(M)$ e, portanto, $L = TRAD(M)$.
+\end{proof}
+
+\begin{theorem}[Transformação Mealy-Moore]\label{teo:Mealy-Moore}
+	Dado uma linguagem $L \subseteq \Lambda^*$. Se $L = TRAD(N)$ para alguma máquina de Mealy $N$,  então existe uma máquina de Moore $M$ tal que $L = TRAD(M)$.
+\end{theorem}
+
+\begin{proof}
+	Similar ao raciocínio da demonstração do Teorema \ref{teo:Moore-Mealy}, e ficará como exercício ao leitor.
+\end{proof}
+
+\begin{rema}
+	As definições dadas aqui não apresentam o conceito de estado final, para leitores interessados em máquinas de Mealy e Moore com estados finais ver \cite{menezes1998LFA}.
+\end{rema}
 
 \subsection{A Notação Matricial}
 
@@ -1836,7 +1652,7 @@ No que diz respeito as expressões regulares é comum assumir que $+, \cdot, (, 
 A seguir será formalizado o conceito de semântica para as expressões regulares, sendo que tal semântica pode ser visto como uma \textbf{semântica denotacional}\footnote{Uma semântica denotacional é aquela em que as funções de valoração usadas, são funções que mapeiam palavras da linguagem para funções parciais que representam o comportamento dos programas.} \cite{scott1971}, que apresenta significado as operações de soma e multiplicação.
 
 \begin{definition}[Semântica das Expressão Regulares]\label{def:ExpRegularesSemantica}
-	Seja $Exp_\Sigma$ o conjunto das expressões regulares sobre $\Sigma$,  a semântica (ou interpretação) de $Exp_\Sigma$ é uma função $\mathcal{L}: Exp_\Sigma \rightarrow \Sigma^*$ definida recursivamente para todo $r, r_1, r_2  \in Exp_\Sigma$ pelas seguintes regras.
+	Seja $Exp_\Sigma$ o conjunto das expressões regulares sobre $\Sigma$,  a semântica (ou interpretação) de $Exp_\Sigma$ é uma função $\mathcal{L}: Exp_\Sigma \rightarrow \wp(\Sigma^*)$ definida recursivamente para todo $r, r_1, r_2  \in Exp_\Sigma$ pelas seguintes regras.
 	\begin{itemize}
 		\item[(i)] Se $r \in \Sigma \cup \{\lambda\}$, então $\mathcal{L}(r) = \{r\}$.
 		\item[(ii)] Se $r = \emptyset$, então $\mathcal{L}(r) = \emptyset$.
@@ -2300,7 +2116,7 @@ Uma consequência imediata deste teorema é apresentada a seguir.
 \end{exem}
 
 \begin{rema}
-	Apenas na demonstração a seguir considere que o símbolo $\Sigma$ representa o somatório enumerável, com respeito a soma $(+)$ das expressões regulares, além disso, para fins de representação durante tal prova leta $X$ irá representar um alfabeto genérico qualquer.
+	Apenas na demonstração a seguir considere que o símbolo $\Sigma$ representa o somatório enumerável, com respeito a soma $(+)$ das expressões regulares, além disso, para fins de representação durante tal prova a letra $X$ irá representar um alfabeto genérico qualquer.
 \end{rema}
 
 \begin{theorem}
@@ -2373,45 +2189,14 @@ Uma consequência imediata deste teorema é apresentada a seguir.
 	\end{eqnarray*}
 \end{exem}
 
-\section{Gramática Regulares}
+\section{Gramática Regulares}\label{sec:GramaticaRegular}
 
 Nas seções anteriores foram apresentados dois formalismos para as linguagens regulares, a saber, formalismo operacional (os autômatos) e o formalismo denotacional (as expressões regulares). Nesta seção será apresentado um terceiro formalismo para as linguagens regulares, sendo este um formalismo gerador (ou axiomático) \cite{menezes1998LFA}. 
 
-Este novo formalismo é baseado em gramática formais e está intimamente ligado a ideia de teoria (ou sistemas) de reescrita \cite{ayala2014}, dito isto pode-se então introduzir as gramática formais.
-
-\begin{definition}[Gramática formal]\label{def:GramaticaFormal}
-	Uma gramática formal é uma estrutura da forma $G = \langle V, \Sigma, S, P \rangle$ onde $V$ é um conjunto não vazio de símbolos chamados variáveis tal que $V \cap \Sigma = \emptyset$, $\Sigma$ é um alfabeto, $S \in V$ é uma variável destacada chamada de \textbf{variável inicial} e $P$ é um conjunto de regras de reescrita\footnote{Tamém é comum encontrar na literatura a nomenclatura regras de produção \cite{benjaLivro2010, linz2006}.} da forma $w \rhd w'$ onde $w \in (V \cup \Sigma)^+$ e $w' \in (V \cup \Sigma)^*$.
-\end{definition}
-
-\begin{exem}\label{exe:GramaticaFormal1}
-	A estrutura $G = \langle \{A, B\}, \{a\}, A, P \rangle$ em que $P$ é formado pelas regras $A \rhd aABa, A \rhd B$ e $B \rhd \lambda$ é uma gramática formal.
-\end{exem}
-
-Qualquer gramática então pode ser visto com um sistema para a geração de palavras através de um mecanismo chamado derivação descrito a seguir.
-
-\begin{definition}[Derivação de palavras]
-	Dado uma gramática $G$ uma palavra $Xw'Y$ é dita derivada a partir de $XwY$ na gramática $G$, denotado por $XwY \ggg_G Xw'Y$, sempre que existe uma regra forma $w \rhd w' \in P$.
-\end{definition}
-
-\begin{exem}
-	Dado a gramática do Exemplo \ref{exe:GramaticaFormal1} tem-se que $aABa \ggg_G aaABaBa$, pois existe em $P$ a regra $A \rhd aABa$.
-\end{exem}
-
-Rigorosamente $\ggg_G$ na verdade é uma relação entre $(V \cup \Sigma)^+$ e $(V \cup \Sigma)^*$, e assim $\ggg_G^*$ denota o fecho transitivo e reflexivo de  $\ggg_G$, além disso, sempre que não causar ambiguidade é comum eliminar a escrita do rótulo da gramática, ou seja, são escritos respectivamente $\ggg^*$ e $\ggg$ em vez de $\ggg_G^*$ e $\ggg_G$. 
-
-
-\begin{definition}[Linguagem de uma gramática]
-	Dado uma gramática $G = \langle V, \Sigma, S, P \rangle$ a linguagem gerada por $G$, denotada por $\mathcal{L}(G)$, corresponde ao conjunto formado por todas as palavras sobre $\Sigma$ que são deriváveis a partir do variável inicial da gramática, ou seja, $\mathcal{L}(G) = \{w \in \Sigma^* \mid S \ggg^* w\}$.
-\end{definition}
-
-\begin{exem}
-	Não é difícil verificar que a gramática do Exemplo \ref{exe:GramaticaFormal1} gera a linguagem $\{w \in \{a\}^* \mid |w| = 2k, k \in \mathbb{N}\}$.
-\end{exem}
-
 \begin{definition}[Gramática Linear]\label{def:GramaticaLinear}
-	Uma gramática $G = \langle V, \Sigma, S, P \rangle$ e dita Linear à direta, ou simplesmente GLD, se todas as suas produções são da forma, 
+	Uma gramática formal $G = \langle V, \Sigma, S, P \rangle$ e dita Linear à Direta, ou simplesmente GLD, se todas as suas produções são da forma, 
 	$$A \rhd wB$$
-	e é dita linear á esquerda, ou simplesmente GLE, se todas as suas produções são da forma, 
+	e é dita Linear à Esquerda, ou simplesmente GLE, se todas as suas produções são da forma, 
 	$$A \rhd Bw$$
 	onde $A \in V, B \in V \cup \{\lambda\}$ e $w \in \Sigma^*$.
 \end{definition}
@@ -2448,13 +2233,13 @@ Em uma gramática formal $G$ quando para uma palavra $w$ existem $w_1, \cdots, w
 \end{exem}
 
 \begin{definition}[Gramática Regular]
-	Uma gramática $G$ é dita regular sempre que ela for linear à esquerda ou à direita.
+	Uma gramática formal $G$ é dita regular sempre que ela for linear à esquerda ou à direita.
 \end{definition}
 
 Um tipo mais rigoroso de gramática regular como comentado em \cite{benjaLivro2010, linz2006},  são as chamadas gramática regulares unitárias definidas a seguir.
 
 \begin{definition}[Gramáticas Regulares Unitárias]
-	Uma gramática regular $G$ é dita unitária á esquerda (à direita) se ela é linear à esquerda (à direita) e toda produção é da forma $A \rhd Bw$ $(A \rhd wB)$ com $A \in V, B \in V \cup \{\lambda\}$ e $w \in \Sigma \cup \{\lambda\}$.
+	Uma gramática regular $G$ é dita unitária à esquerda (à direita) se ela é linear à esquerda (à direita) e toda produção é da forma $A \rhd Bw$ $(A \rhd wB)$ com $A \in V, B \in V \cup \{\lambda\}$ e $w \in \Sigma \cup \{\lambda\}$.
 \end{definition}
 
 \begin{exem}
@@ -2480,7 +2265,7 @@ O próximo resultado estabelece que gramática regulares e gramática regulares 
 		\item[R3:] Se $A \rhd a_1\cdots a_n \in P$ onde $a_i \in \Sigma$ sendo $1 \leq i \leq n$ e $n \geq 2$, então tem-se que $A \rhd B_na_n, B_n \rhd B_{n-1}a_{n-1}, \cdots, B_2 \rhd B_1a_1, B_1 \rhd \lambda \in P'$.
 	\end{itemize}
 
-	Para as regras R2 e R3 todo $B_i$ é uma nova variável existente em $V'$ que não existe originalmente em $V$. Claramente a gramática $G'$ é regular unitária à esquerda. Também não é difícil mostra por indução sobre o tamanho das derivações que para todo $w \in \Sigma^*$ tem-se que $S \ggg_G$ se, e somente se, $S \ggg_{G'} w$, portanto, $\mathcal{L}(G) = \mathcal{L}(G')$.
+	Para as regras R2 e R3 todo $B_i$ é uma nova variável existente em $V'$ que não existe originalmente em $V$. Claramente a gramática $G'$ é regular unitária à esquerda. Também não é difícil mostra por indução sobre o tamanho das derivações que para todo $w \in \Sigma^*$ tem-se que $S \gg^*_G w$ se, e somente se, $S \gg^*_{G'} w$, portanto, $\mathcal{L}(G) = \mathcal{L}(G')$.
 	
 	$(\Leftarrow)$ Trivial uma vez que toda gramática regular unitária à esquerda (à direita) é um caso particular de gramática regular à esquerda (à direita).
 \end{proof}
@@ -2528,7 +2313,7 @@ O próximo resultado estabelece o poder de geração das gramáticas regulares �
 		
 		\item \textbf{Hipótese indutiva (HI)}:
 		
-		Suponha que $S \ggg_{G'} w$ em $n$ derivação com $n \geq 1$ tal que:
+		Suponha que $S \gg^*_{G'} w$ em $n$ derivação com $n \geq 1$ tal que:
 		\begin{itemize}
 			\item[(1)] Se $w \in \Sigma^*$, então $w \in \mathcal{L}(M)$.
 			\item[(2)] Se $w = a_1\cdots a_{n-1}B$ com $a_i \in \Sigma \cup \{\lambda\}$ para todo $1 \leq i \leq n-1$ e $B \in V$, então $B \in \widehat{\underline{\delta_N}}(S, a_1\cdots a_{n-1})$.
@@ -2536,7 +2321,7 @@ O próximo resultado estabelece o poder de geração das gramáticas regulares �
 		
 		\item \textbf{Passo indutivo}:
 		
-		Agora dado que $S \ggg_{G'} w'$ em $n+1$ derivações, tem-se obrigatoriamente que acontece o caso (2) de \textbf{(HI)} e nesse caso duas situações são possíveis:
+		Agora dado que $S \gg^*_{G'} w'$ em $n+1$ derivações, tem-se obrigatoriamente que acontece o caso (2) de \textbf{(HI)} e nesse caso duas situações são possíveis:
 		\begin{itemize}
 			\item[(1)] Se $w' \in \Sigma^*$, então $w = a_1\cdots a_{n-1}B$ com $a_i \in \Sigma \cup \{\lambda\}$ para todo $1 \leq i \leq n-1$ e existe em $P$ uma produção $B \rightarrow \lambda$, e assim, $w' = a_1\cdots a_{n-1}$, nesta situação pelo caso (2) de \textbf{(HI)} tem-se que $B \in \widehat{\underline{\delta_N}}(S, a_1\cdots a_{n-1})$ e como $B \rightarrow \lambda$ pelo construção de $M$ tem-se que $q_f \in \underline{\delta_N}(B, \lambda)$, consequentemente, $\widehat{\underline{\delta_N}}(S, a_1\cdots a_{n-1}) \cap \{q_f\} \neq \emptyset$ e, portanto, $w' \in \mathcal{L}(M)$.
 			\item[(2)] Se $w' = a_1\cdots a_{n-1}B$ com $a_i \in \Sigma \cup \{\lambda\}$ para todo $1 \leq i \leq n-1$ e $B \in V$, então pela construção de $M$ tem-se que $B \in \widehat{\underline{\delta_N}}(S, w)$ como $w' \notin \Sigma^*$ não há mais nada a fazer nesse caso.
@@ -2554,8 +2339,8 @@ O próximo resultado estabelece o poder de geração das gramáticas regulares �
 		& \Longleftrightarrow & (\exists q_f \in F)[\widehat{\delta}(q_0, w) = q_f]\\
 		& \Longleftrightarrow & (\exists q_1, \cdots, q_{n-1} \in Q,  q_f \in F)[\delta(q_0, a_1) = q_1 \land \cdots \land \delta(q_{n-1}, a_n) = q_f]\\
 		& \Longleftrightarrow & (\exists q_1, \cdots, q_{n-1} \in Q,  q_f \in F)[q_0 \rhd a_1q_1, \cdots, q_{n-1} \rhd a_nq_f, q_f \rhd \lambda \in P]\\
-		& \Longleftrightarrow & q_0 \ggg^* a_1 \cdots a_n\\
-		& \Longleftrightarrow & q_0 \ggg^* w\\
+		& \Longleftrightarrow & q_0 \gg^* a_1 \cdots a_n\\
+		& \Longleftrightarrow & q_0 \gg^* w\\
 		& \Longleftrightarrow & w \in \mathcal{L}(G)
 	\end{eqnarray*} 
 	portanto, $\mathcal{L}(M) = \mathcal{L}(G)$ o que conclui a prova.
@@ -2597,7 +2382,7 @@ O próximo resultado mostra que gramática regulares à esquerda e à direita s�
 	Agora note que para todo $w = a_1\cdots a_n \in \Sigma^*$ tem-se que,
 	\begin{eqnarray*}
 		w \in \mathcal{L}(G') & \Longleftrightarrow &  a_1\cdots a_n \in \mathcal{L}(G')\\
-		& \Longleftrightarrow & S \ggg_{G'}^* a_1\cdots a_n\\
+		& \Longleftrightarrow & S \gg_{G'}^* a_1\cdots a_n\\
 		& \Longleftrightarrow & (\exists A_1 \cdots A_n, S \in V)\\
 		& & [S \rhd A_na_n, A_n \rhd A_{n-1}a_{n-1}, \cdots, A_{2} \rhd A_1a_1, A_1 \rhd \lambda \in P']\\
 		& \Longleftrightarrow & (\exists A_1 \cdots A_n, S \in V)\\
@@ -2606,7 +2391,7 @@ O próximo resultado mostra que gramática regulares à esquerda e à direita s�
 		& \Longleftrightarrow & a_n\cdots a_1 \in \mathcal{L}(M)\\
 		& \Longleftrightarrow & w^r \in \mathcal{L}(M)
 	\end{eqnarray*}
-	Logo $\mathcal{L}(M) = \mathcal{L}(G')^r$, desde que $M$ é um $\lambda$-AFN tem-se pelo Corolário \ref{col:RegularLAFN} que $\mathcal{L}(G')^r$ é regular, assim pelo Teorema \ref{teo:GRD-AFD} existe uma gramática regular à direita $\hat{G_1}$ que a gera, ou seja, $\mathcal{L}(\hat{G_1}) = \mathcal{L}(G')^r$, mas pelo Lema \ref{lema:GRD-Reversa} irá existir outra gramática regular à direita $\hat{G_2}$ tal que $\mathcal{L}(\hat{G_2}) = \mathcal{L}(\hat{G_1})^r$, mas $ \mathcal{L}(\hat{G_1})^r = (\mathcal{L}(G')^r)^r = (\mathcal{L}(G)^r)^r = (L^r)^r = L$, portanto, $L$ é gerada por uma gramática regular à direita. $(\Leftarrow)$ Suponha que que $L$ é gerada por uma gramática regular à direita, ou seja, que existe uma gramática regular a direita $G$ tal que $L = \mathcal{L}(G)$, assim pelo Lema \ref{lema:GRD-Reversa} irá existir outra gramática regular à direita $G_1 = \langle V, \Sigma, S, P \rangle$ tal que $L^r = \mathcal{L}(G_1)$, sem perda de generalidade pelo Teorema \ref{teo:SimplificacaoRegular} pode-se assumir que $G_1$ é regular unitária à direita, logo todas as suas produções são da forma $A \rhd aB$ com $A \in V, B \in V \cup \{\lambda\}$ e $a \in \Sigma \cup \{\lambda\}$. Dito isso construa uma nova gramática $G_2 = \langle V, \Sigma, S, P'\rangle$ onde $P' = \{A \rhd Ba \mid A \rhd Ba \in P\}$, claramente $G_2$ é unitária à esquerda. Mas pela construção de $G_2$ fica claro que $S \ggg_{G_1}^* w \Longleftrightarrow S \ggg_{G_2}^* w^r$, logo $\mathcal{L}(G_1)^r = \mathcal{L}(G_2)$, mas desde que, $\mathcal{L}(G_1)^r = (L^r)^r = L$, tem-se então que $L$ é gerada por uma gramática linear à esquerda, o que completa  a prova.
+	Logo $\mathcal{L}(M) = \mathcal{L}(G')^r$, desde que $M$ é um $\lambda$-AFN tem-se pelo Corolário \ref{col:RegularLAFN} que $\mathcal{L}(G')^r$ é regular, assim pelo Teorema \ref{teo:GRD-AFD} existe uma gramática regular à direita $\hat{G_1}$ que a gera, ou seja, $\mathcal{L}(\hat{G_1}) = \mathcal{L}(G')^r$, mas pelo Lema \ref{lema:GRD-Reversa} irá existir outra gramática regular à direita $\hat{G_2}$ tal que $\mathcal{L}(\hat{G_2}) = \mathcal{L}(\hat{G_1})^r$, mas $ \mathcal{L}(\hat{G_1})^r = (\mathcal{L}(G')^r)^r = (\mathcal{L}(G)^r)^r = (L^r)^r = L$, portanto, $L$ é gerada por uma gramática regular à direita. $(\Leftarrow)$ Suponha que que $L$ é gerada por uma gramática regular à direita, ou seja, que existe uma gramática regular a direita $G$ tal que $L = \mathcal{L}(G)$, assim pelo Lema \ref{lema:GRD-Reversa} irá existir outra gramática regular à direita $G_1 = \langle V, \Sigma, S, P \rangle$ tal que $L^r = \mathcal{L}(G_1)$, sem perda de generalidade pelo Teorema \ref{teo:SimplificacaoRegular} pode-se assumir que $G_1$ é regular unitária à direita, logo todas as suas produções são da forma $A \rhd aB$ com $A \in V, B \in V \cup \{\lambda\}$ e $a \in \Sigma \cup \{\lambda\}$. Dito isso construa uma nova gramática $G_2 = \langle V, \Sigma, S, P'\rangle$ onde $P' = \{A \rhd Ba \mid A \rhd Ba \in P\}$, claramente $G_2$ é unitária à esquerda. Mas pela construção de $G_2$ fica claro que $S \gg_{G_1}^* w \Longleftrightarrow S \gg_{G_2}^* w^r$, logo $\mathcal{L}(G_1)^r = \mathcal{L}(G_2)$, mas desde que, $\mathcal{L}(G_1)^r = (L^r)^r = L$, tem-se então que $L$ é gerada por uma gramática linear à esquerda, o que completa  a prova.
 \end{proof}
 
 \begin{exem}
@@ -2631,79 +2416,6 @@ O próximo resultado mostra que gramática regulares à esquerda e à direita s�
 \begin{rema}
 	Para esse questionário sempre que $w \in \Sigma^*$ e $c \in \Sigma$ a notação $|w|_c$ irá representar o número de $c$'s que existem na palavra $w$.
 \end{rema}
-
-\begin{exercise}\label{exerc:LR1}
-	Dado o alfabeto $\Sigma = \{a, b, c\}$ e as palavras $u = aabcab, v = bbccabac$ e $w = ccbabbaaca$ determine:
-\end{exercise}
-
-\begin{enumerate}
-	\item A palavra $uv^r$.
-	\item A palavra $(w^r)^2u$.
-	\item A palavra $((u^r)^2v^0)^rv$.
-	\item A palavra $uu^2v^rw$.
-	\item A palavra $((wuv)^r)^2u$.
-	\item O valor da expressão $|w^3| + 2|v^2u| - |u|$.
-	\item O valor da expressão $2|w^r| - |uv|$.
-	\item O valor da expressão $|w^raaw| - |w|$.
-	\item O valor da expressão $|uv^r| - 4$.
-	\item O valor da expressão $\frac{|(w^r)^2u|}{2} - \frac{|u|}{6}$.
-\end{enumerate}
-
-\begin{exercise}\label{exerc:LR2}
-	Demonstre para quaisquer palavras $u$ e $v$ e para todo $n \in \mathbb{N}$ as asserções a seguir.
-\end{exercise}
-
-\begin{enumerate}
-	\item Se $u$ é um prefixo de $v$, então $|u| \leq |v|$.
-	\item $|u^n| = n|u|$.
-	\item $|(uv)^r| = |vu|$.
-	\item Se $|u| = n$, então $n \leq |uv|$.
-\end{enumerate}
-
-\begin{exercise}\label{exerc:LR3}
-	Considere a linguagem $L = \{\lambda, abb, a, abba\}$ e determine:
-\end{exercise}
-
-\begin{enumerate}
-	\item $L^r - \{\lambda, a\}$.
-	\item $L^3$.
-	\item $PRE(L)$.
-	\item $SUF(L^2)$.
-	\item $w$ tal que $|w| = \bigsqcup \{|w'| \mid w' \in L^3\}$.
-\end{enumerate}
-
-\begin{exercise}\label{exerc:LR4}
-	Prove que para qualquer linguagem $L$ e quaisquer $m,n \in \mathbb{N}$ as seguintes asserções.
-\end{exercise}
-
-\begin{enumerate}
-	\item $(L^m)^n = L^{mn}$.
-	\item $L^mL^n = L^{m+n}$.
-	\item $(L^r)^n = (L^n)^r$.
-	\item $\overline{L}^r = \overline{L^r}$.
-	\item $PRE(L) = (SUF(L^r))^r$.
-\end{enumerate}
-
-\begin{exercise}\label{exerc:LR5}
-	Dado duas linguagens quaisquer $L_1$ e $L_2$ demostre que:
-\end{exercise}
-
-\begin{enumerate}
-	\item Se $L_1 \cap L_2 \neq \emptyset$, então $PRE(L_1) \cap PRE(L_2) = \emptyset$.
-	\item Se $L_1 \subseteq L_2$, então $SUF(L_1) \cap SUF(L_2) = \emptyset$.
-	\item Se $L_1 \subseteq L_2$, então $L_1^r \subseteq L_2^r$.
-	\item Se $L_1 \subseteq L_2$, então para todo $L$ tem-se que $LL_1 \subseteq LL_2$. 
-\end{enumerate}
-
-\begin{exercise}\label{exerc:LR6}
-	Demonstre ou refute o predicado $(\forall L \subseteq \Sigma^*)[(\forall n \in \mathbb{N})[\overline{L}^n = \overline{L^n}]]$.
-\end{exercise}
-
-\begin{exercise}\label{exerc:LR7}
-	Esboce formalmente em que condições a igualdade 
-	$$PRE(L) = (SUF(L))^r$$ 
-	é verdadeira.
-\end{exercise}
 
 \begin{exercise}\label{exerc:LR8}
 	Considere o autômato na Figura \ref{fig:AutomaExercicioLR8} e responda o que é solicitado.
@@ -3207,3 +2919,11 @@ O próximo resultado mostra que gramática regulares à esquerda e à direita s�
 		B & \rhd & bbS \mid aA \mid bb\\ 
 	\end{eqnarray*}
 \end{enumerate}
+
+\begin{exercise}\label{exerc:LR51}
+	Para cada gramática do Exercício \ref{exerc:LR51} esboce uma gramática regular unitária à esquerda equivalente. 
+\end{exercise}
+
+\begin{exercise}\label{exerc:LR52}
+	Esboce uma gramática regular que gere a linguagem aceita pelo AFD da Figura \ref{fig:AFD-Expressao}. 
+\end{exercise}
